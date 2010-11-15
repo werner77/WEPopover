@@ -177,9 +177,9 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
 					if (theOffset.x < 0) {
 						xArrowOffset += theOffset.x;
 						theOffset.x = 0;
-					} else if (theOffset.x > displayArea.size.width) {
-						xArrowOffset += theOffset.x - displayArea.size.width;
-						theOffset.x = displayArea.size.width;
+					} else if (theOffset.x + theSize.width > displayArea.size.width) {
+						xArrowOffset += (theOffset.x + theSize.width - displayArea.size.width);
+						theOffset.x = displayArea.size.width - theSize.width;
 					}
 					
 					theArrowRect = CGRectMake(xArrowOffset, yArrowOffset, upArrowImage.size.width, upArrowImage.size.height);
@@ -198,9 +198,9 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
 					if (theOffset.x < 0) {
 						xArrowOffset += theOffset.x;
 						theOffset.x = 0;
-					} else if (theOffset.x > displayArea.size.width) {
-						xArrowOffset += theOffset.x - displayArea.size.width;
-						theOffset.x = displayArea.size.width;
+					} else if (theOffset.x + theSize.width > displayArea.size.width) {
+						xArrowOffset += (theOffset.x + theSize.width - displayArea.size.width);
+						theOffset.x = displayArea.size.width - theSize.width;
 					}
 					theArrowRect = CGRectMake(xArrowOffset , yArrowOffset, downArrowImage.size.width, downArrowImage.size.height);
 					
@@ -218,9 +218,9 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
 					if (theOffset.y < 0) {
 						yArrowOffset += theOffset.y;
 						theOffset.y = 0;
-					} else if (theOffset.y > displayArea.size.height) {
-						yArrowOffset += theOffset.y - displayArea.size.height;
-						theOffset.y = displayArea.size.height;
+					} else if (theOffset.y + theSize.height > displayArea.size.height) {
+						yArrowOffset += (theOffset.y + theSize.height - displayArea.size.height);
+						theOffset.y = displayArea.size.height - theSize.height;
 					}
 					theArrowRect = CGRectMake(xArrowOffset, yArrowOffset, leftArrowImage.size.width, leftArrowImage.size.height);
 					
@@ -238,9 +238,9 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
 					if (theOffset.y < 0) {
 						yArrowOffset += theOffset.y;
 						theOffset.y = 0;
-					} else if (theOffset.y > displayArea.size.height) {
-						yArrowOffset += theOffset.y - displayArea.size.height;
-						theOffset.y = displayArea.size.height;
+					} else if (theOffset.y + theSize.height > displayArea.size.height) {
+						yArrowOffset += (theOffset.y + theSize.height - displayArea.size.height);
+						theOffset.y = displayArea.size.height - theSize.height;
 					}
 					
 					theArrowRect = CGRectMake(xArrowOffset, yArrowOffset, rightArrowImage.size.width, rightArrowImage.size.height);
