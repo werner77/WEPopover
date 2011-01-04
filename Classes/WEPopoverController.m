@@ -160,6 +160,9 @@
 	CGRect displayArea = CGRectZero;
 	if ([theView conformsToProtocol:@protocol(WEPopoverParentView)] && [theView respondsToSelector:@selector(displayAreaForPopover)]) {
 		displayArea = [(id <WEPopoverParentView>)theView displayAreaForPopover];
+	} else if ([theView isKindOfClass:[UIScrollView class]]) {
+		CGPoint contentOffset = [(UIScrollView *)theView contentOffset];
+		displayArea = CGRectMake(contentOffset.x, contentOffset.y, theView.frame.size.width, theView.frame.size.height);
 	} else {
 		displayArea = CGRectMake(0, 0, theView.frame.size.width, theView.frame.size.height);
 	}

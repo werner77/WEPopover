@@ -15,6 +15,7 @@
 		2899E5220DE3E06400AC0155 /* WEPopoverViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2899E5210DE3E06400AC0155 /* WEPopoverViewController.xib */; };
 		28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD733E0D9D9553002E5188 /* MainWindow.xib */; };
 		28D7ACF80DDB3853001CB0EB /* WEPopoverViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28D7ACF70DDB3853001CB0EB /* WEPopoverViewController.m */; };
+		7496C86112D363AC00F93229 /* WEPopoverTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7496C86012D363AC00F93229 /* WEPopoverTableViewController.m */; };
 		749FAE791286125600AB97F9 /* popoverArrowDown.png in Resources */ = {isa = PBXBuildFile; fileRef = 749FAE731286125600AB97F9 /* popoverArrowDown.png */; };
 		749FAE7A1286125600AB97F9 /* popoverArrowLeft.png in Resources */ = {isa = PBXBuildFile; fileRef = 749FAE741286125600AB97F9 /* popoverArrowLeft.png */; };
 		749FAE7B1286125600AB97F9 /* popoverArrowRight.png in Resources */ = {isa = PBXBuildFile; fileRef = 749FAE751286125600AB97F9 /* popoverArrowRight.png */; };
@@ -39,6 +40,8 @@
 		28D7ACF70DDB3853001CB0EB /* WEPopoverViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WEPopoverViewController.m; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* WEPopover_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WEPopover_Prefix.pch; sourceTree = "<group>"; };
+		7496C85F12D363AC00F93229 /* WEPopoverTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WEPopoverTableViewController.h; sourceTree = "<group>"; };
+		7496C86012D363AC00F93229 /* WEPopoverTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WEPopoverTableViewController.m; sourceTree = "<group>"; };
 		749FAE731286125600AB97F9 /* popoverArrowDown.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = popoverArrowDown.png; sourceTree = "<group>"; };
 		749FAE741286125600AB97F9 /* popoverArrowLeft.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = popoverArrowLeft.png; sourceTree = "<group>"; };
 		749FAE751286125600AB97F9 /* popoverArrowRight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = popoverArrowRight.png; sourceTree = "<group>"; };
@@ -79,6 +82,8 @@
 				749FAE821286130000AB97F9 /* WEPopoverContentViewController.m */,
 				28D7ACF60DDB3853001CB0EB /* WEPopoverViewController.h */,
 				28D7ACF70DDB3853001CB0EB /* WEPopoverViewController.m */,
+				7496C85F12D363AC00F93229 /* WEPopoverTableViewController.h */,
+				7496C86012D363AC00F93229 /* WEPopoverTableViewController.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -234,6 +239,7 @@
 				749FAE861286130000AB97F9 /* WEPopoverContainerView.m in Sources */,
 				749FAE871286130000AB97F9 /* WEPopoverContentViewController.m in Sources */,
 				749FAE881286130000AB97F9 /* WEPopoverController.m in Sources */,
+				7496C86112D363AC00F93229 /* WEPopoverTableViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -276,7 +282,8 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
-				SDKROOT = iphoneos4.1;
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				SDKROOT = iphoneos;
 			};
 			name = Debug;
 		};
@@ -290,7 +297,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PREBINDING = NO;
-				SDKROOT = iphoneos4.1;
+				SDKROOT = iphoneos;
 			};
 			name = Release;
 		};
