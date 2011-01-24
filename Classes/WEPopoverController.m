@@ -9,7 +9,7 @@
 #import "WEPopoverController.h"
 #import "WEPopoverParentView.h"
 
-#define FADE_DURATION 0.25
+#define FADE_DURATION 0.2
 
 @interface WEPopoverController(Private)
 
@@ -170,24 +170,38 @@
 }
 
 - (WEPopoverContainerViewProperties *)defaultContainerViewProperties {
-	WEPopoverContainerViewProperties *ret = [[WEPopoverContainerViewProperties new] autorelease];
+	WEPopoverContainerViewProperties *ret = [[WEPopoverContainerViewProperties alloc] autorelease];
 	
-	static const NSInteger CAP_SIZE = 188 / 2;
-	static const CGFloat BG_IMAGE_MARGIN = 39.0;
+//	static const NSInteger CAP_SIZE = 188 / 2;
+//	static const CGFloat BG_IMAGE_MARGIN = 39.0;
+	
+	// Support the retina display graphics
+	CGFloat scale = 1.0;
+	if([[UIScreen mainScreen] respondsToSelector:NSSelectorFromString(@"scale")]) {
+
+		scale = [[UIScreen mainScreen] scale];
+	}
+	
+	NSInteger CAP_SIZE = 188 / 2 * .5; // (1.0 / scale);
+	CGFloat BG_IMAGE_MARGIN = 39.0 * .5; //(1.0 / scale);
+		
 	
 	CGSize theSize = self.popoverContentSize;
+	
+	NSLog(@"TheSize: %@", NSStringFromCGSize(theSize));
+	
 	NSString *bgImageName = nil;
 	CGFloat bgMargin = 0.0;
 	CGFloat bgCapSize = 0.0;
 	CGFloat contentMargin = 3.0;
 	if (theSize.width < (CAP_SIZE + 1) || theSize.height < (CAP_SIZE + 1)) {
 		bgImageName = @"popoverBgSmall.png";
-		bgMargin = BG_IMAGE_MARGIN / 2;
-		bgCapSize = CAP_SIZE / 2;
+		bgMargin = BG_IMAGE_MARGIN / 2; // * scale;
+		bgCapSize = CAP_SIZE / 2;// * scale;
 	} else {
 		bgImageName = @"popoverBg.png";
-		bgMargin = BG_IMAGE_MARGIN;
-		bgCapSize = CAP_SIZE;
+		bgMargin = BG_IMAGE_MARGIN; // * scale;
+		bgCapSize = CAP_SIZE; // * scale;
 	}
 	
 	ret.leftBgMargin = bgMargin;

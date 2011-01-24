@@ -38,6 +38,23 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 	
 	currentPopoverCellIndex = -1;
+	
+	UIBarButtonItem *leftButton = [[UIBarButtonItem	alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(add:)];
+	UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemBookmarks target:self action:@selector(bookmarks:)];
+	
+	self.navigationItem.leftBarButtonItem = leftButton;
+	self.navigationItem.rightBarButtonItem = rightButton;
+	
+	[leftButton release];
+	[rightButton release];
+}
+
+- (void)add:(id)sender {
+	NSLog(@"Add Button Pressed");
+}
+
+- (void)bookmarks:(id)sender {
+	NSLog(@"Bookmarks Button Pressed");
 }
 
 /*

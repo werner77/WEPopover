@@ -25,6 +25,11 @@
 		749FAE861286130000AB97F9 /* WEPopoverContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 749FAE801286130000AB97F9 /* WEPopoverContainerView.m */; };
 		749FAE871286130000AB97F9 /* WEPopoverContentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 749FAE821286130000AB97F9 /* WEPopoverContentViewController.m */; };
 		749FAE881286130000AB97F9 /* WEPopoverController.m in Sources */ = {isa = PBXBuildFile; fileRef = 749FAE841286130000AB97F9 /* WEPopoverController.m */; };
+		BD258CF512ECCB860002B7C4 /* popoverBg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BD258CF412ECCB860002B7C4 /* popoverBg@2x.png */; };
+		BD258D3B12ECD1200002B7C4 /* popoverArrowDown@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BD258D3A12ECD1200002B7C4 /* popoverArrowDown@2x.png */; };
+		BD258DE512ED33FD0002B7C4 /* popoverArrowLeft@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BD258DE212ED33FD0002B7C4 /* popoverArrowLeft@2x.png */; };
+		BD258DE612ED33FD0002B7C4 /* popoverArrowRight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BD258DE312ED33FD0002B7C4 /* popoverArrowRight@2x.png */; };
+		BD258DE712ED33FD0002B7C4 /* popoverArrowUp@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BD258DE412ED33FD0002B7C4 /* popoverArrowUp@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -56,6 +61,11 @@
 		749FAE841286130000AB97F9 /* WEPopoverController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WEPopoverController.m; sourceTree = "<group>"; };
 		749FAE851286130000AB97F9 /* WEPopoverParentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WEPopoverParentView.h; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* WEPopover-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "WEPopover-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
+		BD258CF412ECCB860002B7C4 /* popoverBg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "popoverBg@2x.png"; sourceTree = "<group>"; };
+		BD258D3A12ECD1200002B7C4 /* popoverArrowDown@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "popoverArrowDown@2x.png"; sourceTree = "<group>"; };
+		BD258DE212ED33FD0002B7C4 /* popoverArrowLeft@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "popoverArrowLeft@2x.png"; sourceTree = "<group>"; };
+		BD258DE312ED33FD0002B7C4 /* popoverArrowRight@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "popoverArrowRight@2x.png"; sourceTree = "<group>"; };
+		BD258DE412ED33FD0002B7C4 /* popoverArrowUp@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "popoverArrowUp@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -153,6 +163,11 @@
 		749FAE721286123F00AB97F9 /* Popover */ = {
 			isa = PBXGroup;
 			children = (
+				BD258DE212ED33FD0002B7C4 /* popoverArrowLeft@2x.png */,
+				BD258DE312ED33FD0002B7C4 /* popoverArrowRight@2x.png */,
+				BD258DE412ED33FD0002B7C4 /* popoverArrowUp@2x.png */,
+				BD258D3A12ECD1200002B7C4 /* popoverArrowDown@2x.png */,
+				BD258CF412ECCB860002B7C4 /* popoverBg@2x.png */,
 				749FAE731286125600AB97F9 /* popoverArrowDown.png */,
 				749FAE741286125600AB97F9 /* popoverArrowLeft.png */,
 				749FAE751286125600AB97F9 /* popoverArrowRight.png */,
@@ -223,6 +238,11 @@
 				749FAE7C1286125600AB97F9 /* popoverArrowUp.png in Resources */,
 				749FAE7D1286125600AB97F9 /* popoverBg.png in Resources */,
 				749FAE7E1286125600AB97F9 /* popoverBgSmall.png in Resources */,
+				BD258CF512ECCB860002B7C4 /* popoverBg@2x.png in Resources */,
+				BD258D3B12ECD1200002B7C4 /* popoverArrowDown@2x.png in Resources */,
+				BD258DE512ED33FD0002B7C4 /* popoverArrowLeft@2x.png in Resources */,
+				BD258DE612ED33FD0002B7C4 /* popoverArrowRight@2x.png in Resources */,
+				BD258DE712ED33FD0002B7C4 /* popoverArrowUp@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
