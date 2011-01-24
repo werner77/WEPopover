@@ -42,7 +42,7 @@
 			 displayArea:(CGRect)displayArea
 permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
 		properties:(WEPopoverContainerViewProperties *)theProperties {
-	if (self = [super initWithFrame:CGRectZero]) {
+	if( (self = [super initWithFrame:CGRectZero]) ) {
 		
 		self.properties = theProperties;
 		correctedSize = CGSizeMake(theSize.width + properties.leftBgMargin + properties.rightBgMargin + properties.leftContentMargin + properties.rightContentMargin, 
