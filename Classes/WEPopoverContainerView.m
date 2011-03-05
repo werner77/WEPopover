@@ -44,7 +44,7 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
 		properties:(WEPopoverContainerViewProperties *)theProperties {
 	if( (self = [super initWithFrame:CGRectZero]) ) {
 		
-		self.properties = theProperties;
+		[self setProperties:theProperties];
 		correctedSize = CGSizeMake(theSize.width + properties.leftBgMargin + properties.rightBgMargin + properties.leftContentMargin + properties.rightContentMargin, 
 								   theSize.height + properties.topBgMargin + properties.bottomBgMargin + properties.topContentMargin + properties.bottomContentMargin);	
 		[self determineGeometryForSize:correctedSize anchorRect:anchorRect displayArea:displayArea permittedArrowDirections:permittedArrowDirections];
