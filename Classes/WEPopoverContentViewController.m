@@ -18,7 +18,9 @@
 - (id)initWithStyle:(UITableViewStyle)style {
     // Override initWithStyle: if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
     if ((self = [super initWithStyle:style])) {
-		self.contentSizeForViewInPopover = CGSizeMake(200, 4 * 44 - 1);
+        
+        // Set the size of the content for 4 rows of data
+		self.contentSizeForViewInPopover = CGSizeMake(100, 4 * 44 - 1);
     }
     return self;
 }

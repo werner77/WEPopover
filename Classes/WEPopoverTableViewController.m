@@ -42,6 +42,7 @@
 	UIBarButtonItem *leftButton = [[UIBarButtonItem	alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(add:)];
 	UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemBookmarks target:self action:@selector(bookmarks:)];
 	
+    
 	self.navigationItem.leftBarButtonItem = leftButton;
 	self.navigationItem.rightBarButtonItem = rightButton;
 	
@@ -55,6 +56,32 @@
 
 - (void)bookmarks:(id)sender {
 	NSLog(@"Bookmarks Button Pressed");
+    
+    static int x = 50;
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 40)];
+    [label setText:@"Hello World"];
+    [label setBackgroundColor:[UIColor clearColor]];
+    [label setTextColor:[UIColor whiteColor]];
+    [label setTextAlignment:UITextAlignmentCenter];
+    UIViewController *viewCon = [[UIViewController alloc] init];
+    viewCon.view = label;
+    viewCon.contentSizeForViewInPopover = CGSizeMake(100, 36);
+    
+    
+    NSLog(@"Label Frame: %@", NSStringFromCGRect(label.frame));
+    NSLog(@"Popover size: %@", NSStringFromCGSize(viewCon.contentSizeForViewInPopover));
+    NSLog(@"ViewCon: %@", NSStringFromCGRect(viewCon.view.frame));
+    
+    WEPopoverController *pop = [[WEPopoverController alloc] initWithContentViewController:viewCon];
+    [pop presentPopoverFromRect:CGRectMake(315-x, 0, 50, 44+ 11)
+                                            inView:self.navigationController.view
+                          permittedArrowDirections:UIPopoverArrowDirectionUp//UIPopoverArrowDirectionDown|
+     
+                                          animated:YES];
+
+    
+    x+=15;
+
 }
 
 /*

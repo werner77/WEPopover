@@ -172,20 +172,13 @@
 - (WEPopoverContainerViewProperties *)defaultContainerViewProperties {
 	WEPopoverContainerViewProperties *ret = [[WEPopoverContainerViewProperties alloc] autorelease];
 	
-//	static const NSInteger CAP_SIZE = 188 / 2;
-//	static const CGFloat BG_IMAGE_MARGIN = 39.0;
-	
-	// Support the retina display graphics
-	CGFloat scale = 1.0;
-	if([[UIScreen mainScreen] respondsToSelector:NSSelectorFromString(@"scale")]) {
-
-		scale = [[UIScreen mainScreen] scale];
-	}
-	
-	NSInteger CAP_SIZE = 188 / 2 * .5; // (1.0 / scale);
-	CGFloat BG_IMAGE_MARGIN = 39.0 * .5; //(1.0 / scale);
-		
-	
+    // Values based on the provided popoverBgSmall.png image, using stretchable UIImage caps
+    // popoverBgSmall.png is 94x94 pixels
+    // 18x18 pixel image with dropshaow
+    
+	static const NSInteger CAP_SIZE = 44/2; //94; //94; 
+	static const CGFloat BG_IMAGE_MARGIN = 26/ 2; //76/ 2; //76;
+			
 	CGSize theSize = self.popoverContentSize;
 	
 	NSLog(@"TheSize: %@", NSStringFromCGSize(theSize));
@@ -194,16 +187,11 @@
 	CGFloat bgMargin = 0.0;
 	CGFloat bgCapSize = 0.0;
 	CGFloat contentMargin = 3.0;
-	if (theSize.width < (CAP_SIZE + 1) || theSize.height < (CAP_SIZE + 1)) {
-		bgImageName = @"popoverBgSmall.png";
-		bgMargin = BG_IMAGE_MARGIN / 2; // * scale;
-		bgCapSize = CAP_SIZE / 2;// * scale;
-	} else {
-		bgImageName = @"popoverBg.png";
-		bgMargin = BG_IMAGE_MARGIN; // * scale;
-		bgCapSize = CAP_SIZE; // * scale;
-	}
-	
+    
+    bgImageName = @"popoverBg.png";
+    bgMargin = 13; // minimum margin width of 13 pixels on all sides popoverBg.png //14; //52-26 / 2 // 17; // (Imagesize - 18 pixels)/2 //15; //BG_IMAGE_MARGIN / 2; 
+    bgCapSize = 30; //26; // ImageSize/2  //44-18; //CAP_SIZE / 2;
+
 	ret.leftBgMargin = bgMargin;
 	ret.rightBgMargin = bgMargin;
 	ret.topBgMargin = bgMargin;
