@@ -57,6 +57,7 @@
 - (void)bookmarks:(id)sender {
 	NSLog(@"Bookmarks Button Pressed");
     
+    CGRect screenBounds = [UIScreen mainScreen].bounds;
     static int x = 50;
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 40)];
     [label setText:@"Hello World"];
@@ -73,9 +74,9 @@
     NSLog(@"ViewCon: %@", NSStringFromCGRect(viewCon.view.frame));
     
     WEPopoverController *pop = [[WEPopoverController alloc] initWithContentViewController:viewCon];
-    [pop presentPopoverFromRect:CGRectMake(360-x, 0, 50, 57)
+    [pop presentPopoverFromRect:CGRectMake(screenBounds.size.width-x, 0, 50, 57)
                                             inView:self.navigationController.view
-                          permittedArrowDirections:UIPopoverArrowDirectionUp//UIPopoverArrowDirectionDown|
+                          permittedArrowDirections:UIPopoverArrowDirectionUp | UIPopoverArrowDirectionDown
      
                                           animated:YES];
 

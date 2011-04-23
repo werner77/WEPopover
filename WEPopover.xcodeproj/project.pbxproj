@@ -64,6 +64,7 @@
 		BD258DE312ED33FD0002B7C4 /* popoverArrowRight@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "popoverArrowRight@2x.png"; sourceTree = "<group>"; };
 		BD258DE412ED33FD0002B7C4 /* popoverArrowUp@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "popoverArrowUp@2x.png"; sourceTree = "<group>"; };
 		BD799F6D1361EF11007C948E /* popoverBg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "popoverBg@2x.png"; sourceTree = "<group>"; };
+		BD799F77136292B1007C948E /* Library-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Library-Prefix.pch"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,6 +111,7 @@
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
+				BD799F75136292B0007C948E /* Library */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 			);
@@ -173,6 +175,22 @@
 				BD258D3A12ECD1200002B7C4 /* popoverArrowDown@2x.png */,
 			);
 			name = Popover;
+			sourceTree = "<group>";
+		};
+		BD799F75136292B0007C948E /* Library */ = {
+			isa = PBXGroup;
+			children = (
+				BD799F76136292B1007C948E /* Supporting Files */,
+			);
+			path = Library;
+			sourceTree = "<group>";
+		};
+		BD799F76136292B1007C948E /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				BD799F77136292B1007C948E /* Library-Prefix.pch */,
+			);
+			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
