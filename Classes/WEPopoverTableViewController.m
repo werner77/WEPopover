@@ -40,7 +40,7 @@
 	currentPopoverCellIndex = -1;
 	
 	UIBarButtonItem *leftButton = [[UIBarButtonItem	alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(add:)];
-	UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemBookmarks target:self action:@selector(bookmarks:)];
+	UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(bookmarks:)];
 	
     
 	self.navigationItem.leftBarButtonItem = leftButton;
@@ -73,14 +73,14 @@
     NSLog(@"ViewCon: %@", NSStringFromCGRect(viewCon.view.frame));
     
     WEPopoverController *pop = [[WEPopoverController alloc] initWithContentViewController:viewCon];
-    [pop presentPopoverFromRect:CGRectMake(315-x, 0, 50, 44+ 11)
+    [pop presentPopoverFromRect:CGRectMake(360-x, 0, 50, 57)
                                             inView:self.navigationController.view
                           permittedArrowDirections:UIPopoverArrowDirectionUp//UIPopoverArrowDirectionDown|
      
                                           animated:YES];
 
     
-    x+=15;
+    x+=40;
 
 }
 
