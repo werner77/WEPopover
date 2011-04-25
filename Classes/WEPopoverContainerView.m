@@ -252,7 +252,7 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
 			CGRect intersection = CGRectIntersection(displayArea, CGRectOffset(theBgRect, theOffset.x, theOffset.y));
 			CGFloat surface = intersection.size.width * intersection.size.height;
 			
-			if (surface > biggestSurface) {
+			if (surface >= biggestSurface) {
 				biggestSurface = surface;
 				offset = theOffset;
 				arrowRect = theArrowRect;
