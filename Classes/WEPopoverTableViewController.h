@@ -16,6 +16,10 @@
     WEPopoverController *navPopover;
 }
 
+- (void)popoverButtonPressed:(id)sender; 
+- (void)add:(id)sender;
+- (void)bookmarks:(id)sender;
+
 @property (nonatomic, retain) WEPopoverController *popoverController;
 
 @end
