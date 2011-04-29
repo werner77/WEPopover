@@ -121,7 +121,7 @@
         UIFont *font = [UIFont boldSystemFontOfSize:20];
         [label setFont:font];
         CGSize size = [label.text sizeWithFont:font];
-        CGRect frame = CGRectMake(0, 0, size.width + 10, size.height + 10); // ad a bit of a border around the text
+        CGRect frame = CGRectMake(0, 0, size.width + 10, size.height + 10); // add a bit of a border around the text
         label.frame = frame;
         
         UIButton *button = [[UIButton alloc] initWithFrame:label.frame];
