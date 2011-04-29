@@ -157,6 +157,11 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
     CGFloat minXArrowOffset = properties.leftBgMargin +  (upArrowImage.size.width / 2); 
     CGFloat maxXArrowOffset = theSize.width - properties.leftBgMargin - properties.rightBgMargin - properties.rightContentMargin - properties.leftContentMargin - (upArrowImage.size.width / 2);
 
+    CGFloat minYArrowOffset = properties.topBgMargin +  (rightArrowImage.size.height / 2); 
+    CGFloat maxYArrowOffset = theSize.height - properties.topBgMargin - properties.bottomBgMargin - properties.topContentMargin - properties.bottomContentMargin - (rightArrowImage.size.height / 2);
+
+    
+    
 	while (theArrowDirection <= UIPopoverArrowDirectionRight) {
 		
 		if ((supportedArrowDirections & theArrowDirection)) {
@@ -224,8 +229,8 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
                         xArrowOffset = maxXArrowOffset; 
                     }
                     
-                    
-					theArrowRect = CGRectMake(xArrowOffset , yArrowOffset, downArrowImage.size.width, downArrowImage.size.height);
+                    // Account for the border on bottom edge, need to cover it up by one pixel, lost in truncation
+					theArrowRect = CGRectMake(xArrowOffset , yArrowOffset - 1, downArrowImage.size.width, downArrowImage.size.height);
 					
 					break;
 				case UIPopoverArrowDirectionLeft:
@@ -240,12 +245,21 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
 					
 					if (theOffset.y < 0) {
 						yArrowOffset += theOffset.y;
-						theOffset.y = 0;
+						theOffset.y = -properties.topBgMargin / 2;
 					} else if (theOffset.y + theSize.height > displayArea.size.height) {
 						yArrowOffset += (theOffset.y + theSize.height - displayArea.size.height);
-						theOffset.y = displayArea.size.height - theSize.height;
+						theOffset.y = displayArea.size.height - theSize.height + properties.bottomBgMargin / 2;
 					}
-					theArrowRect = CGRectMake(xArrowOffset, yArrowOffset, leftArrowImage.size.width, leftArrowImage.size.height);
+                    
+                    // Keep the arrow in bounds using the margin on the background image
+                    if(yArrowOffset < minYArrowOffset) { 
+                        yArrowOffset = minYArrowOffset; 
+                    } else if(yArrowOffset > maxYArrowOffset) {
+                        yArrowOffset = maxYArrowOffset; 
+                    }
+
+                    
+					theArrowRect = CGRectMake(xArrowOffset + 1, yArrowOffset, leftArrowImage.size.width, leftArrowImage.size.height);
 					
 					break;
 				case UIPopoverArrowDirectionRight:
@@ -260,11 +274,19 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
 					
 					if (theOffset.y < 0) {
 						yArrowOffset += theOffset.y;
-						theOffset.y = 0;
+						theOffset.y = -properties.topBgMargin / 2;
 					} else if (theOffset.y + theSize.height > displayArea.size.height) {
 						yArrowOffset += (theOffset.y + theSize.height - displayArea.size.height);
-						theOffset.y = displayArea.size.height - theSize.height;
+						theOffset.y = displayArea.size.height - theSize.height + properties.bottomBgMargin / 2;
 					}
+                    
+                    // Keep the arrow in bounds using the margin on the background image
+                    if(yArrowOffset < minYArrowOffset) { 
+                        yArrowOffset = minYArrowOffset; 
+                    } else if(yArrowOffset > maxYArrowOffset) {
+                        yArrowOffset = maxYArrowOffset; 
+                    }
+
 					
 					theArrowRect = CGRectMake(xArrowOffset, yArrowOffset, rightArrowImage.size.width, rightArrowImage.size.height);
 					

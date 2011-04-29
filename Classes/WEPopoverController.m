@@ -32,7 +32,7 @@
 @synthesize context;
 
 - (id)initWithContentViewController:(UIViewController *)viewController {
-	if (self = [self init]) {
+	if ((self = [self init])) {
 		self.contentViewController = viewController;
 	}
 	return self;
@@ -176,8 +176,8 @@
     // popoverBgSmall.png is 94x94 pixels
     // 18x18 pixel image with dropshaow
     
-	static const NSInteger CAP_SIZE = 44/2; //94; //94; 
-	static const CGFloat BG_IMAGE_MARGIN = 26/ 2; //76/ 2; //76;
+	//static const NSInteger CAP_SIZE = 44/2; //94; //94; 
+	//static const CGFloat BG_IMAGE_MARGIN = 26/ 2; //76/ 2; //76;
 			
 	CGSize theSize = self.popoverContentSize;
 	
@@ -186,11 +186,11 @@
 	NSString *bgImageName = nil;
 	CGFloat bgMargin = 0.0;
 	CGFloat bgCapSize = 0.0;
-	CGFloat contentMargin = 3.0;
+	CGFloat contentMargin = 4.0;
     
     bgImageName = @"popoverBg.png";
     bgMargin = 13; // minimum margin width of 13 pixels on all sides popoverBg.png //14; //52-26 / 2 // 17; // (Imagesize - 18 pixels)/2 //15; //BG_IMAGE_MARGIN / 2; 
-    bgCapSize = 30; //26; // ImageSize/2  //44-18; //CAP_SIZE / 2;
+    bgCapSize = 31; //26; // ImageSize/2  //44-18; //CAP_SIZE / 2;
 
 	ret.leftBgMargin = bgMargin;
 	ret.rightBgMargin = bgMargin;
@@ -200,9 +200,9 @@
 	ret.topBgCapSize = bgCapSize;
 	ret.bgImageName = bgImageName;
 	ret.leftContentMargin = contentMargin;
-	ret.rightContentMargin = contentMargin;
-	ret.topContentMargin = contentMargin;
-	ret.bottomContentMargin = contentMargin;
+	ret.rightContentMargin = contentMargin - 1;// + 1;// + 2;
+	ret.topContentMargin = contentMargin; // + 1;
+	ret.bottomContentMargin = contentMargin; // + 1;
 	
 	ret.upArrowImageName = @"popoverArrowUp.png";
 	ret.downArrowImageName = @"popoverArrowDown.png";
