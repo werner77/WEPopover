@@ -38,7 +38,138 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 	
 	currentPopoverCellIndex = -1;
+	
+	UIBarButtonItem *leftButton = [[UIBarButtonItem	alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(add:)];
+	UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemBookmarks target:self action:@selector(bookmarks:)];
+	
+    
+	self.navigationItem.leftBarButtonItem = leftButton;
+	self.navigationItem.rightBarButtonItem = rightButton;
+	
+	[leftButton release];
+	[rightButton release];
 }
+
+- (void)popoverButtonPressed:(id)sender {
+    NSLog(@"Popover Button pressed");
+}
+
+
+- (void)add:(id)sender {
+	NSLog(@"Add Button Pressed");
+    
+    if(!navPopover) {
+        // Create a label and button for the popover
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 40)];
+        [label setText:@"Add more images here"];
+        [label setBackgroundColor:[UIColor clearColor]];
+        [label setTextColor:[UIColor whiteColor]];
+        [label setTextAlignment:UITextAlignmentCenter];
+
+        UIFont *font = [UIFont boldSystemFontOfSize:20];
+        [label setFont:font];
+        CGSize size = [label.text sizeWithFont:font];
+        CGRect frame = CGRectMake(0, 0, size.width + 10, size.height + 10); // ad a bit of a border around the text
+        label.frame = frame;
+        
+        UIButton *button = [[UIButton alloc] initWithFrame:label.frame];
+        [button addSubview:label];
+        [button addTarget:self action:@selector(popoverButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        
+        UIViewController *viewCon = [[UIViewController alloc] init];
+        viewCon.view = button;
+        viewCon.contentSizeForViewInPopover = frame.size;
+        
+        
+        NSLog(@"Label Frame: %@", NSStringFromCGRect(label.frame));
+        NSLog(@"Popover size: %@", NSStringFromCGSize(viewCon.contentSizeForViewInPopover));
+        NSLog(@"ViewCon: %@", NSStringFromCGRect(viewCon.view.frame));
+        
+         navPopover = [[WEPopoverController alloc] initWithContentViewController:viewCon];
+        
+        
+        [navPopover setDelegate:self];
+    } 
+    
+    if([navPopover isPopoverVisible]) {
+        [navPopover dismissPopoverAnimated:YES];
+        [navPopover setDelegate:nil];
+        [navPopover autorelease];
+        navPopover = nil;
+    } else {
+        [navPopover presentPopoverFromRect:CGRectMake(0, 0, 50, 57)
+                                    inView:self.navigationController.view
+                  permittedArrowDirections:UIPopoverArrowDirectionUp | UIPopoverArrowDirectionDown
+                                  animated:YES];
+    }
+    
+
+}
+
+
+- (void)bookmarks:(id)sender {
+	NSLog(@"Bookmarks Button Pressed");
+    
+    if(!navPopover) {
+            // Create a label and button for the popover
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 40)];
+        [label setText:@"Bookmark it!"];
+        [label setBackgroundColor:[UIColor clearColor]];
+        [label setTextColor:[UIColor whiteColor]];
+        [label setTextAlignment:UITextAlignmentCenter];
+        
+        UIFont *font = [UIFont boldSystemFontOfSize:20];
+        [label setFont:font];
+        CGSize size = [label.text sizeWithFont:font];
+        CGRect frame = CGRectMake(0, 0, size.width + 10, size.height + 10); // add a bit of a border around the text
+        label.frame = frame;
+        
+        UIButton *button = [[UIButton alloc] initWithFrame:label.frame];
+        [button addSubview:label];
+        [button addTarget:self action:@selector(popoverButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        
+        UIViewController *viewCon = [[UIViewController alloc] init];
+        viewCon.view = button;
+        viewCon.contentSizeForViewInPopover = frame.size;//CGSizeMake(100, 36);
+        
+        
+        NSLog(@"Label Frame: %@", NSStringFromCGRect(label.frame));
+        NSLog(@"Popover size: %@", NSStringFromCGSize(viewCon.contentSizeForViewInPopover));
+        NSLog(@"ViewCon: %@", NSStringFromCGRect(viewCon.view.frame));
+        
+        navPopover = [[WEPopoverController alloc] initWithContentViewController:viewCon];
+        
+        
+        [navPopover setDelegate:self];
+    } 
+    
+    if([navPopover isPopoverVisible]) {
+        [navPopover dismissPopoverAnimated:YES];
+        [navPopover setDelegate:nil];
+        [navPopover autorelease];
+        navPopover = nil;
+    } else {
+        CGRect screenBounds = [UIScreen mainScreen].bounds;
+
+        [navPopover presentPopoverFromRect:CGRectMake(screenBounds.size.width, 0, 50, 57)
+                                    inView:self.navigationController.view
+                  permittedArrowDirections:UIPopoverArrowDirectionUp | UIPopoverArrowDirectionDown
+                                  animated:YES];
+    }
+}
+
+- (void)popoverControllerDidDismissPopover:(WEPopoverController *)popoverController {
+    
+    NSLog(@"Did dismiss");
+}
+
+- (BOOL)popoverControllerShouldDismissPopover:(WEPopoverController *)popoverController {
+    NSLog(@"Should dismiss");
+    return YES;
+}
+
+
+
 
 /*
 - (void)viewWillAppear:(BOOL)animated {

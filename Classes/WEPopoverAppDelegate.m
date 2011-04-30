@@ -7,7 +7,8 @@
 //
 
 #import "WEPopoverAppDelegate.h"
-#import "WEPopoverViewController.h"
+//#import "WEPopoverViewController.h"
+#import "WEPopoverTableViewController.h"
 
 @implementation WEPopoverAppDelegate
 
@@ -22,9 +23,14 @@
     
     // Override point for customization after application launch.
 
+	UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:viewController];
+	
+	
     // Add the view controller's view to the window and display.
-    [window addSubview:viewController.view];
-    [window makeKeyAndVisible];
+    //[window addSubview:viewController.view];
+    [window addSubview:navController.view];
+	
+	[window makeKeyAndVisible];
 
     return YES;
 }

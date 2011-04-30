@@ -9,7 +9,7 @@
 #import "WEPopoverController.h"
 #import "WEPopoverParentView.h"
 
-#define FADE_DURATION 0.25
+#define FADE_DURATION 0.2
 
 @interface WEPopoverController(Private)
 
@@ -32,7 +32,7 @@
 @synthesize context;
 
 - (id)initWithContentViewController:(UIViewController *)viewController {
-	if (self = [self init]) {
+	if ((self = [self init])) {
 		self.contentViewController = viewController;
 	}
 	return self;
@@ -170,26 +170,23 @@
 }
 
 - (WEPopoverContainerViewProperties *)defaultContainerViewProperties {
-	WEPopoverContainerViewProperties *ret = [[WEPopoverContainerViewProperties new] autorelease];
-	
-	static const NSInteger CAP_SIZE = 188 / 2;
-	static const CGFloat BG_IMAGE_MARGIN = 39.0;
+	WEPopoverContainerViewProperties *ret = [[WEPopoverContainerViewProperties alloc] autorelease];
 	
 	CGSize theSize = self.popoverContentSize;
+	
+	NSLog(@"TheSize: %@", NSStringFromCGSize(theSize));
+	
 	NSString *bgImageName = nil;
 	CGFloat bgMargin = 0.0;
 	CGFloat bgCapSize = 0.0;
-	CGFloat contentMargin = 3.0;
-	if (theSize.width < (CAP_SIZE + 1) || theSize.height < (CAP_SIZE + 1)) {
-		bgImageName = @"popoverBgSmall.png";
-		bgMargin = BG_IMAGE_MARGIN / 2;
-		bgCapSize = CAP_SIZE / 2;
-	} else {
-		bgImageName = @"popoverBg.png";
-		bgMargin = BG_IMAGE_MARGIN;
-		bgCapSize = CAP_SIZE;
-	}
-	
+	CGFloat contentMargin = 4.0;
+    
+    bgImageName = @"popoverBg.png";
+    
+    // These constants are determined by the popoverBg.png image file and are image dependent
+    bgMargin = 13; // margin width of 13 pixels on all sides popoverBg.png (62 pixels wide - 36 pixel background) / 2 == 26 / 2 == 13 
+    bgCapSize = 31; // ImageSize/2  == 62 / 2 == 31 pixels
+    
 	ret.leftBgMargin = bgMargin;
 	ret.rightBgMargin = bgMargin;
 	ret.topBgMargin = bgMargin;
@@ -198,8 +195,8 @@
 	ret.topBgCapSize = bgCapSize;
 	ret.bgImageName = bgImageName;
 	ret.leftContentMargin = contentMargin;
-	ret.rightContentMargin = contentMargin;
-	ret.topContentMargin = contentMargin;
+	ret.rightContentMargin = contentMargin - 1; // Need to shift one pixel for border to look correct
+	ret.topContentMargin = contentMargin; 
 	ret.bottomContentMargin = contentMargin;
 	
 	ret.upArrowImageName = @"popoverArrowUp.png";
@@ -208,5 +205,6 @@
 	ret.rightArrowImageName = @"popoverArrowRight.png";
 	return ret;
 }
+
 
 @end

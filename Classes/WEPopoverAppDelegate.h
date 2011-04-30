@@ -8,15 +8,19 @@
 
 #import <UIKit/UIKit.h>
 
-@class WEPopoverViewController;
+//@class WEPopoverViewController;
+@class WEPopoverTableViewController;
 
 @interface WEPopoverAppDelegate : NSObject <UIApplicationDelegate> {
     UIWindow *window;
-    WEPopoverViewController *viewController;
+//    WEPopoverViewController *viewController;
+	WEPopoverTableViewController *viewController;
 }
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
-@property (nonatomic, retain) IBOutlet WEPopoverViewController *viewController;
+//@property (nonatomic, retain) IBOutlet WEPopoverViewController *viewController;
+@property (nonatomic, retain) IBOutlet WEPopoverTableViewController *viewController;
+
 
 @end
 
