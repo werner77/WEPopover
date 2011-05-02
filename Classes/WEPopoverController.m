@@ -43,6 +43,16 @@
 	[contentViewController release];
 	[containerViewProperties release];
 	self.context = nil;
+    
+    
+    if(parentView) {
+        [parentView removeGestureRecognizer:tapGesture];
+    }
+    [tapGesture release];
+    tapGesture = nil;
+    parentView = nil;
+    
+    
 	[super dealloc];
 }
 
@@ -61,6 +71,9 @@
 		popoverVisible = YES;
 		[contentViewController viewDidAppear:YES];
 	} else {
+        if(delegate && [delegate respondsToSelector:@selector(popoverControllerDidDismissPopover:)]) {
+            [delegate popoverControllerDidDismissPopover:self];
+        }
 		popoverVisible = NO;
 		[contentViewController viewDidDisappear:YES];
 		[self.view removeFromSuperview];
@@ -73,6 +86,12 @@
 	if (self.view) {
 		[contentViewController viewWillDisappear:animated];
 		
+        if(tapGesture) {
+            [parentView removeGestureRecognizer:tapGesture];
+            [tapGesture autorelease];
+            tapGesture = nil;
+        }
+            
 		if (animated) {
 			
 			self.view.userInteractionEnabled = NO;
@@ -86,12 +105,33 @@
 			
 			[UIView commitAnimations];
 		} else {
+            if(delegate && [delegate respondsToSelector:@selector(popoverControllerDidDismissPopover:)]) {
+                [delegate popoverControllerDidDismissPopover:self];
+            }
+            
 			popoverVisible = NO;
 			[contentViewController viewDidDisappear:animated];
 			[self.view removeFromSuperview];
 			self.view = nil;
 		}
 	}
+}
+
+- (void)parentViewTapped:(UITapGestureRecognizer *)theTapGesture {
+     // dismiss the popover if it's visible and conforms to the delegate protocol
+    
+    if(delegate && [delegate respondsToSelector:@selector(popoverControllerShouldDismissPopover:)]) {
+        CGPoint tap = [theTapGesture locationInView:view];
+        if(![view pointInside:tap withEvent:nil]) {
+            if([self isPopoverVisible] && [delegate popoverControllerShouldDismissPopover:self]) {
+                [self dismissPopoverAnimated:YES];
+                
+                [parentView removeGestureRecognizer:tapGesture];
+                [tapGesture autorelease];
+                tapGesture = nil;
+            }
+        } 
+    }
 }
 
 - (void)presentPopoverFromRect:(CGRect)rect 
@@ -115,6 +155,13 @@
 	
 	[contentViewController viewWillAppear:animated];
 	
+    // Used to dismiss the popover if it's parent view is touched
+    tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(parentViewTapped:)];
+    tapGesture.cancelsTouchesInView = NO;
+    [theView addGestureRecognizer:tapGesture];
+    parentView = theView;
+    
+    
 	if (animated) {
 		self.view.userInteractionEnabled = NO;
 		self.view.alpha = 0.0;

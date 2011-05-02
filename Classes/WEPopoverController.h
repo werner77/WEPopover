@@ -11,7 +11,7 @@
 
 @class WEPopoverController;
 
-@protocol PopoverControllerDelegate
+@protocol PopoverControllerDelegate<NSObject>
 
 - (void)popoverControllerDidDismissPopover:(WEPopoverController *)popoverController;
 - (BOOL)popoverControllerShouldDismissPopover:(WEPopoverController *)popoverController;
@@ -28,6 +28,9 @@
 	CGSize popoverContentSize;
 	WEPopoverContainerViewProperties *containerViewProperties;
 	id <NSObject> context;
+    
+    UITapGestureRecognizer *tapGesture;
+    UIView *parentView;
 }
 
 @property(nonatomic, retain) UIViewController *contentViewController;
@@ -52,4 +55,5 @@
 - (void)repositionPopoverFromRect:(CGRect)rect
 		 permittedArrowDirections:(UIPopoverArrowDirection)arrowDirections;
 
+- (void)parentViewTapped:(UITapGestureRecognizer *)tapGesture;
 @end
