@@ -1,5 +1,5 @@
 //
-//  PopupViewController.h
+//  WEPopoverController.h
 //  WEPopover
 //
 //  Created by Werner Altewischer on 02/09/10.
@@ -8,23 +8,28 @@
 
 #import <Foundation/Foundation.h>
 #import "WEPopoverContainerView.h"
+#import "WETouchableView.h"
 
 @class WEPopoverController;
 
-@protocol PopoverControllerDelegate
+@protocol WEPopoverControllerDelegate<NSObject>
 
 - (void)popoverControllerDidDismissPopover:(WEPopoverController *)popoverController;
 - (BOOL)popoverControllerShouldDismissPopover:(WEPopoverController *)popoverController;
 
 @end
 
-@interface WEPopoverController : NSObject {
+/**
+ * @brief Popover controller for the iPhone, mimicing the iPad UIPopoverController interface. See that class for more details.
+ */
+@interface WEPopoverController : NSObject<WETouchableViewDelegate> {
 	UIViewController *contentViewController;
 	UIView *view;
+	WETouchableView *backgroundView;
 	
 	BOOL popoverVisible;
 	UIPopoverArrowDirection popoverArrowDirection;
-	id <PopoverControllerDelegate> delegate;
+	id <WEPopoverControllerDelegate> delegate;
 	CGSize popoverContentSize;
 	WEPopoverContainerViewProperties *containerViewProperties;
 	id <NSObject> context;
@@ -35,7 +40,7 @@
 @property (nonatomic, readonly) UIView *view;
 @property (nonatomic, readonly, getter=isPopoverVisible) BOOL popoverVisible;
 @property (nonatomic, readonly) UIPopoverArrowDirection popoverArrowDirection;
-@property (nonatomic, assign) id <PopoverControllerDelegate> delegate;
+@property (nonatomic, assign) id <WEPopoverControllerDelegate> delegate;
 @property (nonatomic, assign) CGSize popoverContentSize;
 @property (nonatomic, retain) WEPopoverContainerViewProperties *containerViewProperties;
 @property (nonatomic, retain) id <NSObject> context;

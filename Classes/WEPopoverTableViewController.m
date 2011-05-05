@@ -2,7 +2,7 @@
 //  WEPopoverTableViewController.m
 //  WEPopover
 //
-//  Created by X082540 on 1/4/11.
+//  Created by Werner Altewischer on 1/4/11.
 //  Copyright 2011 Werner IT Consultancy. All rights reserved.
 //
 
@@ -166,9 +166,10 @@
 		CGRect frame = [tableView cellForRowAtIndexPath:indexPath].frame;
 		
 		self.popoverController = [[[WEPopoverController alloc] initWithContentViewController:contentViewController] autorelease];
-		[self.popoverController presentPopoverFromRect:frame 
+		self.popoverController.delegate = self;
+		[self.popoverController presentPopoverFromRect:frame  
 												inView:self.view 
-							  permittedArrowDirections:UIPopoverArrowDirectionDown|UIPopoverArrowDirectionUp
+							  permittedArrowDirections:UIPopoverArrowDirectionUp|UIPopoverArrowDirectionDown
 											  animated:YES];
 		
 		currentPopoverCellIndex = indexPath.row;
@@ -176,6 +177,19 @@
 		[contentViewController release];
 	}
 	
+}
+
+#pragma mark -
+#pragma mark WEPopoverControllerDelegate implementation
+
+- (void)popoverControllerDidDismissPopover:(WEPopoverController *)thePopoverController {
+	//Safe to release the popover here
+	self.popoverController = nil;
+}
+
+- (BOOL)popoverControllerShouldDismissPopover:(WEPopoverController *)thePopoverController {
+	//The popover is automatically dismissed if you click outside it, unless you return NO here
+	return YES;
 }
 
 

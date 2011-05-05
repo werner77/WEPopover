@@ -1,5 +1,5 @@
 //
-//  PopupViewController.m
+//  WEPopoverController.m
 //  WEPopover
 //
 //  Created by Werner Altewischer on 02/09/10.
@@ -16,6 +16,7 @@
 - (void)setView:(UIView *)v;
 - (CGRect)displayAreaForView:(UIView *)theView;
 - (WEPopoverContainerViewProperties *)defaultContainerViewProperties;
+- (void)dismissPopoverAnimated:(BOOL)animated userInitiated:(BOOL)userInitiated;
 
 @end
 
@@ -31,8 +32,14 @@
 @synthesize containerViewProperties;
 @synthesize context;
 
+- (id)init {
+	if (self = [super init]) {
+	}
+	return self;
+}
+
 - (id)initWithContentViewController:(UIViewController *)viewController {
-	if( (self = [self init]) ) {
+	if ((self = [self init])) {
 		self.contentViewController = viewController;
 	}
 	return self;
@@ -54,7 +61,7 @@
 	}
 }
 
-- (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
+- (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)theContext {
 	
 	if ([animationID isEqual:@"FadeIn"]) {
 		self.view.userInteractionEnabled = YES;
@@ -65,33 +72,22 @@
 		[contentViewController viewDidDisappear:YES];
 		[self.view removeFromSuperview];
 		self.view = nil;
+		[backgroundView removeFromSuperview];
+		[backgroundView release];
+		backgroundView = nil;
+		
+		BOOL userInitiatedDismissal = [(NSNumber *)theContext boolValue];
+		
+		if (userInitiatedDismissal) {
+			//Only send message to delegate in case the user initiated this event, which is if he touched outside the view
+			[delegate popoverControllerDidDismissPopover:self];
+		}
 	}
 }
 
 - (void)dismissPopoverAnimated:(BOOL)animated {
 	
-	if (self.view) {
-		[contentViewController viewWillDisappear:animated];
-		
-		if (animated) {
-			
-			self.view.userInteractionEnabled = NO;
-			[UIView beginAnimations:@"FadeOut" context:nil];
-			[UIView setAnimationDelegate:self];
-			[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
-			
-			[UIView setAnimationDuration:FADE_DURATION];
-			
-			self.view.alpha = 0.0;
-			
-			[UIView commitAnimations];
-		} else {
-			popoverVisible = NO;
-			[contentViewController viewDidDisappear:animated];
-			[self.view removeFromSuperview];
-			self.view = nil;
-		}
-	}
+	[self dismissPopoverAnimated:animated userInitiated:NO];
 }
 
 - (void)presentPopoverFromRect:(CGRect)rect 
@@ -107,16 +103,24 @@
 	WEPopoverContainerViewProperties *props = self.containerViewProperties ? self.containerViewProperties : [self defaultContainerViewProperties];
 	WEPopoverContainerView *containerView = [[[WEPopoverContainerView alloc] initWithSize:self.popoverContentSize anchorRect:rect displayArea:displayArea permittedArrowDirections:arrowDirections properties:props] autorelease];
 	popoverArrowDirection = containerView.arrowDirection;
-	[theView addSubview:containerView];
-
+	
+	backgroundView = [[WETouchableView alloc] initWithFrame:theView.bounds];
+	backgroundView.backgroundColor = [UIColor clearColor];
+	backgroundView.delegate = self;
+	
+	[theView addSubview:backgroundView];
+	
+	containerView.frame = CGRectOffset(containerView.frame, -backgroundView.frame.origin.x, -backgroundView.frame.origin.y);
+	
+	[backgroundView addSubview:containerView];
+	
 	containerView.contentView = contentViewController.view;
 	
 	self.view = containerView;
-	
 	[contentViewController viewWillAppear:animated];
+	[self.view becomeFirstResponder];
 	
 	if (animated) {
-		self.view.userInteractionEnabled = NO;
 		self.view.alpha = 0.0;
 		
 		[UIView beginAnimations:@"FadeIn" context:nil];
@@ -129,20 +133,29 @@
 		
 		[UIView commitAnimations];
 	} else {
-		self.view.userInteractionEnabled = YES;
 		popoverVisible = YES;
 		[contentViewController viewDidAppear:animated];
 	}
 }
 
 - (void)repositionPopoverFromRect:(CGRect)rect
-	   permittedArrowDirections:(UIPopoverArrowDirection)arrowDirections {
+		 permittedArrowDirections:(UIPopoverArrowDirection)arrowDirections {
 	[(WEPopoverContainerView *)self.view updatePositionWithAnchorRect:rect
-														displayArea:[self displayAreaForView:self.view.superview]
-										   permittedArrowDirections:arrowDirections];
+																  displayArea:[self displayAreaForView:self.view.superview]
+													 permittedArrowDirections:arrowDirections];
 	popoverArrowDirection = ((WEPopoverContainerView *)self.view).arrowDirection;
 }
 
+#pragma mark -
+#pragma mark WETouchableViewDelegate implementation
+
+- (void)viewWasTouched:(WETouchableView *)view {
+	if (popoverVisible) {
+		if (!delegate || [delegate popoverControllerShouldDismissPopover:self]) {
+			[self dismissPopoverAnimated:YES userInitiated:YES];
+		}
+	}
+}
 
 @end
 
@@ -156,15 +169,40 @@
 	}
 }
 
+- (void)dismissPopoverAnimated:(BOOL)animated userInitiated:(BOOL)userInitiated {
+	if (self.view) {
+		[contentViewController viewWillDisappear:animated];
+		popoverVisible = NO;
+		[self.view resignFirstResponder];
+		if (animated) {
+			
+			self.view.userInteractionEnabled = NO;
+			[UIView beginAnimations:@"FadeOut" context:[NSNumber numberWithBool:userInitiated]];
+			[UIView setAnimationDelegate:self];
+			[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
+			
+			[UIView setAnimationDuration:FADE_DURATION];
+			
+			self.view.alpha = 0.0;
+			
+			[UIView commitAnimations];
+		} else {
+			[contentViewController viewDidDisappear:animated];
+			[self.view removeFromSuperview];
+			self.view = nil;
+			[backgroundView removeFromSuperview];
+			[backgroundView release];
+			backgroundView = nil;
+		}
+	}
+}
+
 - (CGRect)displayAreaForView:(UIView *)theView {
 	CGRect displayArea = CGRectZero;
 	if ([theView conformsToProtocol:@protocol(WEPopoverParentView)] && [theView respondsToSelector:@selector(displayAreaForPopover)]) {
 		displayArea = [(id <WEPopoverParentView>)theView displayAreaForPopover];
-	} else if ([theView isKindOfClass:[UIScrollView class]]) {
-		CGPoint contentOffset = [(UIScrollView *)theView contentOffset];
-		displayArea = CGRectMake(contentOffset.x, contentOffset.y, theView.frame.size.width, theView.frame.size.height);
 	} else {
-		displayArea = CGRectMake(0, 0, theView.frame.size.width, theView.frame.size.height);
+		displayArea = theView.bounds;
 	}
 	return displayArea;
 }
@@ -172,35 +210,23 @@
 - (WEPopoverContainerViewProperties *)defaultContainerViewProperties {
 	WEPopoverContainerViewProperties *ret = [[WEPopoverContainerViewProperties new] autorelease];
 	
-	static const NSInteger CAP_SIZE = 188 / 2;
-	static const CGFloat BG_IMAGE_MARGIN = 39.0;
-	
-	CGSize theSize = self.popoverContentSize;
-	NSString *bgImageName = nil;
-	CGFloat bgMargin = 0.0;
-	CGFloat bgCapSize = 0.0;
-	CGFloat contentMargin = 3.0;
-	if (theSize.width < (CAP_SIZE + 1) || theSize.height < (CAP_SIZE + 1)) {
-		bgImageName = @"popoverBgSmall.png";
-		bgMargin = BG_IMAGE_MARGIN / 2;
-		bgCapSize = CAP_SIZE / 2;
-	} else {
-		bgImageName = @"popoverBg.png";
-		bgMargin = BG_IMAGE_MARGIN;
-		bgCapSize = CAP_SIZE;
-	}
+	CGSize imageSize = CGSizeMake(30.0f, 30.0f);
+	NSString *bgImageName = @"popoverBg.png";
+	CGFloat bgMargin = 6.0;
+	CGFloat contentMargin = 2.0;
 	
 	ret.leftBgMargin = bgMargin;
 	ret.rightBgMargin = bgMargin;
 	ret.topBgMargin = bgMargin;
 	ret.bottomBgMargin = bgMargin;
-	ret.leftBgCapSize = bgCapSize;
-	ret.topBgCapSize = bgCapSize;
+	ret.leftBgCapSize = imageSize.width/2;
+	ret.topBgCapSize = imageSize.height/2;
 	ret.bgImageName = bgImageName;
 	ret.leftContentMargin = contentMargin;
 	ret.rightContentMargin = contentMargin;
 	ret.topContentMargin = contentMargin;
 	ret.bottomContentMargin = contentMargin;
+	ret.arrowMargin = 1.0;
 	
 	ret.upArrowImageName = @"popoverArrowUp.png";
 	ret.downArrowImageName = @"popoverArrowDown.png";
