@@ -1,5 +1,5 @@
 //
-//  PopupViewController.m
+//  WEPopoverController.m
 //  WEPopover
 //
 //  Created by Werner Altewischer on 02/09/10.
@@ -30,6 +30,12 @@
 @synthesize view;
 @synthesize containerViewProperties;
 @synthesize context;
+
+- (id)init {
+	if (self = [super init]) {
+	}
+	return self;
+}
 
 - (id)initWithContentViewController:(UIViewController *)viewController {
 	if (self = [self init]) {
@@ -65,6 +71,9 @@
 		[contentViewController viewDidDisappear:YES];
 		[self.view removeFromSuperview];
 		self.view = nil;
+		[backgroundView removeFromSuperview];
+		[backgroundView release];
+		backgroundView = nil;
 	}
 }
 
@@ -72,7 +81,8 @@
 	
 	if (self.view) {
 		[contentViewController viewWillDisappear:animated];
-		
+		popoverVisible = NO;
+		[self.view resignFirstResponder];
 		if (animated) {
 			
 			self.view.userInteractionEnabled = NO;
@@ -86,10 +96,12 @@
 			
 			[UIView commitAnimations];
 		} else {
-			popoverVisible = NO;
 			[contentViewController viewDidDisappear:animated];
 			[self.view removeFromSuperview];
 			self.view = nil;
+			[backgroundView removeFromSuperview];
+			[backgroundView release];
+			backgroundView = nil;
 		}
 	}
 }
@@ -107,16 +119,22 @@
 	WEPopoverContainerViewProperties *props = self.containerViewProperties ? self.containerViewProperties : [self defaultContainerViewProperties];
 	WEPopoverContainerView *containerView = [[[WEPopoverContainerView alloc] initWithSize:self.popoverContentSize anchorRect:rect displayArea:displayArea permittedArrowDirections:arrowDirections properties:props] autorelease];
 	popoverArrowDirection = containerView.arrowDirection;
-	[theView addSubview:containerView];
-
+	
+	backgroundView = [[WETouchableView alloc] initWithFrame:theView.bounds];
+	backgroundView.backgroundColor = [UIColor clearColor];
+	backgroundView.delegate = self;
+	
+	[theView addSubview:backgroundView];
+	
+	[backgroundView addSubview:containerView];
+	
 	containerView.contentView = contentViewController.view;
 	
 	self.view = containerView;
-	
 	[contentViewController viewWillAppear:animated];
+	[self.view becomeFirstResponder];
 	
 	if (animated) {
-		self.view.userInteractionEnabled = NO;
 		self.view.alpha = 0.0;
 		
 		[UIView beginAnimations:@"FadeIn" context:nil];
@@ -129,20 +147,30 @@
 		
 		[UIView commitAnimations];
 	} else {
-		self.view.userInteractionEnabled = YES;
 		popoverVisible = YES;
 		[contentViewController viewDidAppear:animated];
 	}
 }
 
 - (void)repositionPopoverFromRect:(CGRect)rect
-	   permittedArrowDirections:(UIPopoverArrowDirection)arrowDirections {
+		 permittedArrowDirections:(UIPopoverArrowDirection)arrowDirections {
 	[(WEPopoverContainerView *)self.view updatePositionWithAnchorRect:rect
-														displayArea:[self displayAreaForView:self.view.superview]
-										   permittedArrowDirections:arrowDirections];
+																  displayArea:[self displayAreaForView:self.view.superview]
+													 permittedArrowDirections:arrowDirections];
 	popoverArrowDirection = ((WEPopoverContainerView *)self.view).arrowDirection;
 }
 
+#pragma mark -
+#pragma mark WETouchableViewDelegate implementation
+
+- (void)viewWasTouched:(WETouchableView *)view {
+	if (popoverVisible) {
+		if (!delegate || [delegate popoverControllerShouldDismissPopover:self]) {
+			[self dismissPopoverAnimated:YES];
+			[delegate popoverControllerDidDismissPopover:self];
+		}
+	}
+}
 
 @end
 
@@ -172,30 +200,17 @@
 - (WEPopoverContainerViewProperties *)defaultContainerViewProperties {
 	WEPopoverContainerViewProperties *ret = [[WEPopoverContainerViewProperties new] autorelease];
 	
-	static const NSInteger CAP_SIZE = 188 / 2;
-	static const CGFloat BG_IMAGE_MARGIN = 39.0;
-	
-	CGSize theSize = self.popoverContentSize;
-	NSString *bgImageName = nil;
-	CGFloat bgMargin = 0.0;
-	CGFloat bgCapSize = 0.0;
+	CGSize imageSize = CGSizeMake(30.0f, 30.0f);
+	NSString *bgImageName = @"popoverBg.png";
+	CGFloat bgMargin = 5.0;
 	CGFloat contentMargin = 3.0;
-	if (theSize.width < (CAP_SIZE + 1) || theSize.height < (CAP_SIZE + 1)) {
-		bgImageName = @"popoverBgSmall.png";
-		bgMargin = BG_IMAGE_MARGIN / 2;
-		bgCapSize = CAP_SIZE / 2;
-	} else {
-		bgImageName = @"popoverBg.png";
-		bgMargin = BG_IMAGE_MARGIN;
-		bgCapSize = CAP_SIZE;
-	}
 	
 	ret.leftBgMargin = bgMargin;
 	ret.rightBgMargin = bgMargin;
 	ret.topBgMargin = bgMargin;
 	ret.bottomBgMargin = bgMargin;
-	ret.leftBgCapSize = bgCapSize;
-	ret.topBgCapSize = bgCapSize;
+	ret.leftBgCapSize = imageSize.width/2;
+	ret.topBgCapSize = imageSize.height/2;
 	ret.bgImageName = bgImageName;
 	ret.leftContentMargin = contentMargin;
 	ret.rightContentMargin = contentMargin;
