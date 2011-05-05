@@ -167,9 +167,9 @@
 		
 		self.popoverController = [[[WEPopoverController alloc] initWithContentViewController:contentViewController] autorelease];
 		self.popoverController.delegate = self;
-		[self.popoverController presentPopoverFromRect:frame 
+		[self.popoverController presentPopoverFromRect:frame  
 												inView:self.view 
-							  permittedArrowDirections:UIPopoverArrowDirectionDown|UIPopoverArrowDirectionUp
+							  permittedArrowDirections:UIPopoverArrowDirectionUp|UIPopoverArrowDirectionDown
 											  animated:YES];
 		
 		currentPopoverCellIndex = indexPath.row;

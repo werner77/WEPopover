@@ -18,7 +18,7 @@
 - (id)initWithStyle:(UITableViewStyle)style {
     // Override initWithStyle: if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
     if ((self = [super initWithStyle:style])) {
-		self.contentSizeForViewInPopover = CGSizeMake(200, 4 * 44 - 1);
+		self.contentSizeForViewInPopover = CGSizeMake(100, 1 * 44 - 1);
     }
     return self;
 }
@@ -29,6 +29,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+	self.tableView.rowHeight = 44.0;
 	self.view.backgroundColor = [UIColor clearColor];
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
@@ -74,7 +75,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
-    return 4;
+    return 1;
 }
 
 

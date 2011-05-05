@@ -24,6 +24,7 @@
 	CGFloat bottomBgMargin;
 	NSInteger topBgCapSize;
 	NSInteger leftBgCapSize;
+	CGFloat arrowMargin;
 }
 
 @property(nonatomic, retain) NSString *bgImageName;
@@ -41,6 +42,7 @@
 @property(nonatomic, assign) CGFloat bottomContentMargin;
 @property(nonatomic, assign) NSInteger topBgCapSize;
 @property(nonatomic, assign) NSInteger leftBgCapSize;
+@property(nonatomic, assign) CGFloat arrowMargin;
 
 @end
 
