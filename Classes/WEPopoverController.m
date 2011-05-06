@@ -31,6 +31,7 @@
 @synthesize view;
 @synthesize containerViewProperties;
 @synthesize context;
+@synthesize passthroughViews;
 
 - (id)init {
 	if (self = [super init]) {
@@ -49,6 +50,7 @@
 	[self dismissPopoverAnimated:NO];
 	[contentViewController release];
 	[containerViewProperties release];
+	[passthroughViews release];
 	self.context = nil;
 	[super dealloc];
 }
@@ -59,6 +61,16 @@
 		contentViewController = [vc retain];
 		popoverContentSize = [vc contentSizeForViewInPopover];
 	}
+}
+
+//Overridden setter to copy the passthroughViews to the background view if it exists already
+- (void)setPassthroughViews:(NSArray *)array {
+	[passthroughViews release];
+	passthroughViews = nil;
+	if (array) {
+		passthroughViews = [[NSArray alloc] initWithArray:array];
+	}
+	backgroundView.passthroughViews = passthroughViews;
 }
 
 - (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)theContext {
@@ -104,13 +116,16 @@
 	WEPopoverContainerView *containerView = [[[WEPopoverContainerView alloc] initWithSize:self.popoverContentSize anchorRect:rect displayArea:displayArea permittedArrowDirections:arrowDirections properties:props] autorelease];
 	popoverArrowDirection = containerView.arrowDirection;
 	
-	backgroundView = [[WETouchableView alloc] initWithFrame:theView.bounds];
+	UIWindow *keyWindow = [[UIApplication sharedApplication] keyWindow];
+	
+	backgroundView = [[WETouchableView alloc] initWithFrame:keyWindow.bounds];
 	backgroundView.backgroundColor = [UIColor clearColor];
 	backgroundView.delegate = self;
+	backgroundView.passthroughViews = self.passthroughViews;
 	
-	[theView addSubview:backgroundView];
+	[keyWindow addSubview:backgroundView];
 	
-	containerView.frame = CGRectOffset(containerView.frame, -backgroundView.frame.origin.x, -backgroundView.frame.origin.y);
+	containerView.frame = [theView convertRect:containerView.frame toView:backgroundView];
 	
 	[backgroundView addSubview:containerView];
 	

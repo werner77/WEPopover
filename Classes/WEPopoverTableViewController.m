@@ -167,11 +167,16 @@
 		
 		self.popoverController = [[[WEPopoverController alloc] initWithContentViewController:contentViewController] autorelease];
 		self.popoverController.delegate = self;
+		
+		//Uncomment the line below to allow the table view to handle events while the popover is displayed.
+		//Otherwise the popover is dismissed automatically if a user touches anywhere outside of its view.
+		
+		//self.popoverController.passthroughViews = [NSArray arrayWithObject:self.tableView];
+		
 		[self.popoverController presentPopoverFromRect:frame  
 												inView:self.view 
 							  permittedArrowDirections:UIPopoverArrowDirectionUp|UIPopoverArrowDirectionDown
 											  animated:YES];
-		
 		currentPopoverCellIndex = indexPath.row;
 		
 		[contentViewController release];
