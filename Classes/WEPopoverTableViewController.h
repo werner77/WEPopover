@@ -16,4 +16,6 @@
 
 @property (nonatomic, retain) WEPopoverController *popoverController;
 
+- (IBAction)showPopover:(id)sender;
+
 @end
