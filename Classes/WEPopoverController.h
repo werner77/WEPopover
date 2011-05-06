@@ -33,6 +33,7 @@
 	CGSize popoverContentSize;
 	WEPopoverContainerViewProperties *containerViewProperties;
 	id <NSObject> context;
+	NSArray *passthroughViews;
 }
 
 @property(nonatomic, retain) UIViewController *contentViewController;
@@ -44,6 +45,7 @@
 @property (nonatomic, assign) CGSize popoverContentSize;
 @property (nonatomic, retain) WEPopoverContainerViewProperties *containerViewProperties;
 @property (nonatomic, retain) id <NSObject> context;
+@property (nonatomic, copy) NSArray *passthroughViews;
 
 - (id)initWithContentViewController:(UIViewController *)theContentViewController;
 
