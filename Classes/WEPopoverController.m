@@ -8,6 +8,7 @@
 
 #import "WEPopoverController.h"
 #import "WEPopoverParentView.h"
+#import "UIBarButtonItem+WEPopover.h"
 
 #define FADE_DURATION 0.25
 
@@ -100,6 +101,18 @@
 - (void)dismissPopoverAnimated:(BOOL)animated {
 	
 	[self dismissPopoverAnimated:animated userInitiated:NO];
+}
+
+- (void)presentPopoverFromBarButtonItem:(UIBarButtonItem *)item 
+			   permittedArrowDirections:(UIPopoverArrowDirection)arrowDirections 
+							   animated:(BOOL)animated {
+	
+	
+	UIView *v = [[UIApplication sharedApplication] keyWindow];
+	
+	CGRect rect = [item frameInView:v];
+	
+	return [self presentPopoverFromRect:rect inView:v permittedArrowDirections:arrowDirections animated:animated];
 }
 
 - (void)presentPopoverFromRect:(CGRect)rect 

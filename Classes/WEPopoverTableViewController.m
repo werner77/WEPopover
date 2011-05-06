@@ -185,6 +185,27 @@
 }
 
 #pragma mark -
+#pragma mark Actions
+
+- (IBAction)showPopover:(id)sender {
+	
+	if (!self.popoverController) {
+		UIViewController *contentViewController = [[WEPopoverContentViewController alloc] initWithStyle:UITableViewStylePlain];
+		self.popoverController = [[[WEPopoverController alloc] initWithContentViewController:contentViewController] autorelease];
+		self.popoverController.delegate = self;
+		self.popoverController.passthroughViews = [NSArray arrayWithObject:self.navigationController.navigationBar];
+		
+		[self.popoverController presentPopoverFromBarButtonItem:sender 
+									   permittedArrowDirections:UIPopoverArrowDirectionUp|UIPopoverArrowDirectionDown 
+													   animated:YES];
+		[contentViewController release];
+	} else {
+		[self.popoverController dismissPopoverAnimated:YES];
+		self.popoverController = nil;
+	}
+}
+
+#pragma mark -
 #pragma mark WEPopoverControllerDelegate implementation
 
 - (void)popoverControllerDidDismissPopover:(WEPopoverController *)thePopoverController {
