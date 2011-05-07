@@ -34,14 +34,14 @@
 		if (hitView == self) {
 			//Test whether any of the passthrough views would handle this touch
 			testHits = YES;
-			UIWindow *w = [[UIApplication sharedApplication] keyWindow];
-			UIView *superHitView = [w hitTest:point withEvent:event];
+			UIView *superHitView = [self.superview hitTest:point withEvent:event];
 			testHits = NO;
 			
 			if ([self isPassthroughView:superHitView]) {
 				hitView = superHitView;
 			}
 		}
+		
 		return hitView;
 	}
 }

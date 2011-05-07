@@ -33,6 +33,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+	
+	popoverClass = [WEPopoverController class];
 
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
@@ -60,13 +62,13 @@
     [super viewDidDisappear:animated];
 }
 */
-/*
+
 // Override to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     // Return YES for supported orientations.
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+    //return interfaceOrientation == UIInterfaceOrientationPortrait;
+	return YES;
 }
-*/
 
 
 - (void)viewDidUnload {
@@ -165,7 +167,7 @@
 		UIViewController *contentViewController = [[WEPopoverContentViewController alloc] initWithStyle:UITableViewStylePlain];
 		CGRect frame = [tableView cellForRowAtIndexPath:indexPath].frame;
 		
-		self.popoverController = [[[WEPopoverController alloc] initWithContentViewController:contentViewController] autorelease];
+		self.popoverController = [[[popoverClass alloc] initWithContentViewController:contentViewController] autorelease];
 		self.popoverController.delegate = self;
 		
 		//Uncomment the line below to allow the table view to handle events while the popover is displayed.
@@ -190,8 +192,9 @@
 - (IBAction)showPopover:(id)sender {
 	
 	if (!self.popoverController) {
+		
 		UIViewController *contentViewController = [[WEPopoverContentViewController alloc] initWithStyle:UITableViewStylePlain];
-		self.popoverController = [[[WEPopoverController alloc] initWithContentViewController:contentViewController] autorelease];
+		self.popoverController = [[[popoverClass alloc] initWithContentViewController:contentViewController] autorelease];
 		self.popoverController.delegate = self;
 		self.popoverController.passthroughViews = [NSArray arrayWithObject:self.navigationController.navigationBar];
 		

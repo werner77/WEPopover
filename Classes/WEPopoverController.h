@@ -33,7 +33,7 @@
 	CGSize popoverContentSize;
 	WEPopoverContainerViewProperties *containerViewProperties;
 	id <NSObject> context;
-	NSArray *passthroughViews;
+	NSArray *passthroughViews;	
 }
 
 @property(nonatomic, retain) UIViewController *contentViewController;
@@ -61,6 +61,7 @@
 					  animated:(BOOL)animated;
 
 - (void)repositionPopoverFromRect:(CGRect)rect
+						   inView:(UIView *)view
 		 permittedArrowDirections:(UIPopoverArrowDirection)arrowDirections;
 
 @end
