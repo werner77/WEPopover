@@ -29,15 +29,19 @@
 	} else if (touchForwardingDisabled) {
 		return self;
 	} else {
-		testHits = YES;
-		UIWindow *w = [[UIApplication sharedApplication] keyWindow];
+		UIView *hitView = [super hitTest:point withEvent:event];
 		
-		UIView *hitView = [w hitTest:point withEvent:event];
-		testHits = NO;
-		
-		if (![self isPassthroughView:hitView]) {
-			hitView = [super hitTest:point withEvent:event];
-		}		
+		if (hitView == self) {
+			//Test whether any of the passthrough views would handle this touch
+			testHits = YES;
+			UIWindow *w = [[UIApplication sharedApplication] keyWindow];
+			UIView *superHitView = [w hitTest:point withEvent:event];
+			testHits = NO;
+			
+			if ([self isPassthroughView:superHitView]) {
+				hitView = superHitView;
+			}
+		}
 		return hitView;
 	}
 }
