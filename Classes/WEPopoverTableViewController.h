@@ -9,9 +9,10 @@
 #import <UIKit/UIKit.h>
 #import "WEPopoverController.h"
 
-@interface WEPopoverTableViewController : UITableViewController<WEPopoverControllerDelegate> {
+@interface WEPopoverTableViewController : UITableViewController<WEPopoverControllerDelegate, UIPopoverControllerDelegate> {
 	WEPopoverController *popoverController;
 	NSInteger currentPopoverCellIndex;
+	Class popoverClass;
 }
 
 @property (nonatomic, retain) WEPopoverController *popoverController;

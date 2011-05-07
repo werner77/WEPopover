@@ -14,6 +14,8 @@
 
 @interface WEPopoverController(Private)
 
+- (UIView *)keyView;
+- (void)updateBackgroundPassthroughViews;
 - (void)setView:(UIView *)v;
 - (CGRect)displayAreaForView:(UIView *)theView;
 - (WEPopoverContainerViewProperties *)defaultContainerViewProperties;
@@ -71,7 +73,7 @@
 	if (array) {
 		passthroughViews = [[NSArray alloc] initWithArray:array];
 	}
-	backgroundView.passthroughViews = passthroughViews;
+	[self updateBackgroundPassthroughViews];
 }
 
 - (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)theContext {
@@ -107,9 +109,7 @@
 			   permittedArrowDirections:(UIPopoverArrowDirection)arrowDirections 
 							   animated:(BOOL)animated {
 	
-	
-	UIView *v = [[UIApplication sharedApplication] keyWindow];
-	
+	UIView *v = [self keyView];
 	CGRect rect = [item frameInView:v];
 	
 	return [self presentPopoverFromRect:rect inView:v permittedArrowDirections:arrowDirections animated:animated];
@@ -129,23 +129,34 @@
 	WEPopoverContainerView *containerView = [[[WEPopoverContainerView alloc] initWithSize:self.popoverContentSize anchorRect:rect displayArea:displayArea permittedArrowDirections:arrowDirections properties:props] autorelease];
 	popoverArrowDirection = containerView.arrowDirection;
 	
-	UIWindow *keyWindow = [[UIApplication sharedApplication] keyWindow];
+	UIView *keyView = self.keyView;
 	
-	backgroundView = [[WETouchableView alloc] initWithFrame:keyWindow.bounds];
+	backgroundView = [[WETouchableView alloc] initWithFrame:keyView.bounds];
+	backgroundView.contentMode = UIViewContentModeScaleToFill;
+	backgroundView.autoresizingMask = ( UIViewAutoresizingFlexibleLeftMargin |
+									   UIViewAutoresizingFlexibleWidth |
+									   UIViewAutoresizingFlexibleRightMargin |
+									   UIViewAutoresizingFlexibleTopMargin |
+									   UIViewAutoresizingFlexibleHeight |
+									   UIViewAutoresizingFlexibleBottomMargin);
 	backgroundView.backgroundColor = [UIColor clearColor];
 	backgroundView.delegate = self;
-	backgroundView.passthroughViews = self.passthroughViews;
 	
-	[keyWindow addSubview:backgroundView];
+	[keyView addSubview:backgroundView];
 	
 	containerView.frame = [theView convertRect:containerView.frame toView:backgroundView];
 	
 	[backgroundView addSubview:containerView];
 	
 	containerView.contentView = contentViewController.view;
+	containerView.autoresizingMask = ( UIViewAutoresizingFlexibleLeftMargin |
+									  UIViewAutoresizingFlexibleRightMargin);
 	
 	self.view = containerView;
+	[self updateBackgroundPassthroughViews];
+	
 	[contentViewController viewWillAppear:animated];
+	
 	[self.view becomeFirstResponder];
 	
 	if (animated) {
@@ -163,15 +174,21 @@
 	} else {
 		popoverVisible = YES;
 		[contentViewController viewDidAppear:animated];
-	}
+	}	
 }
 
 - (void)repositionPopoverFromRect:(CGRect)rect
+						   inView:(UIView *)theView
 		 permittedArrowDirections:(UIPopoverArrowDirection)arrowDirections {
-	[(WEPopoverContainerView *)self.view updatePositionWithAnchorRect:rect
-																  displayArea:[self displayAreaForView:self.view.superview]
-													 permittedArrowDirections:arrowDirections];
-	popoverArrowDirection = ((WEPopoverContainerView *)self.view).arrowDirection;
+	
+	CGRect displayArea = [self displayAreaForView:theView];
+	WEPopoverContainerView *containerView = (WEPopoverContainerView *)self.view;
+	[containerView updatePositionWithAnchorRect:rect
+									displayArea:displayArea
+					   permittedArrowDirections:arrowDirections];
+	
+	popoverArrowDirection = containerView.arrowDirection;
+	containerView.frame = [theView convertRect:containerView.frame toView:backgroundView];
 }
 
 #pragma mark -
@@ -190,12 +207,26 @@
 
 @implementation WEPopoverController(Private)
 
+- (UIView *)keyView {
+	UIWindow *w = [[UIApplication sharedApplication] keyWindow];
+	if (w.subviews.count > 0) {
+		return [w.subviews objectAtIndex:0];
+	} else {
+		return w;
+	}
+}
+
 - (void)setView:(UIView *)v {
 	if (view != v) {
 		[view release];
 		view = [v retain];
 	}
 }
+
+- (void)updateBackgroundPassthroughViews {
+	backgroundView.passthroughViews = passthroughViews;
+}
+
 
 - (void)dismissPopoverAnimated:(BOOL)animated userInitiated:(BOOL)userInitiated {
 	if (self.view) {
