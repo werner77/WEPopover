@@ -155,7 +155,8 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
 	arrowRect = CGRectZero;
 	arrowDirection = UIPopoverArrowDirectionUnknown;
 	
-	CGFloat biggestSurface = 0.0;
+	CGFloat biggestSurface = 0.0f;
+	CGFloat currentMinMargin = 0.0f;
 	
 	UIImage *upArrowImage = [UIImage imageNamed:properties.upArrowImageName];
 	UIImage *downArrowImage = [UIImage imageNamed:properties.downArrowImageName];
@@ -276,16 +277,26 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
 					break;
 			}
 			
-			
-			CGRect intersection = CGRectIntersection(displayArea, CGRectOffset(theBgRect, theOffset.x, theOffset.y));
+			CGRect bgFrame = CGRectOffset(theBgRect, theOffset.x, theOffset.y);
+			CGRect intersection = CGRectIntersection(displayArea, bgFrame);
 			CGFloat surface = intersection.size.width * intersection.size.height;
 			
-			if (surface > biggestSurface) {
+			CGFloat minMarginLeft = CGRectGetMinX(bgFrame) - CGRectGetMinX(displayArea); 
+			CGFloat minMarginRight = CGRectGetMaxX(displayArea) - CGRectGetMaxX(bgFrame); 
+			CGFloat minMarginTop = CGRectGetMinY(bgFrame) - CGRectGetMinY(displayArea); 
+			CGFloat minMarginBottom = CGRectGetMaxY(displayArea) - CGRectGetMaxY(bgFrame); 
+			
+			CGFloat minMargin = MIN(minMarginLeft, minMarginRight);
+			minMargin = MIN(minMargin, minMarginTop);
+			minMargin = MIN(minMargin, minMarginBottom);
+			
+			if (surface >= biggestSurface && minMargin >= currentMinMargin) {
 				biggestSurface = surface;
 				offset = theOffset;
 				arrowRect = theArrowRect;
 				bgRect = theBgRect;
 				arrowDirection = theArrowDirection;
+				currentMinMargin = minMargin;
 			}
 		}
 		

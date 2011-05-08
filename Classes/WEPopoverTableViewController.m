@@ -166,6 +166,10 @@
 	if (shouldShowNewPopover) {
 		UIViewController *contentViewController = [[WEPopoverContentViewController alloc] initWithStyle:UITableViewStylePlain];
 		CGRect frame = [tableView cellForRowAtIndexPath:indexPath].frame;
+		//double percentage =  (rand() / ((double)RAND_MAX));
+		//double percentage = 0.95;
+		//CGRect rect = CGRectMake(frame.size.width * percentage, frame.origin.y, 1, frame.size.height); 
+		CGRect rect = frame;
 		
 		self.popoverController = [[[popoverClass alloc] initWithContentViewController:contentViewController] autorelease];
 		self.popoverController.delegate = self;
@@ -173,11 +177,12 @@
 		//Uncomment the line below to allow the table view to handle events while the popover is displayed.
 		//Otherwise the popover is dismissed automatically if a user touches anywhere outside of its view.
 		
-		//self.popoverController.passthroughViews = [NSArray arrayWithObject:self.tableView];
+		self.popoverController.passthroughViews = [NSArray arrayWithObject:self.tableView];
 		
-		[self.popoverController presentPopoverFromRect:frame  
+		[self.popoverController presentPopoverFromRect:rect  
 												inView:self.view 
-							  permittedArrowDirections:UIPopoverArrowDirectionUp|UIPopoverArrowDirectionDown
+							  permittedArrowDirections:(UIPopoverArrowDirectionUp|UIPopoverArrowDirectionDown|
+														UIPopoverArrowDirectionLeft|UIPopoverArrowDirectionRight)
 											  animated:YES];
 		currentPopoverCellIndex = indexPath.row;
 		
@@ -199,7 +204,8 @@
 		self.popoverController.passthroughViews = [NSArray arrayWithObject:self.navigationController.navigationBar];
 		
 		[self.popoverController presentPopoverFromBarButtonItem:sender 
-									   permittedArrowDirections:UIPopoverArrowDirectionUp|UIPopoverArrowDirectionDown 
+									   permittedArrowDirections:(UIPopoverArrowDirectionUp|UIPopoverArrowDirectionDown|
+																UIPopoverArrowDirectionLeft|UIPopoverArrowDirectionRight) 
 													   animated:YES];
 		[contentViewController release];
 	} else {
