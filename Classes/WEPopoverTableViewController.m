@@ -8,6 +8,7 @@
 
 #import "WEPopoverTableViewController.h"
 #import "WEPopoverContentViewController.h"
+#import "UIBarButtonItem+WEPopover.h"
 
 @implementation WEPopoverTableViewController
 
@@ -206,6 +207,7 @@
 		[self.popoverController presentPopoverFromBarButtonItem:sender 
 									   permittedArrowDirections:(UIPopoverArrowDirectionUp|UIPopoverArrowDirectionDown) 
 													   animated:YES];
+		 
 		[contentViewController release];
 	} else {
 		[self.popoverController dismissPopoverAnimated:YES];
