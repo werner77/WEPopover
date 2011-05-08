@@ -204,8 +204,7 @@
 		self.popoverController.passthroughViews = [NSArray arrayWithObject:self.navigationController.navigationBar];
 		
 		[self.popoverController presentPopoverFromBarButtonItem:sender 
-									   permittedArrowDirections:(UIPopoverArrowDirectionUp|UIPopoverArrowDirectionDown|
-																UIPopoverArrowDirectionLeft|UIPopoverArrowDirectionRight) 
+									   permittedArrowDirections:(UIPopoverArrowDirectionUp|UIPopoverArrowDirectionDown) 
 													   animated:YES];
 		[contentViewController release];
 	} else {
