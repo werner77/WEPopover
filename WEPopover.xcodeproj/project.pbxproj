@@ -155,7 +155,7 @@
 				746B0A1B137454A000C5A8B5 /* UIBarButtonItem+WEPopover.h */,
 				746B0A1C137454A000C5A8B5 /* UIBarButtonItem+WEPopover.m */,
 			);
-			name = Popover;
+			path = Popover;
 			sourceTree = "<group>";
 		};
 		749FAE721286123F00AB97F9 /* Popover */ = {
