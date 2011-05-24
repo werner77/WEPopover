@@ -62,7 +62,7 @@
 	if (vc != contentViewController) {
 		[contentViewController release];
 		contentViewController = [vc retain];
-		popoverContentSize = [vc contentSizeForViewInPopover];
+		popoverContentSize = CGSizeZero;
 	}
 }
 
@@ -122,6 +122,13 @@
 	
 	
 	[self dismissPopoverAnimated:NO];
+	
+	//First force a load view for the contentViewController so the popoverContentSize is properly initialized
+	contentViewController.view;
+	
+	if (CGSizeEqualToSize(popoverContentSize, CGSizeZero)) {
+		popoverContentSize = contentViewController.contentSizeForViewInPopover;
+	}
 	
 	CGRect displayArea = [self displayAreaForView:theView];
 	
