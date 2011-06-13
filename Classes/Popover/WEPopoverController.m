@@ -273,11 +273,12 @@
 	return displayArea;
 }
 
+//Enable to use the simple popover style
 - (WEPopoverContainerViewProperties *)defaultContainerViewProperties {
 	WEPopoverContainerViewProperties *ret = [[WEPopoverContainerViewProperties new] autorelease];
 	
 	CGSize imageSize = CGSizeMake(30.0f, 30.0f);
-	NSString *bgImageName = @"popoverBg.png";
+	NSString *bgImageName = @"popoverBgSimple.png";
 	CGFloat bgMargin = 6.0;
 	CGFloat contentMargin = 2.0;
 	
@@ -294,10 +295,10 @@
 	ret.bottomContentMargin = contentMargin;
 	ret.arrowMargin = 1.0;
 	
-	ret.upArrowImageName = @"popoverArrowUp.png";
-	ret.downArrowImageName = @"popoverArrowDown.png";
-	ret.leftArrowImageName = @"popoverArrowLeft.png";
-	ret.rightArrowImageName = @"popoverArrowRight.png";
+	ret.upArrowImageName = @"popoverArrowUpSimple.png";
+	ret.downArrowImageName = @"popoverArrowDownSimple.png";
+	ret.leftArrowImageName = @"popoverArrowLeftSimple.png";
+	ret.rightArrowImageName = @"popoverArrowRightSimple.png";
 	return ret;
 }
 
