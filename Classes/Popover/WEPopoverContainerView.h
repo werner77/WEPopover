@@ -68,6 +68,8 @@
 	UIView *contentView;
 }
 
+@property (nonatomic, retain) WEPopoverContainerViewProperties* properties;
+
 /**
  * @brief The current arrow direction for the popover.
  */
