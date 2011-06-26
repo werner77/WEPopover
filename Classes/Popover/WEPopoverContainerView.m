@@ -278,17 +278,57 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
 			}
 			
 			CGRect bgFrame = CGRectOffset(theBgRect, theOffset.x, theOffset.y);
-			CGRect intersection = CGRectIntersection(displayArea, bgFrame);
-			CGFloat surface = intersection.size.width * intersection.size.height;
 			
-			CGFloat minMarginLeft = CGRectGetMinX(bgFrame) - CGRectGetMinX(displayArea); 
+			CGFloat minMarginLeft = CGRectGetMinX(bgFrame) - CGRectGetMinX(displayArea);
 			CGFloat minMarginRight = CGRectGetMaxX(displayArea) - CGRectGetMaxX(bgFrame); 
 			CGFloat minMarginTop = CGRectGetMinY(bgFrame) - CGRectGetMinY(displayArea); 
 			CGFloat minMarginBottom = CGRectGetMaxY(displayArea) - CGRectGetMaxY(bgFrame); 
 			
+			if (minMarginLeft < 0) {
+			    // Popover is too wide and clipped on the left; decrease width
+			    // and move it to the right
+			    theOffset.x -= minMarginLeft;
+			    theBgRect.size.width += minMarginLeft;
+			    minMarginLeft = 0;
+			    if (theArrowDirection == UIPopoverArrowDirectionRight) {
+			        theArrowRect.origin.x = CGRectGetMaxX(theBgRect) - properties.rightBgMargin;
+			    }
+			}
+			if (minMarginRight < 0) {
+			    // Popover is too wide and clipped on the right; decrease width.
+			    theBgRect.size.width += minMarginRight;
+			    minMarginRight = 0;
+			    if (theArrowDirection == UIPopoverArrowDirectionLeft) {
+			        theArrowRect.origin.x = CGRectGetMinX(theBgRect) - leftArrowImage.size.width + properties.leftBgMargin;
+			    }
+			}
+			if (minMarginTop < 0) {
+			    // Popover is too high and clipped at the top; decrease height
+			    // and move it down
+			    theOffset.y -= minMarginTop;
+			    theBgRect.size.height += minMarginTop;
+			    minMarginTop = 0;
+			    if (theArrowDirection == UIPopoverArrowDirectionDown) {
+			        theArrowRect.origin.y = CGRectGetMaxY(theBgRect) - properties.bottomBgMargin;
+			    }
+			}
+			if (minMarginBottom < 0) {
+			    // Popover is too high and clipped at the bottom; decrease height.
+			    theBgRect.size.height += minMarginBottom;
+			    minMarginBottom = 0;
+			    if (theArrowDirection == UIPopoverArrowDirectionUp) {
+			        theArrowRect.origin.y = CGRectGetMinY(theBgRect) - upArrowImage.size.height + properties.topBgMargin;
+			    }
+			}
+			bgFrame = CGRectOffset(theBgRect, theOffset.x, theOffset.y);
+            
 			CGFloat minMargin = MIN(minMarginLeft, minMarginRight);
 			minMargin = MIN(minMargin, minMarginTop);
 			minMargin = MIN(minMargin, minMarginBottom);
+			
+			// Calculate intersection and surface
+			CGRect intersection = CGRectIntersection(displayArea, bgFrame);
+			CGFloat surface = intersection.size.width * intersection.size.height;
 			
 			if (surface >= biggestSurface && minMargin >= currentMinMargin) {
 				biggestSurface = surface;
