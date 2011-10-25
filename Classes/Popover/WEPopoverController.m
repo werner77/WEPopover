@@ -150,7 +150,8 @@
 	backgroundView.delegate = self;
 	
 	[keyView addSubview:backgroundView];
-	
+	[keyView bringSubviewToFront:backgroundView];
+
 	containerView.frame = [theView convertRect:containerView.frame toView:backgroundView];
 	
 	[backgroundView addSubview:containerView];
@@ -217,7 +218,8 @@
 - (UIView *)keyView {
 	UIWindow *w = [[UIApplication sharedApplication] keyWindow];
 	if (w.subviews.count > 0) {
-		return [w.subviews objectAtIndex:0];
+		/* The last view is the frontmost; we want to display above the frontmost view. -evands */
+		return [w.subviews lastObject];
 	} else {
 		return w;
 	}
