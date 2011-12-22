@@ -53,10 +53,10 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
 		self.backgroundColor = [UIColor clearColor];
 		UIImage *theImage = [UIImage imageNamed:properties.bgImageName];
         if ([theImage respondsToSelector:@selector(resizableImageWithCapInsets:)]) {
-            UIEdgeInsets insets = { properties.topBgMargin, 
-                                    properties.leftBgCapSize, 
-                                    properties.topBgCapSize, 
-                                    properties.leftBgCapSize };
+            CGFloat topBottomInset = properties.topBgCapSize-1;
+            CGFloat leftRightInset = properties.leftBgCapSize-1;
+            UIEdgeInsets insets = UIEdgeInsetsMake(topBottomInset, leftRightInset, 
+                                                   topBottomInset, leftRightInset);
             bgImage = [[theImage resizableImageWithCapInsets:insets] retain];
         } else 
             bgImage = [[theImage stretchableImageWithLeftCapWidth:properties.leftBgCapSize 
