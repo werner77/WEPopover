@@ -123,8 +123,14 @@
 	
 	[self dismissPopoverAnimated:NO];
 	
+	// http://gcc.gnu.org/onlinedocs/gcc/Diagnostic-Pragmas.html
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused"
+
 	//First force a load view for the contentViewController so the popoverContentSize is properly initialized
 	contentViewController.view;
+	
+#pragma GCC diagnostic pop
 	
 	if (CGSizeEqualToSize(popoverContentSize, CGSizeZero)) {
 		popoverContentSize = contentViewController.contentSizeForViewInPopover;
