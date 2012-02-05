@@ -124,7 +124,7 @@
 	[self dismissPopoverAnimated:NO];
 	
 	//First force a load view for the contentViewController so the popoverContentSize is properly initialized
-	contentViewController.view;
+	UIView *contentView = contentViewController.view;
 	
 	if (CGSizeEqualToSize(popoverContentSize, CGSizeZero)) {
 		popoverContentSize = contentViewController.contentSizeForViewInPopover;
@@ -155,7 +155,7 @@
 	
 	[backgroundView addSubview:containerView];
 	
-	containerView.contentView = contentViewController.view;
+	containerView.contentView = contentView;
 	containerView.autoresizingMask = ( UIViewAutoresizingFlexibleLeftMargin |
 									  UIViewAutoresizingFlexibleRightMargin);
 	
