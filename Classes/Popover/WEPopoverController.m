@@ -124,7 +124,11 @@
 	[self dismissPopoverAnimated:NO];
 	
 	//First force a load view for the contentViewController so the popoverContentSize is properly initialized
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-value"
 	contentViewController.view;
+#pragma clang diagnostic pop
+	
 	
 	if (CGSizeEqualToSize(popoverContentSize, CGSizeZero)) {
 		popoverContentSize = contentViewController.contentSizeForViewInPopover;
