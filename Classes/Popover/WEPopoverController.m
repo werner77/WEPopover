@@ -76,7 +76,7 @@
 	[self updateBackgroundPassthroughViews];
 }
 
-- (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)theContext {
+- (void)fadeAnimationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)theContext {
 	
 	if ([animationID isEqual:@"FadeIn"]) {
 		self.view.userInteractionEnabled = YES;
@@ -172,7 +172,7 @@
 		[UIView beginAnimations:@"FadeIn" context:nil];
 		
 		[UIView setAnimationDelegate:self];
-		[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
+		[UIView setAnimationDidStopSelector:@selector(fadeAnimationDidStop:finished:context:)];
 		[UIView setAnimationDuration:FADE_DURATION];
 		
 		self.view.alpha = 1.0;
@@ -245,7 +245,7 @@
 			self.view.userInteractionEnabled = NO;
 			[UIView beginAnimations:@"FadeOut" context:[NSNumber numberWithBool:userInitiated]];
 			[UIView setAnimationDelegate:self];
-			[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
+			[UIView setAnimationDidStopSelector:@selector(fadeAnimationDidStop:finished:context:)];
 			
 			[UIView setAnimationDuration:FADE_DURATION];
 			
