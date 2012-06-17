@@ -275,31 +275,36 @@
 
 //Enable to use the simple popover style
 - (WEPopoverContainerViewProperties *)defaultContainerViewProperties {
-	WEPopoverContainerViewProperties *ret = [[WEPopoverContainerViewProperties new] autorelease];
-	
-	CGSize imageSize = CGSizeMake(30.0f, 30.0f);
-	NSString *bgImageName = @"popoverBgSimple.png";
-	CGFloat bgMargin = 6.0;
-	CGFloat contentMargin = 2.0;
-	
-	ret.leftBgMargin = bgMargin;
-	ret.rightBgMargin = bgMargin;
-	ret.topBgMargin = bgMargin;
-	ret.bottomBgMargin = bgMargin;
-	ret.leftBgCapSize = imageSize.width/2;
-	ret.topBgCapSize = imageSize.height/2;
-	ret.bgImageName = bgImageName;
-	ret.leftContentMargin = contentMargin;
-	ret.rightContentMargin = contentMargin;
-	ret.topContentMargin = contentMargin;
-	ret.bottomContentMargin = contentMargin;
-	ret.arrowMargin = 1.0;
-	
-	ret.upArrowImageName = @"popoverArrowUpSimple.png";
-	ret.downArrowImageName = @"popoverArrowDownSimple.png";
-	ret.leftArrowImageName = @"popoverArrowLeftSimple.png";
-	ret.rightArrowImageName = @"popoverArrowRightSimple.png";
-	return ret;
+    WEPopoverContainerViewProperties *ret = [[[WEPopoverContainerViewProperties alloc] init] autorelease];
+    
+    NSString *bgImageName = nil;
+    CGFloat bgMargin = 0.0;
+    CGFloat bgCapSize = 0.0;
+    CGFloat contentMargin = 4.0;
+    
+    bgImageName = @"popoverBg.png";
+    
+    // These constants are determined by the popoverBg.png image file and are image dependent
+    bgMargin = 13; // margin width of 13 pixels on all sides popoverBg.png (62 pixels wide - 36 pixel background) / 2 == 26 / 2 == 13 
+    bgCapSize = 31; // ImageSize/2  == 62 / 2 == 31 pixels
+    
+    ret.leftBgMargin = bgMargin;
+    ret.rightBgMargin = bgMargin;
+    ret.topBgMargin = bgMargin;
+    ret.bottomBgMargin = bgMargin;
+    ret.leftBgCapSize = bgCapSize;
+    ret.topBgCapSize = bgCapSize;
+    ret.bgImageName = bgImageName;
+    ret.leftContentMargin = contentMargin;
+    ret.rightContentMargin = contentMargin - 1; // Need to shift one pixel for border to look correct
+    ret.topContentMargin = contentMargin - 1;
+    ret.bottomContentMargin = contentMargin;
+    
+    ret.upArrowImageName = @"popoverArrowUp.png";
+    ret.downArrowImageName = @"popoverArrowDown.png";
+    ret.leftArrowImageName = @"popoverArrowLeft.png";
+    ret.rightArrowImageName = @"popoverArrowRight.png";
+    return ret;
 }
 
 @end
