@@ -18,17 +18,17 @@ Integrate WEPopover in your project
 
 The easiest way to integrate WEPopover in your project is build it as a framework. This option have many advantages over make it as subproject, especially if your project uses ARC. To Integrate it follow this easy steps:
 
-	1 - Download the WEPopover source code from https://github.com/werner77/WEPopover/
+1 - Download the WEPopover source code from https://github.com/werner77/WEPopover/
 
-	2 - Select as active scheme "WEPopover Framework" for *iPhone/iPad simulator* and build it
-	    ![](https://raw.github.com/JoseExposito/WEPopover/WEPopover-as-Framework/screenshots/Integrate_WEPopover_1.png)
+2 - Select as active scheme "WEPopover Framework" for *iPhone/iPad simulator* and build it
+![](https://raw.github.com/JoseExposito/WEPopover/WEPopover-as-Framework/screenshots/Integrate_WEPopover_1.png)
 
-	3 - Go to the WEPopover source code folder, a "build" folder was generated with the "WEPopover.framework" in
+3 - Go to the WEPopover source code folder, a "build" folder was generated with the "WEPopover.framework" in
 
-	4 - In your project, go to your target and in "Build Phases" tab add the WEPopover.framework by pressing the "+" button, clicking in "Select others" and selecting the framework
+4 - In your project, go to your target and in "Build Phases" tab add the WEPopover.framework by pressing the "+" button, clicking in "Select others" and selecting the framework
 
-	    ![](https://raw.github.com/JoseExposito/WEPopover/WEPopover-as-Framework/screenshots/Integrate_WEPopover_2.png)
-	    ![](https://raw.github.com/JoseExposito/WEPopover/WEPopover-as-Framework/screenshots/Integrate_WEPopover_3.png)
+![](https://raw.github.com/JoseExposito/WEPopover/WEPopover-as-Framework/screenshots/Integrate_WEPopover_2.png)
+![](https://raw.github.com/JoseExposito/WEPopover/WEPopover-as-Framework/screenshots/Integrate_WEPopover_3.png)
 
-	5 - In the "Summary" tab, add the WEPopover.framework in the "Linked Frameworks and Libraries" section
-	    ![](https://raw.github.com/JoseExposito/WEPopover/WEPopover-as-Framework/screenshots/Integrate_WEPopover_4.png)
+5 - In the "Summary" tab, add the WEPopover.framework in the "Linked Frameworks and Libraries" section
+![](https://raw.github.com/JoseExposito/WEPopover/WEPopover-as-Framework/screenshots/Integrate_WEPopover_4.png)
