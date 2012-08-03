@@ -21,14 +21,14 @@ The easiest way to integrate WEPopover in your project is build it as a framewor
 	1 - Download the WEPopover source code from https://github.com/werner77/WEPopover/
 
 	2 - Select as active scheme "WEPopover Framework" for *iPhone/iPad simulator* and build it
-	    ![](https://github.com/JoseExposito/WEPopover/raw/master/screenshots/Integrate_WEPopover_1.png)
+	    ![](https://raw.github.com/JoseExposito/WEPopover/WEPopover-as-Framework/screenshots/Integrate_WEPopover_1.png)
 
 	3 - Go to the WEPopover source code folder, a "build" folder was generated with the "WEPopover.framework" in
 
 	4 - In your project, go to your target and in "Build Phases" tab add the WEPopover.framework by pressing the "+" button, clicking in "Select others" and selecting the framework
 
-	    ![](https://github.com/JoseExposito/WEPopover/raw/master/screenshots/Integrate_WEPopover_2.png)
-	    ![](https://github.com/JoseExposito/WEPopover/raw/master/screenshots/Integrate_WEPopover_3.png)
+	    ![](https://raw.github.com/JoseExposito/WEPopover/WEPopover-as-Framework/screenshots/Integrate_WEPopover_2.png)
+	    ![](https://raw.github.com/JoseExposito/WEPopover/WEPopover-as-Framework/screenshots/Integrate_WEPopover_3.png)
 
 	5 - In the "Summary" tab, add the WEPopover.framework in the "Linked Frameworks and Libraries" section
-	    ![](https://github.com/JoseExposito/WEPopover/raw/master/screenshots/Integrate_WEPopover_4.png)
+	    ![](https://raw.github.com/JoseExposito/WEPopover/WEPopover-as-Framework/screenshots/Integrate_WEPopover_4.png)
