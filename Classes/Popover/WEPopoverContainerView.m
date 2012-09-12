@@ -123,7 +123,7 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
 	bgRect = CGRectOffset(bgRect, arrowOffset.x, arrowOffset.y);
 	arrowRect = CGRectOffset(arrowRect, arrowOffset.x, arrowOffset.y);
 	
-	self.frame = theFrame;	
+    self.frame = CGRectIntegral(theFrame);
 }																		 
 
 - (CGSize)contentSize {
