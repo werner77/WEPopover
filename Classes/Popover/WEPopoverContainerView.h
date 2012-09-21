@@ -92,8 +92,9 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
 /**
  * @brief To update the position of the popover with a new anchor rect, display area and permitted arrow directions
  */
-- (void)updatePositionWithAnchorRect:(CGRect)anchorRect 
-						 displayArea:(CGRect)displayArea
-			permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections;	
+- (void)updatePositionWithSize:(CGSize)theSize
+                    anchorRect:(CGRect)anchorRect
+                   displayArea:(CGRect)displayArea
+      permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections;
 
 @end
