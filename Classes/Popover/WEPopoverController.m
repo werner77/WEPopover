@@ -106,7 +106,10 @@
 		
 		if (userInitiatedDismissal) {
 			//Only send message to delegate in case the user initiated this event, which is if he touched outside the view
-			[delegate popoverControllerDidDismissPopover:self];
+			if(delegate != nil && [delegate conformsToProtocol:@protocol(WEPopoverControllerDelegate)] &&
+			   [delegate respondsToSelector:@selector(popoverControllerDidDismissPopover:)]) {
+				[delegate popoverControllerDidDismissPopover:self];
+			}
 		}
 	}
 }
@@ -246,9 +249,13 @@
 
 - (void)viewWasTouched:(WETouchableView *)view {
 	if (popoverVisible) {
-		if (!delegate || [delegate popoverControllerShouldDismissPopover:self]) {
-			[self dismissPopoverAnimated:YES userInitiated:YES];
+		BOOL shouldDismiss = YES;
+		if(delegate != nil && [delegate conformsToProtocol:@protocol(WEPopoverControllerDelegate)] &&
+		   [delegate respondsToSelector:@selector(popoverControllerShouldDismissPopover:)]) {
+			shouldDismiss = [delegate popoverControllerShouldDismissPopover:self];
 		}
+		if(shouldDismiss)
+			[self dismissPopoverAnimated:YES userInitiated:YES];
 	}
 }
 

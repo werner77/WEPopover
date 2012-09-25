@@ -15,6 +15,8 @@
 
 @protocol WEPopoverControllerDelegate<NSObject>
 
+@optional
+
 - (void)popoverControllerDidDismissPopover:(WEPopoverController *)popoverController;
 - (BOOL)popoverControllerShouldDismissPopover:(WEPopoverController *)popoverController;
 
