@@ -28,11 +28,11 @@
 	CGFloat arrowMargin;
 }
 
-@property(nonatomic, retain) NSString *bgImageName;
-@property(nonatomic, retain) NSString *upArrowImageName;
-@property(nonatomic, retain) NSString *downArrowImageName;
-@property(nonatomic, retain) NSString *leftArrowImageName;
-@property(nonatomic, retain) NSString *rightArrowImageName;
+@property(nonatomic, strong) NSString *bgImageName;
+@property(nonatomic, strong) NSString *upArrowImageName;
+@property(nonatomic, strong) NSString *downArrowImageName;
+@property(nonatomic, strong) NSString *leftArrowImageName;
+@property(nonatomic, strong) NSString *rightArrowImageName;
 @property(nonatomic, assign) CGFloat leftBgMargin;
 @property(nonatomic, assign) CGFloat rightBgMargin;
 @property(nonatomic, assign) CGFloat topBgMargin;
@@ -77,7 +77,7 @@
 /**
  * @brief The content view being displayed.
  */
-@property (nonatomic, retain) UIView *contentView;
+@property (nonatomic, strong) UIView *contentView;
 
 /**
  * @brief Initializes the position of the popover with a size, anchor rect, display area and permitted arrow directions and optionally the properties. 

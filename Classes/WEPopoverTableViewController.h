@@ -15,7 +15,7 @@
 	Class popoverClass;
 }
 
-@property (nonatomic, retain) WEPopoverController *popoverController;
+@property (nonatomic, strong) WEPopoverController *popoverController;
 
 - (IBAction)showPopover:(id)sender;
 

@@ -28,28 +28,28 @@
 @interface WEPopoverController : NSObject<WETouchableViewDelegate> {
 	UIViewController *contentViewController;
 	UIView *view;
-    UIView *parentView;
+    UIView __weak *parentView;
 	WETouchableView *backgroundView;
 	
 	BOOL popoverVisible;
 	UIPopoverArrowDirection popoverArrowDirection;
-	id <WEPopoverControllerDelegate> delegate;
+	id <WEPopoverControllerDelegate> __weak delegate;
 	CGSize popoverContentSize;
 	WEPopoverContainerViewProperties *containerViewProperties;
 	id <NSObject> context;
 	NSArray *passthroughViews;	
 }
 
-@property(nonatomic, retain) UIViewController *contentViewController;
+@property(nonatomic, strong) UIViewController *contentViewController;
 
-@property (nonatomic, readonly) UIView *view;
+@property (nonatomic, strong, readonly) UIView *view;
 @property (nonatomic, readonly, getter=isPopoverVisible) BOOL popoverVisible;
 @property (nonatomic, readonly) UIPopoverArrowDirection popoverArrowDirection;
-@property (nonatomic, assign) id <WEPopoverControllerDelegate> delegate;
+@property (nonatomic, weak) id <WEPopoverControllerDelegate> delegate;
 @property (nonatomic, assign) CGSize popoverContentSize;
-@property (nonatomic, retain) WEPopoverContainerViewProperties *containerViewProperties;
-@property (nonatomic, retain) id <NSObject> context;
-@property (nonatomic, assign) UIView *parentView;
+@property (nonatomic, strong) WEPopoverContainerViewProperties *containerViewProperties;
+@property (nonatomic, strong) id <NSObject> context;
+@property (nonatomic, weak) UIView *parentView;
 @property (nonatomic, copy) NSArray *passthroughViews;
 
 - (id)initWithContentViewController:(UIViewController *)theContentViewController;
