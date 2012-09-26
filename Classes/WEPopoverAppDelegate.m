@@ -23,7 +23,11 @@
     // Override point for customization after application launch.
 
     // Add the view controller's view to the window and display.
-    [window addSubview:navController.view];
+	if([[[UIDevice currentDevice] systemVersion] floatValue] < 4.0) {
+		[window addSubview:navController.view];
+	} else {
+		[window setRootViewController:navController];
+	}
     [window makeKeyAndVisible];
 
     return YES;
@@ -78,11 +82,6 @@
 }
 
 
-- (void)dealloc {
-    [navController release];
-    [window release];
-    [super dealloc];
-}
 
 
 @end
