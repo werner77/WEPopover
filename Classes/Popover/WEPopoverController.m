@@ -36,6 +36,13 @@
 @synthesize context;
 @synthesize passthroughViews;
 
+static UIView *customKeyView;
+
++ (void)setCustomKeyView:(UIView *)keyView
+{
+    customKeyView = keyView;
+}
+
 - (id)init {
 	if ((self = [super init])) {
 	}
@@ -215,6 +222,9 @@
 @implementation WEPopoverController(Private)
 
 - (UIView *)keyView {
+    if (customKeyView) {
+        return customKeyView;
+    }
 	UIWindow *w = [[UIApplication sharedApplication] keyWindow];
 	if (w.subviews.count > 0) {
 		return [w.subviews objectAtIndex:0];
