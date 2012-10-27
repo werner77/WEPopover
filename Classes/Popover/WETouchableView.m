@@ -20,7 +20,7 @@
 
 - (void)dealloc {
 	[passthroughViews release];
-	[super dealloc];
+	[super ah_dealloc];
 }
 
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {

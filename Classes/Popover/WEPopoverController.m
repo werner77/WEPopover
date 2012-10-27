@@ -62,13 +62,13 @@ static UIView *customKeyView;
 	[containerViewProperties release];
 	[passthroughViews release];
 	self.context = nil;
-	[super dealloc];
+	[super ah_dealloc];
 }
 
 - (void)setContentViewController:(UIViewController *)vc {
 	if (vc != contentViewController) {
 		[contentViewController release];
-		contentViewController = [vc retain];
+		contentViewController = [vc ah_retain];
 		popoverContentSize = CGSizeZero;
 	}
 }
@@ -98,7 +98,7 @@ static UIView *customKeyView;
 		[backgroundView release];
 		backgroundView = nil;
 		
-		BOOL userInitiatedDismissal = [(NSNumber *)theContext boolValue];
+		BOOL userInitiatedDismissal = [(__bridge NSNumber *)theContext boolValue];
 		
 		if (userInitiatedDismissal) {
 			//Only send message to delegate in case the user initiated this event, which is if he touched outside the view
@@ -236,7 +236,7 @@ static UIView *customKeyView;
 - (void)setView:(UIView *)v {
 	if (view != v) {
 		[view release];
-		view = [v retain];
+		view = [v ah_retain];
 	}
 }
 
@@ -253,7 +253,7 @@ static UIView *customKeyView;
 		if (animated) {
 			
 			self.view.userInteractionEnabled = NO;
-			[UIView beginAnimations:@"FadeOut" context:[NSNumber numberWithBool:userInitiated]];
+			[UIView beginAnimations:@"FadeOut" context:(__bridge void *)([NSNumber numberWithBool:userInitiated])];
 			[UIView setAnimationDelegate:self];
 			[UIView setAnimationDidStopSelector:@selector(fadeAnimationDidStop:finished:context:)];
 			
