@@ -201,7 +201,8 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
 					//Cap the arrow offset
 					xArrowOffset = MAX(xArrowOffset, properties.leftBgMargin + properties.arrowMargin);
 					xArrowOffset = MIN(xArrowOffset, theSize.width - properties.rightBgMargin - properties.arrowMargin - upArrowImage.size.width);
-					
+                    //x offset should be round to avoid blurring
+					xArrowOffset = roundf(xArrowOffset);
 					theArrowRect = CGRectMake(xArrowOffset, yArrowOffset, upArrowImage.size.width, upArrowImage.size.height);
 					
 					break;
@@ -225,7 +226,8 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
 					//Cap the arrow offset
 					xArrowOffset = MAX(xArrowOffset, properties.leftBgMargin + properties.arrowMargin);
 					xArrowOffset = MIN(xArrowOffset, theSize.width - properties.rightBgMargin - properties.arrowMargin - downArrowImage.size.width);
-					
+                    //x offset should be round to avoid blurring
+                    xArrowOffset = roundf(xArrowOffset);
 					theArrowRect = CGRectMake(xArrowOffset , yArrowOffset, downArrowImage.size.width, downArrowImage.size.height);
 					
 					break;
@@ -249,7 +251,8 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
 					//Cap the arrow offset
 					yArrowOffset = MAX(yArrowOffset, properties.topBgMargin + properties.arrowMargin);
 					yArrowOffset = MIN(yArrowOffset, theSize.height - properties.bottomBgMargin - properties.arrowMargin - leftArrowImage.size.height);
-					
+                    //y offset should be round to avoid blurring
+                    yArrowOffset = roundf(yArrowOffset);
 					theArrowRect = CGRectMake(xArrowOffset, yArrowOffset, leftArrowImage.size.width, leftArrowImage.size.height);
 					
 					break;
@@ -273,7 +276,8 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
 					//Cap the arrow offset
 					yArrowOffset = MAX(yArrowOffset, properties.topBgMargin + properties.arrowMargin);
 					yArrowOffset = MIN(yArrowOffset, theSize.height - properties.bottomBgMargin - properties.arrowMargin - rightArrowImage.size.height);
-					
+                    //y offset should be round to avoid blurring
+                    yArrowOffset = roundf(yArrowOffset);
 					theArrowRect = CGRectMake(xArrowOffset, yArrowOffset, rightArrowImage.size.width, rightArrowImage.size.height);
 					
 					break;
