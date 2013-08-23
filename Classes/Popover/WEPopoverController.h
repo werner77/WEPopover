@@ -47,7 +47,7 @@
 @property (nonatomic, retain) id <NSObject> context;
 @property (nonatomic, copy) NSArray *passthroughViews;
 
-+ (void)setCustomKeyView:(UIView *)keyView;
++ (void)setCustomKeyViewIndex:(NSUInteger)keyViewIndex;
 
 - (id)initWithContentViewController:(UIViewController *)theContentViewController;
 
