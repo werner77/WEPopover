@@ -126,19 +126,34 @@
 	return [self presentPopoverFromRect:rect inView:v permittedArrowDirections:arrowDirections animated:animated];
 }
 
-- (void)presentPopoverFromRect:(CGRect)rect 
+- (CGSize)contentPopoverContentSize
+{
+    CGSize contentPopoverContentSize;
+    
+    contentPopoverContentSize = (([contentViewController respondsToSelector:@selector(preferredContentSize)]) ?
+                                 contentViewController.preferredContentSize :
+                                 CGSizeZero);
+    
+    if (CGSizeEqualToSize(contentPopoverContentSize, CGSizeZero)) {
+        contentPopoverContentSize = contentViewController.contentSizeForViewInPopover;
+    }
+
+    return contentPopoverContentSize;
+}
+
+- (void)presentPopoverFromRect:(CGRect)rect
 						inView:(UIView *)theView 
 	  permittedArrowDirections:(UIPopoverArrowDirection)arrowDirections 
 					  animated:(BOOL)animated {
-	
-	
+    BOOL iOSSevenOrAbove = ([UIDevice currentDevice].systemVersion.doubleValue >= 7.0);
+
 	[self dismissPopoverAnimated:NO];
 	
 	//First force a load view for the contentViewController so the popoverContentSize is properly initialized
 	[contentViewController view];
 	
 	if (CGSizeEqualToSize(popoverContentSize, CGSizeZero)) {
-		popoverContentSize = contentViewController.contentSizeForViewInPopover;
+		popoverContentSize = [self contentPopoverContentSize];
 	}
 	
 	CGRect displayArea = [self displayAreaForView:theView];
@@ -148,7 +163,7 @@
 	popoverArrowDirection = containerView.arrowDirection;
 	
 	UIView *keyView = self.keyView;
-	
+
 	backgroundView = [[WETouchableView alloc] initWithFrame:keyView.bounds];
 	backgroundView.contentMode = UIViewContentModeScaleToFill;
 	backgroundView.autoresizingMask = ( UIViewAutoresizingFlexibleLeftMargin |
@@ -157,9 +172,13 @@
 									   UIViewAutoresizingFlexibleTopMargin |
 									   UIViewAutoresizingFlexibleHeight |
 									   UIViewAutoresizingFlexibleBottomMargin);
-	backgroundView.backgroundColor = [UIColor clearColor];
+
+    /* On iOS 7, the background should gray-out everything but the popup */
+	backgroundView.backgroundColor = (iOSSevenOrAbove ?
+                                      [[UIColor lightGrayColor] colorWithAlphaComponent:0.4] :
+                                      [UIColor clearColor]);
 	backgroundView.delegate = self;
-	
+    backgroundView.alpha = 0.0;
 	[keyView addSubview:backgroundView];
 	
 	containerView.frame = [theView convertRect:containerView.frame toView:backgroundView];
@@ -172,7 +191,16 @@
 	
 	self.view = containerView;
 	[self updateBackgroundPassthroughViews];
-	
+
+	/* On iOS 7, the content view should have rounded corners.
+     * We don't apply this to the containerView itself, as that includes the arrow.
+     */
+    if (iOSSevenOrAbove) {
+        containerView.contentView.layer.cornerRadius = 8.0f;
+        containerView.contentView.layer.masksToBounds = YES;
+    }
+
+    
     if ([self forwardAppearanceMethods]) {
         [contentViewController viewWillAppear:animated];
     }
@@ -187,7 +215,8 @@
                          animations:^{
                              
                              self.view.alpha = 1.0;
-                             
+                             backgroundView.alpha = 1.0;
+
                          } completion:^(BOOL finished) {
                              
                              [self animationDidStop:@"FadeIn" finished:[NSNumber numberWithBool:finished] context:nil];
@@ -195,6 +224,7 @@
         		
 	} else {
         if ([self forwardAppearanceMethods]) {
+            backgroundView.alpha = 1.0;
             [contentViewController viewDidAppear:animated];
         }
 	}	
@@ -223,7 +253,7 @@
     }
     
     if (CGSizeEqualToSize(popoverContentSize, CGSizeZero)) {
-		popoverContentSize = contentViewController.contentSizeForViewInPopover;
+		popoverContentSize = [self contentPopoverContentSize];
 	}
 	
 	CGRect displayArea = [self displayAreaForView:theView];
@@ -277,6 +307,7 @@
         return self.parentView;
     } else {
         UIWindow *w = [[UIApplication sharedApplication] keyWindow];
+
         if (w.subviews.count > 0) {
             return [w.subviews objectAtIndex:0];
         } else {
@@ -339,38 +370,74 @@
 		displayArea = [(id <WEPopoverParentView>)theView displayAreaForPopover];
 	} else {
         UIView *keyView = [self keyView];
-		displayArea = [keyView convertRect:keyView.bounds toView:theView];
+		
+        displayArea = [keyView convertRect:keyView.bounds toView:theView];
+        
+        if (CGRectEqualToRect(keyView.frame, [[UIApplication sharedApplication] keyWindow].frame) &&
+            ([UIApplication sharedApplication].statusBarHidden == NO)) {
+            /* In iOS 7 the display area will overlap the status bar, which we don't want */
+#define kStatusBarHeight 20.0f
+            displayArea.origin.y += kStatusBarHeight;
+            displayArea.size.height -= kStatusBarHeight;
+        }
 	}
 	return displayArea;
 }
 
 //Enable to use the simple popover style
 - (WEPopoverContainerViewProperties *)defaultContainerViewProperties {
-	WEPopoverContainerViewProperties *ret = [[WEPopoverContainerViewProperties new] autorelease];
+	WEPopoverContainerViewProperties *props = [[WEPopoverContainerViewProperties new] autorelease];
+    BOOL iOSSevenOrAbove = ([UIDevice currentDevice].systemVersion.doubleValue >= 7.0);
+	   
+    NSString *bgImageName;
+    CGFloat bgMargin;
+	CGFloat contentMargin;
+
+    if (iOSSevenOrAbove) {
+        /* On iOS 7, there is no background nor content margin, and the arrow is white */
+        bgImageName = nil;
+        
+        bgMargin = 0.0;
+        contentMargin = 0.0;
+        
+        props.upArrowImageName = @"popoverArrowUp-white.png";
+        props.downArrowImageName = @"popoverArrowDown-white.png";
+        props.leftArrowImageName = @"popoverArrowLeft-white.png";
+        props.rightArrowImageName = @"popoverArrowRight-white.png";
+
+    } else {
+        bgImageName = @"popoverBg.png";
+        bgMargin = 0.0;
+        contentMargin = 4.0;
+
+        props.upArrowImageName = @"popoverArrowUp.png";
+        props.downArrowImageName = @"popoverArrowDown.png";
+        props.leftArrowImageName = @"popoverArrowLeft.png";
+        props.rightArrowImageName = @"popoverArrowRight.png";
+    }
+    
+	CGFloat bgCapSize = 0.0;
 	
-	CGSize imageSize = CGSizeMake(30.0f, 30.0f);
-	NSString *bgImageName = @"popoverBgSimple.png";
-	CGFloat bgMargin = 6.0;
-	CGFloat contentMargin = 2.0;
+	// These constants are determined by the popoverBg.png image file and are image dependent
+
+	bgMargin = 13; // margin width of 13 pixels on all sides popoverBg.png (62 pixels wide - 36 pixel background) / 2 == 26 / 2 == 13
+	bgCapSize = 31; // ImageSize/2  == 62 / 2 == 31 pixels
 	
-	ret.leftBgMargin = bgMargin;
-	ret.rightBgMargin = bgMargin;
-	ret.topBgMargin = bgMargin;
-	ret.bottomBgMargin = bgMargin;
-	ret.leftBgCapSize = imageSize.width/2;
-	ret.topBgCapSize = imageSize.height/2;
-	ret.bgImageName = bgImageName;
-	ret.leftContentMargin = contentMargin;
-	ret.rightContentMargin = contentMargin;
-	ret.topContentMargin = contentMargin;
-	ret.bottomContentMargin = contentMargin;
-	ret.arrowMargin = 1.0;
+	props.leftBgMargin = bgMargin;
+	props.rightBgMargin = bgMargin;
+	props.topBgMargin = bgMargin;
+	props.bottomBgMargin = bgMargin;
+	props.leftBgCapSize = bgCapSize;
+	props.topBgCapSize = bgCapSize;
+	props.bgImageName = bgImageName;
+	props.leftContentMargin = contentMargin;
+	props.rightContentMargin = contentMargin - 1; // Need to shift one pixel for border to look correct
+	props.topContentMargin = contentMargin;
+	props.bottomContentMargin = contentMargin;
 	
-	ret.upArrowImageName = @"popoverArrowUpSimple.png";
-	ret.downArrowImageName = @"popoverArrowDownSimple.png";
-	ret.leftArrowImageName = @"popoverArrowLeftSimple.png";
-	ret.rightArrowImageName = @"popoverArrowRightSimple.png";
-	return ret;
+	props.arrowMargin = 4.0;
+	
+	return props;
 }
 
 @end
