@@ -349,7 +349,6 @@
 	WEPopoverContainerViewProperties *ret = [[WEPopoverContainerViewProperties new] autorelease];
 	
 	CGSize imageSize = CGSizeMake(30.0f, 30.0f);
-	NSString *bgImageName = @"popoverBgSimple.png";
 	CGFloat bgMargin = 6.0;
 	CGFloat contentMargin = 2.0;
 	
@@ -359,17 +358,30 @@
 	ret.bottomBgMargin = bgMargin;
 	ret.leftBgCapSize = imageSize.width/2;
 	ret.topBgCapSize = imageSize.height/2;
-	ret.bgImageName = bgImageName;
+	
 	ret.leftContentMargin = contentMargin;
 	ret.rightContentMargin = contentMargin;
 	ret.topContentMargin = contentMargin;
 	ret.bottomContentMargin = contentMargin;
 	ret.arrowMargin = 1.0;
 	
-	ret.upArrowImageName = @"popoverArrowUpSimple.png";
-	ret.downArrowImageName = @"popoverArrowDownSimple.png";
-	ret.leftArrowImageName = @"popoverArrowLeftSimple.png";
-	ret.rightArrowImageName = @"popoverArrowRightSimple.png";
+    // Set the defaults images from framewor or from resources depending of the compilation type
+    ret.bgImageName = ([UIImage imageNamed:@"popoverBgSimple"] == nil)
+            ? @"WEPopover.framework/popoverBgSimple"
+            : @"popoverBgSimple";
+	ret.upArrowImageName = ([UIImage imageNamed:@"popoverArrowUpSimple.png"] == nil)
+            ? @"WEPopover.framework/popoverArrowUpSimple.png"
+            : @"popoverArrowUpSimple.png";
+    ret.downArrowImageName = ([UIImage imageNamed:@"popoverArrowDownSimple.png"] == nil)
+            ? @"WEPopover.framework/popoverArrowDownSimple.png"
+            : @"popoverArrowDownSimple.png";
+    ret.leftArrowImageName = ([UIImage imageNamed:@"popoverArrowLeftSimple.png"] == nil)
+            ? @"WEPopover.framework/popoverArrowLeftSimple.png"
+            : @"popoverArrowLeftSimple.png";
+    ret.rightArrowImageName = ([UIImage imageNamed:@"popoverArrowRightSimple.png"] == nil)
+            ? @"WEPopover.framework/popoverArrowRightSimple.png"
+            : @"popoverArrowRightSimple.png";
+    
 	return ret;
 }
 
