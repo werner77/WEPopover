@@ -10,7 +10,14 @@
 #import "WEPopoverParentView.h"
 #import "UIBarButtonItem+WEPopover.h"
 
-#define FADE_DURATION 0.25
+#define FADE_DURATION   0.25
+#define DIM_ALPHA       0.25
+
+@interface WEPopoverController ()
+
+@property (nonatomic, retain) UIView *dimView;
+
+@end
 
 @interface WEPopoverController(Private)
 
@@ -62,6 +69,7 @@ static NSUInteger customKeyViewIndex;
 	[containerViewProperties release];
 	[passthroughViews release];
 	self.context = nil;
+    self.dimView = nil;
 	[super dealloc];
 }
 
@@ -131,7 +139,7 @@ static NSUInteger customKeyViewIndex;
 	[self dismissPopoverAnimated:NO];
 	
 	//First force a load view for the contentViewController so the popoverContentSize is properly initialized
-	contentViewController.view;
+	contentViewController.view = contentViewController.view;
 	
 	if (CGSizeEqualToSize(popoverContentSize, CGSizeZero)) {
 		popoverContentSize = contentViewController.contentSizeForViewInPopover;
@@ -172,9 +180,15 @@ static NSUInteger customKeyViewIndex;
 	[contentViewController viewWillAppear:animated];
 	
 	[self.view becomeFirstResponder];
+    
+    [_dimView removeFromSuperview];
+    self.dimView = [[[UIView alloc] initWithFrame:keyView.bounds] autorelease];
+    _dimView.backgroundColor = [UIColor blackColor];
+    [keyView insertSubview:self.dimView belowSubview:backgroundView];
 	
 	if (animated) {
 		self.view.alpha = 0.0;
+        _dimView.alpha = 0.0;
 		
 		[UIView beginAnimations:@"FadeIn" context:nil];
 		
@@ -183,10 +197,13 @@ static NSUInteger customKeyViewIndex;
 		[UIView setAnimationDuration:FADE_DURATION];
 		
 		self.view.alpha = 1.0;
+        _dimView.alpha = DIM_ALPHA;
 		
 		[UIView commitAnimations];
 	} else {
 		popoverVisible = YES;
+        _dimView.alpha = DIM_ALPHA;
+
 		[contentViewController viewDidAppear:animated];
 	}	
 }
@@ -257,12 +274,15 @@ static NSUInteger customKeyViewIndex;
 			[UIView setAnimationDuration:FADE_DURATION];
 			
 			self.view.alpha = 0.0;
+            _dimView.alpha = 0.0;
 			
 			[UIView commitAnimations];
 		} else {
 			[contentViewController viewDidDisappear:animated];
 			[self.view removeFromSuperview];
 			self.view = nil;
+			[_dimView removeFromSuperview];
+			self.dimView = nil;
 			[backgroundView removeFromSuperview];
 			[backgroundView release];
 			backgroundView = nil;
