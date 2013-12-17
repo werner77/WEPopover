@@ -69,14 +69,14 @@ static NSUInteger customKeyViewIndex;
 	[containerViewProperties release];
 	[passthroughViews release];
 	self.context = nil;
-    self.dimView = nil;
-	[super dealloc];
+	self.dimView = nil;
+	[super ah_dealloc];
 }
 
 - (void)setContentViewController:(UIViewController *)vc {
 	if (vc != contentViewController) {
 		[contentViewController release];
-		contentViewController = [vc retain];
+		contentViewController = [vc ah_retain];
 		popoverContentSize = CGSizeZero;
 	}
 }
@@ -91,7 +91,7 @@ static NSUInteger customKeyViewIndex;
 	[self updateBackgroundPassthroughViews];
 }
 
-- (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)theContext {
+- (void)fadeAnimationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)theContext {
 	
 	if ([animationID isEqual:@"FadeIn"]) {
 		self.view.userInteractionEnabled = YES;
@@ -106,7 +106,7 @@ static NSUInteger customKeyViewIndex;
 		[backgroundView release];
 		backgroundView = nil;
 		
-		BOOL userInitiatedDismissal = [(NSNumber *)theContext boolValue];
+		BOOL userInitiatedDismissal = [(__bridge NSNumber *)theContext boolValue];
 		
 		if (userInitiatedDismissal) {
 			//Only send message to delegate in case the user initiated this event, which is if he touched outside the view
@@ -193,7 +193,7 @@ static NSUInteger customKeyViewIndex;
 		[UIView beginAnimations:@"FadeIn" context:nil];
 		
 		[UIView setAnimationDelegate:self];
-		[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
+		[UIView setAnimationDidStopSelector:@selector(fadeAnimationDidStop:finished:context:)];
 		[UIView setAnimationDuration:FADE_DURATION];
 		
 		self.view.alpha = 1.0;
@@ -250,7 +250,7 @@ static NSUInteger customKeyViewIndex;
 - (void)setView:(UIView *)v {
 	if (view != v) {
 		[view release];
-		view = [v retain];
+		view = [v ah_retain];
 	}
 }
 
@@ -267,9 +267,9 @@ static NSUInteger customKeyViewIndex;
 		if (animated) {
 			
 			self.view.userInteractionEnabled = NO;
-			[UIView beginAnimations:@"FadeOut" context:[NSNumber numberWithBool:userInitiated]];
+			[UIView beginAnimations:@"FadeOut" context:(__bridge void *)([NSNumber numberWithBool:userInitiated])];
 			[UIView setAnimationDelegate:self];
-			[UIView setAnimationDidStopSelector:@selector(animationDidStop:finished:context:)];
+			[UIView setAnimationDidStopSelector:@selector(fadeAnimationDidStop:finished:context:)];
 			
 			[UIView setAnimationDuration:FADE_DURATION];
 			
@@ -302,31 +302,36 @@ static NSUInteger customKeyViewIndex;
 
 //Enable to use the simple popover style
 - (WEPopoverContainerViewProperties *)defaultContainerViewProperties {
-	WEPopoverContainerViewProperties *ret = [[WEPopoverContainerViewProperties new] autorelease];
-	
-	CGSize imageSize = CGSizeMake(30.0f, 30.0f);
-	NSString *bgImageName = @"popoverBgSimple.png";
-	CGFloat bgMargin = 6.0;
-	CGFloat contentMargin = 2.0;
-	
-	ret.leftBgMargin = bgMargin;
-	ret.rightBgMargin = bgMargin;
-	ret.topBgMargin = bgMargin;
-	ret.bottomBgMargin = bgMargin;
-	ret.leftBgCapSize = imageSize.width/2;
-	ret.topBgCapSize = imageSize.height/2;
-	ret.bgImageName = bgImageName;
-	ret.leftContentMargin = contentMargin;
-	ret.rightContentMargin = contentMargin;
-	ret.topContentMargin = contentMargin;
-	ret.bottomContentMargin = contentMargin;
-	ret.arrowMargin = 1.0;
-	
-	ret.upArrowImageName = @"popoverArrowUpSimple.png";
-	ret.downArrowImageName = @"popoverArrowDownSimple.png";
-	ret.leftArrowImageName = @"popoverArrowLeftSimple.png";
-	ret.rightArrowImageName = @"popoverArrowRightSimple.png";
-	return ret;
+    WEPopoverContainerViewProperties *ret = [[[WEPopoverContainerViewProperties alloc] init] autorelease];
+    
+    NSString *bgImageName = nil;
+    CGFloat bgMargin = 0.0;
+    CGFloat bgCapSize = 0.0;
+    CGFloat contentMargin = 4.0;
+    
+    bgImageName = @"popoverBg.png";
+    
+    // These constants are determined by the popoverBg.png image file and are image dependent
+    bgMargin = 13; // margin width of 13 pixels on all sides popoverBg.png (62 pixels wide - 36 pixel background) / 2 == 26 / 2 == 13 
+    bgCapSize = 31; // ImageSize/2  == 62 / 2 == 31 pixels
+    
+    ret.leftBgMargin = bgMargin;
+    ret.rightBgMargin = bgMargin;
+    ret.topBgMargin = bgMargin;
+    ret.bottomBgMargin = bgMargin;
+    ret.leftBgCapSize = bgCapSize;
+    ret.topBgCapSize = bgCapSize;
+    ret.bgImageName = bgImageName;
+    ret.leftContentMargin = contentMargin;
+    ret.rightContentMargin = contentMargin - 1; // Need to shift one pixel for border to look correct
+    ret.topContentMargin = contentMargin - 1;
+    ret.bottomContentMargin = contentMargin;
+    
+    ret.upArrowImageName = @"popoverArrowUp.png";
+    ret.downArrowImageName = @"popoverArrowDown.png";
+    ret.leftArrowImageName = @"popoverArrowLeft.png";
+    ret.rightArrowImageName = @"popoverArrowRight.png";
+    return ret;
 }
 
 @end
