@@ -15,30 +15,21 @@
 
 @protocol WEPopoverControllerDelegate<NSObject>
 
+@optional
 - (void)popoverControllerDidDismissPopover:(WEPopoverController *)popoverController;
 - (BOOL)popoverControllerShouldDismissPopover:(WEPopoverController *)popoverController;
 
 @end
 
 /**
- * @brief Popover controller for the iPhone, mimicing the iPad UIPopoverController interface. See that class for more details.
+ * Popover controller for the iPhone, mimicing the iPad UIPopoverController interface. See that class for more details.
  */
-@interface WEPopoverController : NSObject<WETouchableViewDelegate> {
-	UIViewController *contentViewController;
-	UIView *view;
-    UIView *parentView;
-	WETouchableView *backgroundView;
-	
-	BOOL popoverVisible;
-	UIPopoverArrowDirection popoverArrowDirection;
-	id <WEPopoverControllerDelegate> delegate;
-	CGSize popoverContentSize;
-	WEPopoverContainerViewProperties *containerViewProperties;
-	id <NSObject> context;
-	NSArray *passthroughViews;	
-}
+@interface WEPopoverController : NSObject
 
 @property(nonatomic, retain) UIViewController *contentViewController;
+
+@property(nonatomic, assign, readonly) UIView *presentedFromView;
+@property(nonatomic, assign, readonly) CGRect presentedFromRect;
 
 @property (nonatomic, readonly) UIView *view;
 @property (nonatomic, readonly, getter=isPopoverVisible) BOOL popoverVisible;
@@ -49,6 +40,9 @@
 @property (nonatomic, retain) id <NSObject> context;
 @property (nonatomic, assign) UIView *parentView;
 @property (nonatomic, copy) NSArray *passthroughViews;
+
++ (WEPopoverContainerViewProperties *)defaultContainerViewProperties;
++ (void)setDefaultContainerViewProperties:(WEPopoverContainerViewProperties *)properties;
 
 - (id)initWithContentViewController:(UIViewController *)theContentViewController;
 

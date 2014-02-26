@@ -30,6 +30,11 @@
 		7407D7DE13A67ABD0074B83C /* popoverArrowLeft.png in Resources */ = {isa = PBXBuildFile; fileRef = 7407D7D413A67ABD0074B83C /* popoverArrowLeft.png */; };
 		7407D7DF13A67ABD0074B83C /* popoverArrowDown@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7407D7D513A67ABD0074B83C /* popoverArrowDown@2x.png */; };
 		7407D7E013A67ABD0074B83C /* popoverArrowDown.png in Resources */ = {isa = PBXBuildFile; fileRef = 7407D7D613A67ABD0074B83C /* popoverArrowDown.png */; };
+		74295FB618BE40C1008612BA /* popoverArrowDown-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 74295FAE18BE40C1008612BA /* popoverArrowDown-white@2x.png */; };
+		74295FB818BE40C1008612BA /* popoverArrowLeft-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 74295FB018BE40C1008612BA /* popoverArrowLeft-white@2x.png */; };
+		74295FBA18BE40C1008612BA /* popoverArrowRight-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 74295FB218BE40C1008612BA /* popoverArrowRight-white@2x.png */; };
+		74295FBC18BE40C1008612BA /* popoverArrowUp-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 74295FB418BE40C1008612BA /* popoverArrowUp-white@2x.png */; };
+		74295FBE18BE47A4008612BA /* popoverBg-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 74295FBD18BE47A4008612BA /* popoverBg-white@2x.png */; };
 		7463500113729C6F000EF936 /* WETouchableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7463500013729C6F000EF936 /* WETouchableView.m */; };
 		746B0A1D137454A000C5A8B5 /* UIBarButtonItem+WEPopover.m in Sources */ = {isa = PBXBuildFile; fileRef = 746B0A1C137454A000C5A8B5 /* UIBarButtonItem+WEPopover.m */; };
 		7496C86112D363AC00F93229 /* WEPopoverTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7496C86012D363AC00F93229 /* WEPopoverTableViewController.m */; };
@@ -66,6 +71,11 @@
 		7407D7D413A67ABD0074B83C /* popoverArrowLeft.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = popoverArrowLeft.png; sourceTree = "<group>"; };
 		7407D7D513A67ABD0074B83C /* popoverArrowDown@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "popoverArrowDown@2x.png"; sourceTree = "<group>"; };
 		7407D7D613A67ABD0074B83C /* popoverArrowDown.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = popoverArrowDown.png; sourceTree = "<group>"; };
+		74295FAE18BE40C1008612BA /* popoverArrowDown-white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "popoverArrowDown-white@2x.png"; sourceTree = "<group>"; };
+		74295FB018BE40C1008612BA /* popoverArrowLeft-white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "popoverArrowLeft-white@2x.png"; sourceTree = "<group>"; };
+		74295FB218BE40C1008612BA /* popoverArrowRight-white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "popoverArrowRight-white@2x.png"; sourceTree = "<group>"; };
+		74295FB418BE40C1008612BA /* popoverArrowUp-white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "popoverArrowUp-white@2x.png"; sourceTree = "<group>"; };
+		74295FBD18BE47A4008612BA /* popoverBg-white@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "popoverBg-white@2x.png"; sourceTree = "<group>"; };
 		74634FFF13729C6F000EF936 /* WETouchableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WETouchableView.h; sourceTree = "<group>"; };
 		7463500013729C6F000EF936 /* WETouchableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WETouchableView.m; sourceTree = "<group>"; };
 		746B0A1B137454A000C5A8B5 /* UIBarButtonItem+WEPopover.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIBarButtonItem+WEPopover.h"; sourceTree = "<group>"; };
@@ -128,6 +138,7 @@
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
+				8D1107310486CEB800E47090 /* WEPopover-Info.plist */,
 			);
 			name = CustomTemplate;
 			sourceTree = "<group>";
@@ -147,9 +158,8 @@
 				749FAE721286123F00AB97F9 /* Popover */,
 				2899E5210DE3E06400AC0155 /* WEPopoverViewController.xib */,
 				28AD733E0D9D9553002E5188 /* MainWindow.xib */,
-				8D1107310486CEB800E47090 /* WEPopover-Info.plist */,
 			);
-			name = Resources;
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
@@ -191,6 +201,18 @@
 			name = Improved;
 			sourceTree = "<group>";
 		};
+		74295FAC18BE401A008612BA /* iOS7 */ = {
+			isa = PBXGroup;
+			children = (
+				74295FBD18BE47A4008612BA /* popoverBg-white@2x.png */,
+				74295FAE18BE40C1008612BA /* popoverArrowDown-white@2x.png */,
+				74295FB018BE40C1008612BA /* popoverArrowLeft-white@2x.png */,
+				74295FB218BE40C1008612BA /* popoverArrowRight-white@2x.png */,
+				74295FB418BE40C1008612BA /* popoverArrowUp-white@2x.png */,
+			);
+			name = iOS7;
+			sourceTree = "<group>";
+		};
 		749FAE6F1286123500AB97F9 /* Popover */ = {
 			isa = PBXGroup;
 			children = (
@@ -210,10 +232,11 @@
 		749FAE721286123F00AB97F9 /* Popover */ = {
 			isa = PBXGroup;
 			children = (
+				74295FAC18BE401A008612BA /* iOS7 */,
 				7407D7C213A67A7A0074B83C /* Improved */,
 				7407D7C113A67A720074B83C /* Simple */,
 			);
-			name = Popover;
+			path = Popover;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -271,6 +294,8 @@
 				28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */,
 				2899E5220DE3E06400AC0155 /* WEPopoverViewController.xib in Resources */,
 				7407D7C813A67A930074B83C /* popoverBgSimple.png in Resources */,
+				74295FB818BE40C1008612BA /* popoverArrowLeft-white@2x.png in Resources */,
+				74295FB618BE40C1008612BA /* popoverArrowDown-white@2x.png in Resources */,
 				7407D7C913A67A930074B83C /* popoverArrowUpSimple.png in Resources */,
 				7407D7CA13A67A930074B83C /* popoverArrowRightSimple.png in Resources */,
 				7407D7CB13A67A930074B83C /* popoverArrowLeftSimple.png in Resources */,
@@ -278,11 +303,14 @@
 				7407D7D713A67ABD0074B83C /* popoverBg@2x.png in Resources */,
 				7407D7D813A67ABD0074B83C /* popoverBg.png in Resources */,
 				7407D7D913A67ABD0074B83C /* popoverArrowUp@2x.png in Resources */,
+				74295FBA18BE40C1008612BA /* popoverArrowRight-white@2x.png in Resources */,
 				7407D7DA13A67ABD0074B83C /* popoverArrowUp.png in Resources */,
+				74295FBC18BE40C1008612BA /* popoverArrowUp-white@2x.png in Resources */,
 				7407D7DB13A67ABD0074B83C /* popoverArrowRight@2x.png in Resources */,
 				7407D7DC13A67ABD0074B83C /* popoverArrowRight.png in Resources */,
 				7407D7DD13A67ABD0074B83C /* popoverArrowLeft@2x.png in Resources */,
 				7407D7DE13A67ABD0074B83C /* popoverArrowLeft.png in Resources */,
+				74295FBE18BE47A4008612BA /* popoverBg-white@2x.png in Resources */,
 				7407D7DF13A67ABD0074B83C /* popoverArrowDown@2x.png in Resources */,
 				7407D7E013A67ABD0074B83C /* popoverArrowDown.png in Resources */,
 			);
@@ -345,6 +373,7 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				PREBINDING = NO;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
@@ -360,6 +389,7 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PREBINDING = NO;
 				SDKROOT = iphoneos;
