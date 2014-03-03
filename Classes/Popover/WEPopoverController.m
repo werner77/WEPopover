@@ -423,6 +423,7 @@ static BOOL OSVersionIsAtLeast(float version) {
                              animations:^{
                                  
                                  self.view.alpha = 0.0;
+                                 backgroundView.alpha = 0.0f;
                                  
                              } completion:^(BOOL finished) {
                                  
