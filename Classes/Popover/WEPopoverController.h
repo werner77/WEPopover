@@ -32,6 +32,8 @@
 @property(nonatomic, assign, readonly) CGRect presentedFromRect;
 
 @property (nonatomic, readonly) UIView *view;
+@property (nonatomic, retain) UIColor *backgroundColor;
+@property (nonatomic, readonly) UIView *backgroundView;
 @property (nonatomic, readonly, getter=isPopoverVisible) BOOL popoverVisible;
 @property (nonatomic, readonly) UIPopoverArrowDirection popoverArrowDirection;
 @property (nonatomic, assign) id <WEPopoverControllerDelegate> delegate;

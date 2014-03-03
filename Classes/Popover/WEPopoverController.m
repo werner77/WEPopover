@@ -41,6 +41,7 @@
 	WEPopoverContainerViewProperties *containerViewProperties;
 	id <NSObject> context;
 	NSArray *passthroughViews;
+    UIColor *backgroundColor;
 }
 
 @synthesize contentViewController;
@@ -53,6 +54,8 @@
 @synthesize containerViewProperties;
 @synthesize context;
 @synthesize passthroughViews;
+@synthesize backgroundColor;
+@synthesize backgroundView;
 
 static WEPopoverContainerViewProperties *defaultProperties = nil;
 
@@ -132,6 +135,7 @@ static BOOL OSVersionIsAtLeast(float version) {
 
 - (id)init {
 	if ((self = [super init])) {
+        self.backgroundColor = [UIColor clearColor];
 	}
 	return self;
 }
@@ -148,6 +152,7 @@ static BOOL OSVersionIsAtLeast(float version) {
 	[contentViewController release];
 	[containerViewProperties release];
 	[passthroughViews release];
+    [backgroundColor release];
 	self.context = nil;
 	[super dealloc];
 }
@@ -253,7 +258,7 @@ static BOOL OSVersionIsAtLeast(float version) {
 									   UIViewAutoresizingFlexibleTopMargin |
 									   UIViewAutoresizingFlexibleHeight |
 									   UIViewAutoresizingFlexibleBottomMargin);
-	backgroundView.backgroundColor = [UIColor clearColor];
+	backgroundView.backgroundColor = self.backgroundColor;
 	backgroundView.delegate = self;
 	
 	[keyView addSubview:backgroundView];
@@ -276,6 +281,7 @@ static BOOL OSVersionIsAtLeast(float version) {
 	popoverVisible = YES;
 	if (animated) {
 		self.view.alpha = 0.0;
+        backgroundView.alpha = 0.0;
         
         [UIView animateWithDuration:FADE_DURATION
                               delay:0.0
@@ -283,6 +289,7 @@ static BOOL OSVersionIsAtLeast(float version) {
                          animations:^{
                              
                              self.view.alpha = 1.0;
+                             backgroundView.alpha = 1.0;
                              
                          } completion:^(BOOL finished) {
                              
