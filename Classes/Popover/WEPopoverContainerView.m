@@ -8,7 +8,20 @@
 
 #import "WEPopoverContainerView.h"
 
-@implementation WEPopoverContainerViewProperties
+@implementation WEPopoverContainerViewProperties {
+	NSString *bgImageName;
+	NSString *upArrowImageName;
+	NSString *downArrowImageName;
+	NSString *leftArrowImageName;
+	NSString *rightArrowImageName;
+	CGFloat leftBgMargin;
+	CGFloat rightBgMargin;
+	CGFloat topBgMargin;
+	CGFloat bottomBgMargin;
+	NSInteger topBgCapSize;
+	NSInteger leftBgCapSize;
+	CGFloat arrowMargin;
+}
 
 @synthesize bgImageName, upArrowImageName, downArrowImageName, leftArrowImageName, rightArrowImageName, topBgMargin, bottomBgMargin, leftBgMargin, rightBgMargin, topBgCapSize, leftBgCapSize;
 @synthesize leftContentMargin, rightContentMargin, topContentMargin, bottomContentMargin, arrowMargin;
@@ -34,7 +47,22 @@
 
 @end
 
-@implementation WEPopoverContainerView
+@implementation WEPopoverContainerView {
+	UIImage *bgImage;
+	UIImage *arrowImage;
+	
+	WEPopoverContainerViewProperties *properties;
+	
+	UIPopoverArrowDirection arrowDirection;
+	
+	CGRect arrowRect;
+	CGRect bgRect;
+	CGPoint offset;
+	CGPoint arrowOffset;
+	
+	CGSize correctedSize;
+	UIView *contentView;
+}
 
 @synthesize arrowDirection, contentView;
 
@@ -149,6 +177,10 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
 		[properties release];
 		properties = [props retain];
 	}
+}
+
+- (CGRect)roundedRect:(CGRect)rect {
+    return CGRectMake(roundf(rect.origin.x), roundf(rect.origin.y), roundf(rect.size.width), roundf(rect.size.height));
 }
 
 - (void)determineGeometryForSize:(CGSize)theSize anchorRect:(CGRect)anchorRect displayArea:(CGRect)displayArea permittedArrowDirections:(UIPopoverArrowDirection)supportedArrowDirections {	
@@ -324,7 +356,6 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
 			        theArrowRect.origin.y = CGRectGetMinY(theBgRect) - upArrowImage.size.height + properties.topBgMargin;
 			    }
 			}
-			bgFrame = CGRectOffset(theBgRect, theOffset.x, theOffset.y);
             
 			CGFloat minMargin = MIN(minMarginLeft, minMarginRight);
 			minMargin = MIN(minMargin, minMarginTop);
@@ -335,9 +366,9 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
 			
 			if (surface >= biggestSurface && minMargin >= currentMinMargin) {
 				biggestSurface = surface;
-				offset = CGPointMake(theOffset.x + displayArea.origin.x, theOffset.y + displayArea.origin.y);
-				arrowRect = theArrowRect;
-				bgRect = theBgRect;
+				offset = CGPointMake(roundf(theOffset.x + displayArea.origin.x), roundf(theOffset.y + displayArea.origin.y));
+				arrowRect = [self roundedRect:theArrowRect];
+				bgRect = [self roundedRect:theBgRect];
 				arrowDirection = theArrowDirection;
 				currentMinMargin = minMargin;
 			}
