@@ -14,6 +14,11 @@
 	NSString *downArrowImageName;
 	NSString *leftArrowImageName;
 	NSString *rightArrowImageName;
+    UIImage *bgImage;
+    UIImage *upArrowImage;
+    UIImage *downArrowImage;
+    UIImage *leftArrowImage;
+    UIImage *rightArrowImage;
 	CGFloat leftBgMargin;
 	CGFloat rightBgMargin;
 	CGFloat topBgMargin;
@@ -25,6 +30,29 @@
 
 @synthesize bgImageName, upArrowImageName, downArrowImageName, leftArrowImageName, rightArrowImageName, topBgMargin, bottomBgMargin, leftBgMargin, rightBgMargin, topBgCapSize, leftBgCapSize;
 @synthesize leftContentMargin, rightContentMargin, topContentMargin, bottomContentMargin, arrowMargin;
+@synthesize upArrowImage, downArrowImage, leftArrowImage, rightArrowImage, bgImage;
+
+#define IMAGE_FOR_NAME(arrowImage, arrowImageName)	((arrowImage != nil) ? (arrowImage) : (arrowImageName == nil ? nil : [UIImage imageNamed:arrowImageName]))
+
+- (UIImage *)upArrowImage {
+    return IMAGE_FOR_NAME(upArrowImage, upArrowImageName);
+}
+
+- (UIImage *)downArrowImage {
+    return IMAGE_FOR_NAME(downArrowImage, downArrowImageName);
+}
+
+- (UIImage *)leftArrowImage {
+    return IMAGE_FOR_NAME(leftArrowImage, leftArrowImageName);
+}
+
+- (UIImage *)rightArrowImage {
+    return IMAGE_FOR_NAME(rightArrowImage, rightArrowImageName);
+}
+
+- (UIImage *)bgImage {
+    return IMAGE_FOR_NAME(bgImage, bgImageName);
+}
 
 - (void)dealloc {
 	self.bgImageName = nil;
@@ -32,6 +60,11 @@
 	self.downArrowImageName = nil;
 	self.leftArrowImageName = nil;
 	self.rightArrowImageName = nil;
+    self.upArrowImage = nil;
+    self.downArrowImage = nil;
+    self.leftArrowImage = nil;
+    self.rightArrowImage = nil;
+    self.bgImage = nil;
 	[super dealloc];
 }
 
@@ -79,7 +112,8 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
 		[self determineGeometryForSize:correctedSize anchorRect:anchorRect displayArea:displayArea permittedArrowDirections:permittedArrowDirections];
 		[self initFrame];
 		self.backgroundColor = [UIColor clearColor];
-		UIImage *theImage = [UIImage imageNamed:properties.bgImageName];
+        
+		UIImage *theImage = properties.bgImage;
 		bgImage = [[theImage stretchableImageWithLeftCapWidth:properties.leftBgCapSize topCapHeight:properties.topBgCapSize] retain];
 		
 		self.clipsToBounds = YES;
@@ -196,10 +230,10 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
 	CGFloat biggestSurface = 0.0f;
 	CGFloat currentMinMargin = 0.0f;
 	
-	UIImage *upArrowImage = [UIImage imageNamed:properties.upArrowImageName];
-	UIImage *downArrowImage = [UIImage imageNamed:properties.downArrowImageName];
-	UIImage *leftArrowImage = [UIImage imageNamed:properties.leftArrowImageName];
-	UIImage *rightArrowImage = [UIImage imageNamed:properties.rightArrowImageName];
+	UIImage *upArrowImage = properties.upArrowImage;
+	UIImage *downArrowImage = properties.downArrowImage;
+	UIImage *leftArrowImage = properties.leftArrowImage;
+	UIImage *rightArrowImage = properties.rightArrowImage;
 	
 	while (theArrowDirection <= UIPopoverArrowDirectionRight) {
 		
