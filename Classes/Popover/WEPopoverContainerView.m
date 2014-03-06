@@ -95,6 +95,7 @@
 	
 	CGSize correctedSize;
 	UIView *contentView;
+    CGRect calculatedFrame;
 }
 
 @synthesize arrowDirection, contentView;
@@ -110,7 +111,6 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
 		correctedSize = CGSizeMake(theSize.width + properties.leftBgMargin + properties.rightBgMargin + properties.leftContentMargin + properties.rightContentMargin, 
 								   theSize.height + properties.topBgMargin + properties.bottomBgMargin + properties.topContentMargin + properties.bottomContentMargin);	
 		[self determineGeometryForSize:correctedSize anchorRect:anchorRect displayArea:displayArea permittedArrowDirections:permittedArrowDirections];
-		[self initFrame];
 		self.backgroundColor = [UIColor clearColor];
         
 		UIImage *theImage = properties.bgImage;
@@ -118,6 +118,7 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
 		
 		self.clipsToBounds = YES;
 		self.userInteractionEnabled = YES;
+        [self initFrame];
 	}
 	return self;
 }
@@ -177,7 +178,9 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
 	}
 }
 
-
+- (CGRect)calculatedFrame {
+    return calculatedFrame;
+}
 
 @end
 
@@ -190,9 +193,8 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
 	arrowOffset = CGPointMake(MAX(0, -arrowRect.origin.x), MAX(0, -arrowRect.origin.y));
 	bgRect = CGRectOffset(bgRect, arrowOffset.x, arrowOffset.y);
 	arrowRect = CGRectOffset(arrowRect, arrowOffset.x, arrowOffset.y);
-	    
-    self.frame = CGRectIntegral(theFrame);
-}																		 
+    calculatedFrame = CGRectIntegral(theFrame);
+}
 
 - (CGSize)contentSize {
 	return self.contentRect.size;

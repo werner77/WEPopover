@@ -244,10 +244,6 @@ static BOOL OSVersionIsAtLeast(float version) {
 	
 	CGRect displayArea = [self displayAreaForView:theView];
 	
-	WEPopoverContainerViewProperties *props = self.containerViewProperties ? self.containerViewProperties : [[self class] defaultContainerViewProperties];
-	WEPopoverContainerView *containerView = [[[WEPopoverContainerView alloc] initWithSize:self.popoverContentSize anchorRect:rect displayArea:displayArea permittedArrowDirections:arrowDirections properties:props] autorelease];
-	popoverArrowDirection = containerView.arrowDirection;
-	
 	UIView *keyView = self.keyView;
 	
 	backgroundView = [[WETouchableView alloc] initWithFrame:keyView.bounds];
@@ -258,8 +254,13 @@ static BOOL OSVersionIsAtLeast(float version) {
 	backgroundView.delegate = self;
 	
 	[keyView addSubview:backgroundView];
+    
+    
+    WEPopoverContainerViewProperties *props = self.containerViewProperties ? self.containerViewProperties : [[self class] defaultContainerViewProperties];
+	WEPopoverContainerView *containerView = [[[WEPopoverContainerView alloc] initWithSize:self.popoverContentSize anchorRect:rect displayArea:displayArea permittedArrowDirections:arrowDirections properties:props] autorelease];
+	popoverArrowDirection = containerView.arrowDirection;
 	
-	containerView.frame = [theView convertRect:containerView.frame toView:backgroundView];
+	containerView.frame = [theView convertRect:containerView.calculatedFrame toView:backgroundView];
 	
 	[backgroundView addSubview:containerView];
 	
@@ -315,12 +316,6 @@ static BOOL OSVersionIsAtLeast(float version) {
 		 permittedArrowDirections:(UIPopoverArrowDirection)arrowDirections
                          animated:(BOOL)animated {
     
-    if (animated) {
-        [UIView beginAnimations:nil context:nil];
-        [UIView setAnimationDuration:FADE_DURATION];
-        [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-    }
-    
     [self determineContentSize];
     
     CGRect displayArea = [self displayAreaForView:theView];
@@ -328,10 +323,16 @@ static BOOL OSVersionIsAtLeast(float version) {
 	[containerView updatePositionWithSize:self.popoverContentSize
                                anchorRect:rect
                               displayArea:displayArea
-                 permittedArrowDirections:arrowDirections];
-	
+                 permittedArrowDirections:arrowDirections];	
 	popoverArrowDirection = containerView.arrowDirection;
-	containerView.frame = [theView convertRect:containerView.frame toView:backgroundView];
+    
+    if (animated) {
+        [UIView beginAnimations:nil context:nil];
+        [UIView setAnimationDuration:FADE_DURATION];
+        [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+    }
+    
+	containerView.frame = [theView convertRect:containerView.calculatedFrame toView:backgroundView];
     
     if (animated) {
         [UIView commitAnimations];

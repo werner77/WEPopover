@@ -66,7 +66,7 @@
 		anchorRect:(CGRect)anchorRect 
 	   displayArea:(CGRect)displayArea
 permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
-		properties:(WEPopoverContainerViewProperties *)properties;	
+		properties:(WEPopoverContainerViewProperties *)properties;
 
 /**
  * To update the position of the popover with a new anchor rect, display area and permitted arrow directions
@@ -75,5 +75,7 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
                     anchorRect:(CGRect)anchorRect
                    displayArea:(CGRect)displayArea
       permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections;
+
+- (CGRect)calculatedFrame;
 
 @end
