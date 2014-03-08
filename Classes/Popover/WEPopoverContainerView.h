@@ -14,11 +14,6 @@
  */
 @interface WEPopoverContainerViewProperties : NSObject
 
-@property(nonatomic, retain) NSString *bgImageName;
-@property(nonatomic, retain) NSString *upArrowImageName;
-@property(nonatomic, retain) NSString *downArrowImageName;
-@property(nonatomic, retain) NSString *leftArrowImageName;
-@property(nonatomic, retain) NSString *rightArrowImageName;
 @property(nonatomic, assign) CGFloat leftBgMargin;
 @property(nonatomic, assign) CGFloat rightBgMargin;
 @property(nonatomic, assign) CGFloat topBgMargin;
@@ -30,6 +25,19 @@
 @property(nonatomic, assign) NSInteger topBgCapSize;
 @property(nonatomic, assign) NSInteger leftBgCapSize;
 @property(nonatomic, assign) CGFloat arrowMargin;
+
+@property(nonatomic, retain) UIImage *upArrowImage;
+@property(nonatomic, retain) UIImage *downArrowImage;
+@property(nonatomic, retain) UIImage *leftArrowImage;
+@property(nonatomic, retain) UIImage *rightArrowImage;
+@property(nonatomic, retain) UIImage *bgImage;
+
+//Deprecated: use upArrowImage, downArrowImage, etc instead.
+@property(nonatomic, retain) NSString *upArrowImageName;
+@property(nonatomic, retain) NSString *downArrowImageName;
+@property(nonatomic, retain) NSString *leftArrowImageName;
+@property(nonatomic, retain) NSString *rightArrowImageName;
+@property(nonatomic, retain) NSString *bgImageName;
 
 @end
 
@@ -58,7 +66,7 @@
 		anchorRect:(CGRect)anchorRect 
 	   displayArea:(CGRect)displayArea
 permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
-		properties:(WEPopoverContainerViewProperties *)properties;	
+		properties:(WEPopoverContainerViewProperties *)properties;
 
 /**
  * To update the position of the popover with a new anchor rect, display area and permitted arrow directions
@@ -67,5 +75,7 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
                     anchorRect:(CGRect)anchorRect
                    displayArea:(CGRect)displayArea
       permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections;
+
+- (CGRect)calculatedFrame;
 
 @end
