@@ -91,7 +91,7 @@ static BOOL OSVersionIsAtLeast(float version) {
             
             contentMargin = 4.0;
             
-            bgMargin = 12;
+            bgMargin = 13;
             bgCapSize = 31;
             
             props.arrowMargin = 4.0;
