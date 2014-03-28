@@ -26,13 +26,24 @@
 	NSInteger topBgCapSize;
 	NSInteger leftBgCapSize;
 	CGFloat arrowMargin;
+    
+    CGFloat maskCornerRadius;
+    CGSize maskInsets;
 }
 
 @synthesize bgImageName, upArrowImageName, downArrowImageName, leftArrowImageName, rightArrowImageName, topBgMargin, bottomBgMargin, leftBgMargin, rightBgMargin, topBgCapSize, leftBgCapSize;
 @synthesize leftContentMargin, rightContentMargin, topContentMargin, bottomContentMargin, arrowMargin;
 @synthesize upArrowImage, downArrowImage, leftArrowImage, rightArrowImage, bgImage;
+@synthesize maskCornerRadius, maskInsets;
 
 #define IMAGE_FOR_NAME(arrowImage, arrowImageName)	((arrowImage != nil) ? (arrowImage) : (arrowImageName == nil ? nil : [UIImage imageNamed:arrowImageName]))
+
+- (id)init {
+    if ((self = [super init])) {
+        self.maskInsets = CGSizeZero;
+    }
+    return self;
+}
 
 - (UIImage *)upArrowImage {
     return IMAGE_FOR_NAME(upArrowImage, upArrowImageName);
@@ -133,7 +144,17 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
 
 - (void)drawRect:(CGRect)rect {
 	[bgImage drawInRect:bgRect blendMode:kCGBlendModeNormal alpha:1.0];
-	[arrowImage drawInRect:arrowRect blendMode:kCGBlendModeNormal alpha:1.0]; 
+	[arrowImage drawInRect:arrowRect blendMode:kCGBlendModeNormal alpha:1.0];
+    
+    BOOL shouldClip = properties.maskCornerRadius > 0.0f || !CGSizeEqualToSize(properties.maskInsets, CGSizeZero);
+    if (shouldClip) {
+        CAShapeLayer *maskLayer = [CAShapeLayer layer];
+        CGPathRef path = [UIBezierPath bezierPathWithRoundedRect:CGRectInset(self.bounds, properties.maskInsets.width, properties.maskInsets.height) cornerRadius:properties.maskCornerRadius].CGPath;
+        [maskLayer setPath:path];
+        [maskLayer setFillRule:kCAFillRuleEvenOdd];
+        maskLayer.frame = self.bounds;
+        [self.layer setMask:maskLayer];
+    }
 }
 
 - (void)updatePositionWithSize:(CGSize)theSize

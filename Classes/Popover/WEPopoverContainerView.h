@@ -26,6 +26,9 @@
 @property(nonatomic, assign) NSInteger leftBgCapSize;
 @property(nonatomic, assign) CGFloat arrowMargin;
 
+@property(nonatomic, assign) CGFloat maskCornerRadius;
+@property(nonatomic, assign) CGSize maskInsets;
+
 @property(nonatomic, retain) UIImage *upArrowImage;
 @property(nonatomic, retain) UIImage *downArrowImage;
 @property(nonatomic, retain) UIImage *leftArrowImage;
