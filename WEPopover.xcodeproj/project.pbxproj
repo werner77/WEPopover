@@ -41,6 +41,7 @@
 		749FAE861286130000AB97F9 /* WEPopoverContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 749FAE801286130000AB97F9 /* WEPopoverContainerView.m */; };
 		749FAE871286130000AB97F9 /* WEPopoverContentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 749FAE821286130000AB97F9 /* WEPopoverContentViewController.m */; };
 		749FAE881286130000AB97F9 /* WEPopoverController.m in Sources */ = {isa = PBXBuildFile; fileRef = 749FAE841286130000AB97F9 /* WEPopoverController.m */; };
+		74A2A7B1190E5B800054A6CD /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74A2A7B0190E5B800054A6CD /* QuartzCore.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -89,6 +90,7 @@
 		749FAE831286130000AB97F9 /* WEPopoverController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WEPopoverController.h; sourceTree = "<group>"; };
 		749FAE841286130000AB97F9 /* WEPopoverController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WEPopoverController.m; sourceTree = "<group>"; };
 		749FAE851286130000AB97F9 /* WEPopoverParentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WEPopoverParentView.h; sourceTree = "<group>"; };
+		74A2A7B0190E5B800054A6CD /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		8D1107310486CEB800E47090 /* WEPopover-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "WEPopover-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -97,6 +99,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				74A2A7B1190E5B800054A6CD /* QuartzCore.framework in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
 				288765A50DF7441C002DB57D /* CoreGraphics.framework in Frameworks */,
@@ -165,6 +168,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				74A2A7B0190E5B800054A6CD /* QuartzCore.framework */,
 				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
 				1D30AB110D05D00D00671497 /* Foundation.framework */,
 				288765A40DF7441C002DB57D /* CoreGraphics.framework */,

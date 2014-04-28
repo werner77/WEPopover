@@ -18,7 +18,7 @@
 
 @interface WEPopoverController(Private)
 
-- (UIView *)keyView;
+- (UIView *)keyViewForView:(UIView *)theView;
 - (void)updateBackgroundPassthroughViews;
 - (void)setView:(UIView *)v;
 - (CGRect)displayAreaForView:(UIView *)theView;
@@ -221,7 +221,7 @@ static BOOL OSVersionIsAtLeast(float version) {
 			   permittedArrowDirections:(UIPopoverArrowDirection)arrowDirections
 							   animated:(BOOL)animated {
 	
-	UIView *v = [self keyView];
+	UIView *v = [self keyViewForView:nil];
 	CGRect rect = [item frameInView:v];
 	
 	return [self presentPopoverFromRect:rect inView:v permittedArrowDirections:arrowDirections animated:animated];
@@ -245,7 +245,7 @@ static BOOL OSVersionIsAtLeast(float version) {
 	
 	CGRect displayArea = [self displayAreaForView:theView];
 	
-	UIView *keyView = self.keyView;
+	UIView *keyView = [self keyViewForView:theView];
 	
 	backgroundView = [[WETouchableView alloc] initWithFrame:keyView.bounds];
 	backgroundView.contentMode = UIViewContentModeScaleToFill;
@@ -371,12 +371,29 @@ static BOOL OSVersionIsAtLeast(float version) {
 
 @implementation WEPopoverController(Private)
 
-- (UIView *)keyView {
+- (BOOL)isView:(UIView *)v1 inSameHierarchyAsView:(UIView *)v2 {
+    BOOL inViewHierarchy = NO;
+    while (v1 != nil) {
+        if (v1 == v2) {
+            inViewHierarchy = YES;
+            break;
+        }
+        v1 = v1.superview;
+    }
+    return inViewHierarchy;
+}
+
+- (UIView *)keyViewForView:(UIView *)theView {
     if (self.parentView) {
         return self.parentView;
     } else {
-        UIWindow *w = [[UIApplication sharedApplication] keyWindow];
-        if (w.subviews.count > 0) {
+        UIWindow *w = nil;
+        if (theView.window) {
+            w = theView.window;
+        } else {
+            w = [[UIApplication sharedApplication] keyWindow];
+        }
+        if (w.subviews.count > 0 && (theView == nil || [self isView:theView inSameHierarchyAsView:[w.subviews objectAtIndex:0]])) {
             return [w.subviews objectAtIndex:0];
         } else {
             return w;
@@ -450,15 +467,8 @@ static BOOL OSVersionIsAtLeast(float version) {
 
 - (CGRect)displayAreaForView:(UIView *)theView {
     
-    UIView *keyView = self.keyView;
-    BOOL inViewHierarchy = NO;
-    UIView *v = theView;
-    while (v != nil) {
-        if (v == keyView) {
-            inViewHierarchy = YES;
-        }
-        v = v.superview;
-    }
+    UIView *keyView = [self keyViewForView:theView];
+    BOOL inViewHierarchy = [self isView:theView inSameHierarchyAsView:keyView];
     
     if (!inViewHierarchy) {
         NSException *ex = [NSException exceptionWithName:@"WEInvalidViewHierarchyException" reason:@"The supplied view to present the popover from is not in the same view hierarchy as the parent view for the popover" userInfo:nil];
@@ -469,7 +479,6 @@ static BOOL OSVersionIsAtLeast(float version) {
 	if ([theView conformsToProtocol:@protocol(WEPopoverParentView)] && [theView respondsToSelector:@selector(displayAreaForPopover)]) {
 		displayArea = [(id <WEPopoverParentView>)theView displayAreaForPopover];
 	} else {
-        UIView *keyView = [self keyView];
 		displayArea = [keyView convertRect:keyView.bounds toView:theView];
         //Subtract margin for status bar that may be in view
         UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
