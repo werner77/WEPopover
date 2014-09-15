@@ -53,7 +53,7 @@ static BOOL OSVersionIsAtLeast(float version) {
     if (defaultProperties) {
         return defaultProperties;
     } else {
-        WEPopoverContainerViewProperties *props = [WEPopoverContainerViewProperties alloc];
+        WEPopoverContainerViewProperties *props = [[WEPopoverContainerViewProperties alloc] init];
         
         NSString *bgImageName = nil;
         CGFloat bgMargin = 0.0;

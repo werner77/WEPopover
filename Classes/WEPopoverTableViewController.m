@@ -156,7 +156,7 @@
  */
 - (WEPopoverContainerViewProperties *)improvedContainerViewProperties {
 	
-	WEPopoverContainerViewProperties *props = [WEPopoverContainerViewProperties alloc];
+	WEPopoverContainerViewProperties *props = [[WEPopoverContainerViewProperties alloc] init];
 	NSString *bgImageName = nil;
 	CGFloat bgMargin = 0.0;
 	CGFloat bgCapSize = 0.0;
