@@ -326,42 +326,74 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
 			CGFloat minMarginTop = CGRectGetMinY(bgFrame); 
 			CGFloat minMarginBottom = CGRectGetHeight(displayArea) - CGRectGetMaxY(bgFrame); 
 			
-			if (minMarginLeft < 0) {
-			    // Popover is too wide and clipped on the left; decrease width
-			    // and move it to the right
-			    theOffset.x -= minMarginLeft;
-			    theBgRect.size.width += minMarginLeft;
-			    minMarginLeft = 0;
-			    if (theArrowDirection == UIPopoverArrowDirectionRight) {
-			        theArrowRect.origin.x = CGRectGetMaxX(theBgRect) - _properties.rightBgMargin;
-			    }
-			}
-			if (minMarginRight < 0) {
-			    // Popover is too wide and clipped on the right; decrease width.
-			    theBgRect.size.width += minMarginRight;
-			    minMarginRight = 0;
-			    if (theArrowDirection == UIPopoverArrowDirectionLeft) {
-			        theArrowRect.origin.x = CGRectGetMinX(theBgRect) - leftArrowImage.size.width + _properties.leftBgMargin;
-			    }
-			}
-			if (minMarginTop < 0) {
-			    // Popover is too high and clipped at the top; decrease height
-			    // and move it down
-			    theOffset.y -= minMarginTop;
-			    theBgRect.size.height += minMarginTop;
-			    minMarginTop = 0;
-			    if (theArrowDirection == UIPopoverArrowDirectionDown) {
-			        theArrowRect.origin.y = CGRectGetMaxY(theBgRect) - _properties.bottomBgMargin;
-			    }
-			}
-			if (minMarginBottom < 0) {
-			    // Popover is too high and clipped at the bottom; decrease height.
-			    theBgRect.size.height += minMarginBottom;
-			    minMarginBottom = 0;
-			    if (theArrowDirection == UIPopoverArrowDirectionUp) {
-			        theArrowRect.origin.y = CGRectGetMinY(theBgRect) - upArrowImage.size.height + _properties.topBgMargin;
-			    }
-			}
+            if (minMarginLeft < 0) {
+                // Popover is clipped on the left;
+                // move it to the right
+                theOffset.x -= minMarginLeft;
+                
+                minMarginRight += minMarginLeft;
+                
+                if (minMarginRight < 0) {
+                    // and decrease width if needed
+                    theBgRect.size.width += minMarginRight;
+                    minMarginRight = 0;
+                }
+                minMarginLeft = 0;
+                
+                if (theArrowDirection == UIPopoverArrowDirectionRight) {
+                    theArrowRect.origin.x = CGRectGetMaxX(theBgRect) - _properties.rightBgMargin;
+                }
+            } else if (minMarginRight < 0) {
+                
+                // Popover is clipped on the right
+                theOffset.x += minMarginRight;
+                
+                minMarginLeft += minMarginRight;
+                
+                if (minMarginLeft < 0) {
+                    theBgRect.size.width += minMarginLeft;
+                    minMarginLeft = 0;
+                }
+                
+                minMarginRight = 0;
+                
+                if (theArrowDirection == UIPopoverArrowDirectionLeft) {
+                    theArrowRect.origin.x = CGRectGetMinX(theBgRect) - leftArrowImage.size.width + _properties.leftBgMargin;
+                }
+            }
+            
+            if (minMarginTop < 0) {
+                // Popover is at the top;
+                theOffset.y -= minMarginTop;
+                minMarginBottom += minMarginTop;
+                
+                if (minMarginBottom < 0) {
+                    theBgRect.size.height += minMarginBottom;
+                    minMarginBottom = 0;
+                }
+                
+                minMarginTop = 0;
+                
+                if (theArrowDirection == UIPopoverArrowDirectionDown) {
+                    theArrowRect.origin.y = CGRectGetMaxY(theBgRect) - _properties.bottomBgMargin;
+                }
+            } else if (minMarginBottom < 0) {
+                // Popover is clipped at the bottom
+                
+                theOffset.y += minMarginBottom;
+                minMarginTop += minMarginBottom;
+                
+                if (minMarginTop < 0) {
+                    theBgRect.size.height += minMarginTop;
+                    minMarginTop = 0;
+                }
+                
+                minMarginBottom = 0;
+                
+                if (theArrowDirection == UIPopoverArrowDirectionUp) {
+                    theArrowRect.origin.y = CGRectGetMinY(theBgRect) - upArrowImage.size.height + _properties.topBgMargin;
+                }
+            }
             
 			CGFloat minMargin = MIN(minMarginLeft, minMarginRight);
 			minMargin = MIN(minMargin, minMarginTop);
