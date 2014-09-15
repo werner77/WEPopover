@@ -113,6 +113,7 @@ static BOOL OSVersionIsAtLeast(float version) {
 - (id)init {
 	if ((self = [super init])) {
         self.backgroundColor = [UIColor clearColor];
+        self.popoverLayoutMargins = UIEdgeInsetsMake(0, 0, 0, 0);
 	}
 	return self;
 }
@@ -444,14 +445,20 @@ static BOOL OSVersionIsAtLeast(float version) {
 		displayArea = [(id <WEPopoverParentView>)theView displayAreaForPopover];
 	} else {
 		displayArea = [keyView convertRect:keyView.bounds toView:theView];
+        
+        UIEdgeInsets insets = self.popoverLayoutMargins;
+        
+        displayArea = UIEdgeInsetsInsetRect(displayArea, insets);
+        
         //Subtract margin for status bar that may be in view
         UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
         
-        float margin = 10.0f;
+        CGFloat margin = 20.0f;
+        
         if (UIInterfaceOrientationIsLandscape(orientation)) {
-            displayArea = CGRectMake(displayArea.origin.x + margin, displayArea.origin.y, displayArea.size.width - 2 * margin, displayArea.size.height);
+            displayArea = CGRectMake(displayArea.origin.x + margin, displayArea.origin.y, displayArea.size.width - margin, displayArea.size.height);
         } else {
-            displayArea = CGRectMake(displayArea.origin.x, displayArea.origin.y + margin, displayArea.size.width, displayArea.size.height - 2 * margin);
+            displayArea = CGRectMake(displayArea.origin.x, displayArea.origin.y + margin, displayArea.size.width, displayArea.size.height - margin);
         }
 	}
 	return displayArea;

@@ -43,6 +43,8 @@
 @property (nonatomic, weak) UIView *parentView;
 @property (nonatomic, copy) NSArray *passthroughViews;
 
+@property(nonatomic, assign) UIEdgeInsets popoverLayoutMargins;
+
 + (WEPopoverContainerViewProperties *)defaultContainerViewProperties;
 + (void)setDefaultContainerViewProperties:(WEPopoverContainerViewProperties *)properties;
 
