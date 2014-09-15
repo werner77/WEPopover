@@ -60,21 +60,16 @@
 	
 	WEPopoverContainerViewProperties *_properties;
 	
-	UIPopoverArrowDirection _arrowDirection;
-	
 	CGRect _arrowRect;
 	CGRect _bgRect;
 	CGPoint _offset;
 	CGPoint _arrowOffset;
 	
 	CGSize _correctedSize;
-	UIView *_contentView;
     CGRect _calculatedFrame;
 }
 
-@synthesize arrowDirection, contentView;
-
-- (id)initWithSize:(CGSize)theSize 
+- (id)initWithSize:(CGSize)theSize
 		anchorRect:(CGRect)anchorRect 
 	   displayArea:(CGRect)displayArea
 permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
@@ -147,10 +142,10 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
 }
 
 - (void)setContentView:(UIView *)v {
-	if (v != contentView) {
-		contentView = v;		
-		contentView.frame = self.contentRect;		
-		[self addSubview:contentView];
+	if (v != _contentView) {
+		_contentView = v;
+		_contentView.frame = self.contentRect;
+		[self addSubview:_contentView];
 	}
 }
 
@@ -388,7 +383,7 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
 		theArrowDirection <<= 1;
 	}
 	
-	switch (arrowDirection) {
+	switch (_arrowDirection) {
 		case UIPopoverArrowDirectionUp:
 			_arrowImage = upArrowImage;
 			break;
