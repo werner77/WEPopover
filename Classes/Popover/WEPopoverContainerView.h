@@ -29,18 +29,18 @@
 @property(nonatomic, assign) CGFloat maskCornerRadius;
 @property(nonatomic, assign) CGSize maskInsets;
 
-@property(nonatomic, retain) UIImage *upArrowImage;
-@property(nonatomic, retain) UIImage *downArrowImage;
-@property(nonatomic, retain) UIImage *leftArrowImage;
-@property(nonatomic, retain) UIImage *rightArrowImage;
-@property(nonatomic, retain) UIImage *bgImage;
+@property(nonatomic, strong) UIImage *upArrowImage;
+@property(nonatomic, strong) UIImage *downArrowImage;
+@property(nonatomic, strong) UIImage *leftArrowImage;
+@property(nonatomic, strong) UIImage *rightArrowImage;
+@property(nonatomic, strong) UIImage *bgImage;
 
 //Deprecated: use upArrowImage, downArrowImage, etc instead.
-@property(nonatomic, retain) NSString *upArrowImageName;
-@property(nonatomic, retain) NSString *downArrowImageName;
-@property(nonatomic, retain) NSString *leftArrowImageName;
-@property(nonatomic, retain) NSString *rightArrowImageName;
-@property(nonatomic, retain) NSString *bgImageName;
+@property(nonatomic, strong) NSString *upArrowImageName;
+@property(nonatomic, strong) NSString *downArrowImageName;
+@property(nonatomic, strong) NSString *leftArrowImageName;
+@property(nonatomic, strong) NSString *rightArrowImageName;
+@property(nonatomic, strong) NSString *bgImageName;
 
 @end
 
@@ -59,7 +59,7 @@
 /**
  * The content view being displayed.
  */
-@property (nonatomic, retain) UIView *contentView;
+@property (nonatomic, strong) UIView *contentView;
 
 /**
  * Initializes the position of the popover with a size, anchor rect, display area and permitted arrow directions and optionally the properties. 

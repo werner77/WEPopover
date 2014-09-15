@@ -103,7 +103,7 @@
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
 	
 	cell.textLabel.text = [NSString stringWithFormat:@"Cell %d", indexPath.row];
@@ -156,7 +156,7 @@
  */
 - (WEPopoverContainerViewProperties *)improvedContainerViewProperties {
 	
-	WEPopoverContainerViewProperties *props = [[WEPopoverContainerViewProperties alloc] autorelease];
+	WEPopoverContainerViewProperties *props = [WEPopoverContainerViewProperties alloc];
 	NSString *bgImageName = nil;
 	CGFloat bgMargin = 0.0;
 	CGFloat bgCapSize = 0.0;
@@ -210,7 +210,7 @@
 		//CGRect rect = CGRectMake(frame.size.width * percentage, frame.origin.y, 1, frame.size.height); 
 		CGRect rect = frame;
 		
-		self.popoverController = [[[popoverClass alloc] initWithContentViewController:contentViewController] autorelease];
+		self.popoverController = [[popoverClass alloc] initWithContentViewController:contentViewController];
 		
 		if ([self.popoverController respondsToSelector:@selector(setContainerViewProperties:)]) {
 			[self.popoverController setContainerViewProperties:[self improvedContainerViewProperties]];
@@ -230,7 +230,6 @@
 											  animated:YES];
 		currentPopoverCellIndex = indexPath.row;
 		
-		[contentViewController release];
 	}
 	
 }
@@ -243,7 +242,7 @@
 	if (!self.popoverController) {
 		
 		UIViewController *contentViewController = [[WEPopoverContentViewController alloc] initWithStyle:UITableViewStylePlain];
-		self.popoverController = [[[popoverClass alloc] initWithContentViewController:contentViewController] autorelease];
+		self.popoverController = [[popoverClass alloc] initWithContentViewController:contentViewController];
 		self.popoverController.delegate = self;
 		self.popoverController.passthroughViews = [NSArray arrayWithObject:self.navigationController.navigationBar];
 		
@@ -251,7 +250,6 @@
 									   permittedArrowDirections:(UIPopoverArrowDirectionUp|UIPopoverArrowDirectionDown) 
 													   animated:YES];
 		 
-		[contentViewController release];
 	} else {
 		[self.popoverController dismissPopoverAnimated:YES];
 		self.popoverController = nil;
@@ -282,9 +280,6 @@
     // Relinquish ownership any cached data, images, etc. that aren't in use.
 }
 
-- (void)dealloc {
-    [super dealloc];
-}
 
 
 @end

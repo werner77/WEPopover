@@ -14,7 +14,7 @@
 	WEPopoverController *popoverController;
 }
 
-@property (nonatomic, retain) WEPopoverController *popoverController;
+@property (nonatomic, strong) WEPopoverController *popoverController;
 
 - (IBAction)onButtonClick:(UIButton *)button;
 

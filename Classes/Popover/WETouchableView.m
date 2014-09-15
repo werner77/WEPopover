@@ -15,32 +15,22 @@
 @end
 
 @implementation WETouchableView {
-	BOOL touchForwardingDisabled;
-	id <WETouchableViewDelegate> delegate;
-	NSArray *passthroughViews;
-	BOOL testHits;
-}
-
-@synthesize touchForwardingDisabled, delegate, passthroughViews;
-
-- (void)dealloc {
-	[passthroughViews release];
-	[super dealloc];
+	BOOL _testHits;
 }
 
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
-	if (testHits) {
+	if (_testHits) {
 		return nil;
-	} else if (touchForwardingDisabled) {
+	} else if (_touchForwardingDisabled) {
 		return self;
 	} else {
 		UIView *hitView = [super hitTest:point withEvent:event];
 		
 		if (hitView == self) {
 			//Test whether any of the passthrough views would handle this touch
-			testHits = YES;
+			_testHits = YES;
 			UIView *superHitView = [self.superview hitTest:point withEvent:event];
-			testHits = NO;
+			_testHits = NO;
 			
 			if ([self isPassthroughView:superHitView]) {
 				hitView = superHitView;
@@ -65,7 +55,7 @@
 		return NO;
 	}
 	
-	if ([passthroughViews containsObject:v]) {
+	if ([_passthroughViews containsObject:v]) {
 		return YES;
 	}
 	
