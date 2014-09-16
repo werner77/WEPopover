@@ -153,6 +153,13 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
     return _calculatedFrame;
 }
 
+- (void)setFrame:(CGRect)frame {
+    if ([self.delegate respondsToSelector:@selector(popoverContainerView:willChangeFrame:)]) {
+        frame = [self.delegate popoverContainerView:self willChangeFrame:frame];
+    }
+    [super setFrame:frame];
+}
+
 @end
 
 @implementation WEPopoverContainerView(Private)
@@ -189,7 +196,7 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
     return CGRectMake(roundf(rect.origin.x), roundf(rect.origin.y), roundf(rect.size.width), roundf(rect.size.height));
 }
 
-- (void)determineGeometryForSize:(CGSize)theSize anchorRect:(CGRect)anchorRect displayArea:(CGRect)displayArea permittedArrowDirections:(UIPopoverArrowDirection)supportedArrowDirections {	
+- (void)determineGeometryForSize:(CGSize)theSize anchorRect:(CGRect)anchorRect displayArea:(CGRect)displayArea permittedArrowDirections:(UIPopoverArrowDirection)supportedArrowDirections {
 	
 	//Determine the frame, it should not go outside the display area
 	UIPopoverArrowDirection theArrowDirection = UIPopoverArrowDirectionUp;

@@ -46,10 +46,22 @@
 
 @class WEPopoverContainerView;
 
+@protocol WEPopoverContainerViewDelegate <NSObject>
+
+/**
+ Implement to override the frame being set in setFrame:
+ */
+- (CGRect)popoverContainerView:(WEPopoverContainerView *)view willChangeFrame:(CGRect)newFrame;
+
+@end
+
+
 /**
  * Container/background view for displaying a popover view.
  */
 @interface WEPopoverContainerView : UIView
+
+@property (nonatomic, weak) id <WEPopoverContainerViewDelegate> delegate;
 
 /**
  * The current arrow direction for the popover.

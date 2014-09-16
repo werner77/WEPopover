@@ -12,7 +12,7 @@
 
 #define FADE_DURATION 0.3
 
-@interface WEPopoverController()<WETouchableViewDelegate>
+@interface WEPopoverController()<WETouchableViewDelegate, WEPopoverContainerViewDelegate>
 
 @end
 
@@ -25,6 +25,8 @@
 - (void)dismissPopoverAnimated:(BOOL)animated userInitiated:(BOOL)userInitiated;
 - (void)determineContentSize;
 - (CGSize)effectivePopoverContentSize;
+- (void)removeView;
+- (void)repositionContainerViewForFrameChange;
 
 @end
 
@@ -163,10 +165,7 @@ static BOOL OSVersionIsAtLeast(float version) {
         if ([self forwardAppearanceMethods]) {
             [_contentViewController viewDidDisappear:YES];
         }
-		[self.view removeFromSuperview];
-		self.view = nil;
-		[_backgroundView removeFromSuperview];
-		_backgroundView = nil;
+		[self removeView];
 		
 		BOOL userInitiatedDismissal = [(__bridge NSNumber *)theContext boolValue];
 		
@@ -202,10 +201,7 @@ static BOOL OSVersionIsAtLeast(float version) {
 	
 	[self dismissPopoverAnimated:NO];
     
-    _presentedFromRect = rect;
-    _presentedFromView = theView;
-	
-	//First force a load view for the contentViewController so the popoverContentSize is properly initialized
+    //First force a load view for the contentViewController so the popoverContentSize is properly initialized
 	[_contentViewController view];
 	
 	[self determineContentSize];
@@ -226,16 +222,16 @@ static BOOL OSVersionIsAtLeast(float version) {
     
     WEPopoverContainerViewProperties *props = self.containerViewProperties ? self.containerViewProperties : [[self class] defaultContainerViewProperties];
 	WEPopoverContainerView *containerView = [[WEPopoverContainerView alloc] initWithSize:self.effectivePopoverContentSize anchorRect:rect displayArea:displayArea permittedArrowDirections:arrowDirections properties:props];
+    containerView.delegate = self;
 	_popoverArrowDirection = containerView.arrowDirection;
 	
 	containerView.frame = [theView convertRect:containerView.calculatedFrame toView:_backgroundView];
-	
+    containerView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
+    
 	[_backgroundView addSubview:containerView];
 	
 	containerView.contentView = _contentViewController.view;
-	containerView.autoresizingMask = ( UIViewAutoresizingFlexibleLeftMargin |
-									  UIViewAutoresizingFlexibleRightMargin);
-	
+    
 	self.view = containerView;
 	[self updateBackgroundPassthroughViews];
 	
@@ -244,6 +240,9 @@ static BOOL OSVersionIsAtLeast(float version) {
     }
 	[self.view becomeFirstResponder];
 	_popoverVisible = YES;
+    _presentedFromRect = rect;
+    _presentedFromView = theView;
+    
 	if (animated) {
 		self.view.alpha = 0.0;
         _backgroundView.alpha = 0.0;
@@ -284,6 +283,9 @@ static BOOL OSVersionIsAtLeast(float version) {
 		 permittedArrowDirections:(UIPopoverArrowDirection)arrowDirections
                          animated:(BOOL)animated {
     
+    _presentedFromRect = CGRectZero;
+    _presentedFromView = nil;
+    
     [self determineContentSize];
     
     CGRect displayArea = [self displayAreaForView:theView];
@@ -305,6 +307,21 @@ static BOOL OSVersionIsAtLeast(float version) {
     if (animated) {
         [UIView commitAnimations];
     }
+    
+    _presentedFromView = theView;
+    _presentedFromRect = rect;
+}
+
+#pragma mark - 
+#pragma mark WEPopoverContainerViewDelegate
+
+- (CGRect)popoverContainerView:(WEPopoverContainerView *)containerView willChangeFrame:(CGRect)newFrame {
+    CGRect rect = newFrame;
+    if (_presentedFromView != nil) {
+        //Call async because all views will need their frames to be adjusted before we can recalculate
+        [self performSelector:@selector(repositionContainerViewForFrameChange) withObject:nil afterDelay:0];
+    }
+    return rect;
 }
 
 #pragma mark -
@@ -422,12 +439,19 @@ static BOOL OSVersionIsAtLeast(float version) {
             if ([self forwardAppearanceMethods]) {
                 [_contentViewController viewDidDisappear:animated];
             }
-			[self.view removeFromSuperview];
-			self.view = nil;
-			[_backgroundView removeFromSuperview];
-			_backgroundView = nil;
+            [self removeView];
 		}
 	}
+}
+
+- (void)removeView {
+    [self.view removeFromSuperview];
+    self.view = nil;
+    [_backgroundView removeFromSuperview];
+    _backgroundView = nil;
+    
+    _presentedFromView = nil;
+    _presentedFromRect = CGRectZero;
 }
 
 - (CGRect)displayAreaForView:(UIView *)theView {
@@ -448,20 +472,37 @@ static BOOL OSVersionIsAtLeast(float version) {
         
         UIEdgeInsets insets = self.popoverLayoutMargins;
         
+        //Add status bar height
+        insets.top += 20.0f;
+        
         displayArea = UIEdgeInsetsInsetRect(displayArea, insets);
-        
-        //Subtract margin for status bar that may be in view
-        UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
-        
-        CGFloat margin = 20.0f;
-        
-        if (UIInterfaceOrientationIsLandscape(orientation)) {
-            displayArea = CGRectMake(displayArea.origin.x + margin, displayArea.origin.y, displayArea.size.width - margin, displayArea.size.height);
-        } else {
-            displayArea = CGRectMake(displayArea.origin.x, displayArea.origin.y + margin, displayArea.size.width, displayArea.size.height - margin);
-        }
 	}
 	return displayArea;
+}
+
+- (void)repositionContainerViewForFrameChange {
+    if (_presentedFromView != nil) {
+        CGRect displayArea = [self displayAreaForView:_presentedFromView];
+        WEPopoverContainerView *containerView = (WEPopoverContainerView *)self.view;
+        
+        containerView.delegate = nil;
+        
+        [containerView updatePositionWithSize:self.effectivePopoverContentSize
+                                   anchorRect:_presentedFromRect
+                                  displayArea:displayArea
+                     permittedArrowDirections:_popoverArrowDirection];
+        
+        UIView *theView = _backgroundView;
+        CGRect theRect = [_presentedFromView convertRect:containerView.calculatedFrame toView:theView];
+        
+        if ([self.delegate respondsToSelector:@selector(popoverController:willRepositionPopoverToRect:inView:)]) {
+            [self.delegate popoverController:self willRepositionPopoverToRect:&theRect inView:&theView];
+            theRect = [theView convertRect:theRect toView:_backgroundView];
+        }
+        
+        containerView.frame = theRect;
+        containerView.delegate = self;
+    }
 }
 
 @end
