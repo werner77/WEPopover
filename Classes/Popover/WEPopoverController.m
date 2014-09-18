@@ -249,7 +249,7 @@ static BOOL OSVersionIsAtLeast(float version) {
         
         [UIView animateWithDuration:FADE_DURATION
                               delay:0.0
-                            options:UIViewAnimationOptionCurveLinear
+                            options:UIViewAnimationOptionCurveLinear | UIViewAnimationOptionBeginFromCurrentState
                          animations:^{
                              
                              self.view.alpha = 1.0;
@@ -295,6 +295,7 @@ static BOOL OSVersionIsAtLeast(float version) {
         [UIView beginAnimations:nil context:nil];
         [UIView setAnimationDuration:FADE_DURATION];
         [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+        [UIView setAnimationBeginsFromCurrentState:YES];
     }
     
     [containerView updatePositionWithSize:self.effectivePopoverContentSize
@@ -423,7 +424,7 @@ static BOOL OSVersionIsAtLeast(float version) {
             
             [UIView animateWithDuration:FADE_DURATION
                                   delay:0.0
-                                options:UIViewAnimationOptionCurveLinear
+                                options:UIViewAnimationOptionCurveLinear | UIViewAnimationOptionBeginFromCurrentState
                              animations:^{
                                  
                                  self.view.alpha = 0.0;

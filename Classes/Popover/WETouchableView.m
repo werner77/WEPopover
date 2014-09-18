@@ -7,15 +7,26 @@
 //
 
 #import "WETouchableView.h"
+#import "WETouchDownGestureRecognizer.h"
 
 @interface WETouchableView(Private)
 
 - (BOOL)isPassthroughView:(UIView *)v;
+- (BOOL)isGestureRecognizerAllowed:(UIGestureRecognizer *)gr;
 
 @end
 
 @implementation WETouchableView {
 	BOOL _testHits;
+}
+
+- (id)initWithFrame:(CGRect)frame {
+    if ((self = [super initWithFrame:frame])) {
+        WETouchDownGestureRecognizer *gr = [[WETouchDownGestureRecognizer alloc] initWithTarget:self action:@selector(onTouchDown:)];
+        gr.cancelsTouchesInView = NO;
+        [self addGestureRecognizer:gr];
+    }
+    return self;
 }
 
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
@@ -45,9 +56,29 @@
 	[self.delegate viewWasTouched:self];
 }
 
+#pragma mark - 
+
+- (void)onTouchDown:(UIGestureRecognizer *)gr {
+    
+}
+
+#pragma mark - UIGestureRecognizerDelegate
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    return [self isGestureRecognizerAllowed:otherGestureRecognizer];
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldBeRequiredToFailByGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    return [self isGestureRecognizerAllowed:otherGestureRecognizer];
+}
+
 @end
 
 @implementation WETouchableView(Private)
+
+- (BOOL)isGestureRecognizerAllowed:(UIGestureRecognizer *)gr {
+    return [gr.view isDescendantOfView:self];
+}
 
 - (BOOL)isPassthroughView:(UIView *)v {
 	
