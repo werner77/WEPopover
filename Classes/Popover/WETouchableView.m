@@ -7,7 +7,7 @@
 //
 
 #import "WETouchableView.h"
-#import "WETouchDownGestureRecognizer.h"
+#import "WEBlockingGestureRecognizer.h"
 
 @interface WETouchableView(Private)
 
@@ -22,8 +22,7 @@
 
 - (id)initWithFrame:(CGRect)frame {
     if ((self = [super initWithFrame:frame])) {
-        WETouchDownGestureRecognizer *gr = [[WETouchDownGestureRecognizer alloc] initWithTarget:self action:@selector(onTouchDown:)];
-        gr.cancelsTouchesInView = NO;
+        WEBlockingGestureRecognizer *gr = [[WEBlockingGestureRecognizer alloc] init];
         [self addGestureRecognizer:gr];
     }
     return self;
@@ -54,12 +53,6 @@
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
 	[self.delegate viewWasTouched:self];
-}
-
-#pragma mark - 
-
-- (void)onTouchDown:(UIGestureRecognizer *)gr {
-    
 }
 
 #pragma mark - UIGestureRecognizerDelegate

@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface WETouchDownGestureRecognizer : UIGestureRecognizer
+@interface WEBlockingGestureRecognizer : UIGestureRecognizer
 
 @end
