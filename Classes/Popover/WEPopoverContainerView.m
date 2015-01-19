@@ -100,7 +100,14 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
     BOOL shouldClip = _properties.maskCornerRadius > 0.0f || !CGSizeEqualToSize(_properties.maskInsets, CGSizeZero);
     if (shouldClip) {
         CAShapeLayer *maskLayer = [CAShapeLayer layer];
-        CGPathRef path = [UIBezierPath bezierPathWithRoundedRect:CGRectInset(self.bounds, _properties.maskInsets.width, _properties.maskInsets.height) cornerRadius:_properties.maskCornerRadius].CGPath;
+        
+        CGFloat maskInsetWidth = MIN(_properties.maskInsets.width, self.bounds.size.width/2.0f);
+        CGFloat maskInsetHeight = MIN(_properties.maskInsets.height, self.bounds.size.height/2.0f);
+        CGRect insetRect = CGRectInset(self.bounds, maskInsetWidth, maskInsetHeight);
+        insetRect.size.width = MAX(insetRect.size.width, 0);
+        insetRect.size.height = MAX(insetRect.size.height, 0);
+        
+        CGPathRef path = [UIBezierPath bezierPathWithRoundedRect:insetRect cornerRadius:_properties.maskCornerRadius].CGPath;
         [maskLayer setPath:path];
         [maskLayer setFillRule:kCAFillRuleEvenOdd];
         maskLayer.frame = self.bounds;
