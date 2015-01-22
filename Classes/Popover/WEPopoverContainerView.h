@@ -26,6 +26,8 @@
 @property(nonatomic, assign) NSInteger leftBgCapSize;
 @property(nonatomic, assign) CGFloat arrowMargin;
 
+@property(nonatomic, strong) UIColor *maskBorderColor;
+@property(nonatomic, assign) CGFloat maskBorderWidth;
 @property(nonatomic, assign) CGFloat maskCornerRadius;
 @property(nonatomic, assign) CGSize maskInsets;
 

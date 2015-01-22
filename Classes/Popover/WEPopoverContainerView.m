@@ -92,7 +92,6 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
     return self;
 }
 
-
 - (void)drawRect:(CGRect)rect {
     [_bgImage drawInRect:_bgRect blendMode:kCGBlendModeNormal alpha:1.0];
     [_arrowImage drawInRect:_arrowRect blendMode:kCGBlendModeNormal alpha:1.0];
@@ -108,6 +107,22 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
         insetRect.size.height = MAX(insetRect.size.height, 0);
         
         CGPathRef path = [UIBezierPath bezierPathWithRoundedRect:insetRect cornerRadius:_properties.maskCornerRadius].CGPath;
+        
+        CGFloat borderWidth = _properties.maskBorderWidth;
+        UIColor *borderColor = _properties.maskBorderColor;
+        
+        if (borderWidth > 0.0f && borderColor != nil) {
+            CAShapeLayer *borderLayer = [CAShapeLayer layer];
+            
+            [borderLayer setPath:path];
+            [borderLayer setLineWidth:borderWidth * 2.0f];
+            [borderLayer setStrokeColor:borderColor.CGColor];
+            [borderLayer setFillColor:[UIColor clearColor].CGColor];
+            
+            borderLayer.frame = self.bounds;
+            [self.layer addSublayer:borderLayer];
+        }
+        
         [maskLayer setPath:path];
         [maskLayer setFillRule:kCAFillRuleEvenOdd];
         maskLayer.frame = self.bounds;
