@@ -249,7 +249,7 @@ static BOOL OSVersionIsAtLeast(float version) {
         
         [UIView animateWithDuration:FADE_DURATION
                               delay:0.0
-                            options:UIViewAnimationOptionCurveLinear | UIViewAnimationOptionBeginFromCurrentState
+                            options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionBeginFromCurrentState
                          animations:^{
                              
                              self.view.alpha = 1.0;
@@ -424,7 +424,7 @@ static BOOL OSVersionIsAtLeast(float version) {
             
             [UIView animateWithDuration:FADE_DURATION
                                   delay:0.0
-                                options:UIViewAnimationOptionCurveLinear | UIViewAnimationOptionBeginFromCurrentState
+                                options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionBeginFromCurrentState
                              animations:^{
                                  
                                  self.view.alpha = 0.0;
