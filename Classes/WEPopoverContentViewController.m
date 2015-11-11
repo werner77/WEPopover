@@ -95,7 +95,7 @@
     }
     
     // Configure the cell...
-	cell.textLabel.text = [NSString stringWithFormat:@"Item %d", [indexPath row]]; 
+	cell.textLabel.text = [NSString stringWithFormat:@"Item %ld", (long)[indexPath row]]; 
 	cell.textLabel.textColor = [UIColor whiteColor];
     return cell;
 }
