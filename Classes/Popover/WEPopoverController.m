@@ -520,7 +520,7 @@ static BOOL OSVersionIsAtLeast(float version) {
 - (CGRect)displayAreaForView:(UIView *)theView {
     
     UIView *keyView = [self keyViewForView:theView];
-    BOOL inViewHierarchy = [self isView:theView inSameHierarchyAsView:keyView];
+    BOOL inViewHierarchy = (theView.window == keyView.window);
     
     if (!inViewHierarchy) {
         NSException *ex = [NSException exceptionWithName:@"WEInvalidViewHierarchyException" reason:@"The supplied view to present the popover from is not in the same view hierarchy as the parent view for the popover" userInfo:nil];
@@ -528,18 +528,18 @@ static BOOL OSVersionIsAtLeast(float version) {
     }
     
 	CGRect displayArea = CGRectZero;
-	if ([theView conformsToProtocol:@protocol(WEPopoverParentView)] && [theView respondsToSelector:@selector(displayAreaForPopover)]) {
+    
+    if ([self.delegate respondsToSelector:@selector(displayAreayForPoverController:relativeToView:)]) {
+        displayArea = [self.delegate displayAreayForPoverController:self relativeToView:keyView];
+        displayArea = [keyView convertRect:displayArea fromView:keyView];
+    } else if ([theView conformsToProtocol:@protocol(WEPopoverParentView)] && [theView respondsToSelector:@selector(displayAreaForPopover)]) {
 		displayArea = [(id <WEPopoverParentView>)theView displayAreaForPopover];
 	} else {
 		displayArea = [keyView convertRect:keyView.bounds toView:theView];
-        
-        UIEdgeInsets insets = self.popoverLayoutMargins;
-        
-        //Add status bar height
-        insets.top += 20.0f;
-        
-        displayArea = UIEdgeInsetsInsetRect(displayArea, insets);
 	}
+    
+    UIEdgeInsets insets = self.popoverLayoutMargins;
+    displayArea = UIEdgeInsetsInsetRect(displayArea, insets);
 	return displayArea;
 }
 
