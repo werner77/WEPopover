@@ -76,6 +76,11 @@
 @property (nonatomic, strong) UIView *contentView;
 
 /**
+ Whether or not the arrow is collapsed.
+ */
+@property (nonatomic, assign, getter=isArrowCollapsed) BOOL arrowCollapsed;
+
+/**
  * Initializes the position of the popover with a size, anchor rect, display area and permitted arrow directions and optionally the properties. 
  * If the last is not supplied the defaults are taken (requires images to be present in bundle representing a black rounded background with partial transparency).
  */

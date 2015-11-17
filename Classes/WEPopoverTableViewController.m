@@ -211,6 +211,11 @@
 		CGRect rect = frame;
 		
 		self.popoverController = [[popoverClass alloc] initWithContentViewController:contentViewController];
+        
+        if ([self.popoverController isKindOfClass:[WEPopoverController class]]) {
+            WEPopoverController *wePopoverController = (WEPopoverController *)self.popoverController;
+            wePopoverController.animationType = WEPopoverAnimationTypeSlide;
+        }
 		
 		if ([self.popoverController respondsToSelector:@selector(setContainerViewProperties:)]) {
 			[self.popoverController setContainerViewProperties:[self improvedContainerViewProperties]];

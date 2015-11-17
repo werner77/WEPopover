@@ -44,6 +44,12 @@
 
 @end
 
+@interface WEPopoverContainerView()
+
+@property (nonatomic, strong) UIImageView *arrowImageView;
+
+@end
+
 @interface WEPopoverContainerView(Private)
 
 - (void)determineGeometryForSize:(CGSize)theSize anchorRect:(CGRect)anchorRect displayArea:(CGRect)displayArea permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections;
@@ -67,6 +73,8 @@
     
     CGSize _correctedSize;
     CGRect _calculatedFrame;
+    
+    BOOL _arrowCollapsed;
 }
 
 - (id)initWithSize:(CGSize)theSize
@@ -88,13 +96,61 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
         self.clipsToBounds = YES;
         self.userInteractionEnabled = YES;
         [self initFrame];
+        
+        self.arrowImageView = [[UIImageView alloc] init];
+        self.arrowImageView.hidden = YES;
+        self.arrowImageView.contentMode = UIViewContentModeCenter;
+        [self addSubview:self.arrowImageView];
     }
     return self;
 }
 
+- (void)setArrowCollapsed:(BOOL)collapsed {
+    if (collapsed != _arrowCollapsed) {
+        _arrowCollapsed = collapsed;
+        self.arrowImageView.frame = self.arrowRect;
+    }
+}
+
+- (CGRect)arrowRect {
+    CGRect rect = _arrowRect;
+    
+    CGPoint shift = CGPointZero;
+    CGFloat margin = 10.0f;
+    
+    if (_arrowCollapsed) {
+        switch (_arrowDirection) {
+            case UIPopoverArrowDirectionDown:
+                
+                shift = CGPointMake(0, -_arrowRect.size.height - margin);
+                break;
+                
+            case UIPopoverArrowDirectionUp:
+                
+                shift = CGPointMake(0, _arrowRect.size.height + margin);
+                break;
+
+            case UIPopoverArrowDirectionLeft:
+                
+                shift = CGPointMake(_arrowRect.size.width + margin, 0);
+                break;
+
+            case UIPopoverArrowDirectionRight:
+                
+                shift = CGPointMake(-_arrowRect.size.width - margin, 0);
+                break;
+                
+            default:
+                break;
+        }
+    }
+    rect = CGRectOffset(_arrowRect, shift.x, shift.y);
+    return rect;
+}
+
 - (void)drawRect:(CGRect)rect {
     [_bgImage drawInRect:_bgRect blendMode:kCGBlendModeNormal alpha:1.0];
-    [_arrowImage drawInRect:_arrowRect blendMode:kCGBlendModeNormal alpha:1.0];
+    //[_arrowImage drawInRect:[self arrowRect] blendMode:kCGBlendModeNormal alpha:1.0];
     
     BOOL shouldClip = _properties.maskCornerRadius > 0.0f || !CGSizeEqualToSize(_properties.maskInsets, CGSizeZero);
     if (shouldClip) {
@@ -183,6 +239,10 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
     [super setFrame:frame];
 }
 
+- (void)setAlpha:(CGFloat)alpha {
+    [super setAlpha:alpha];
+}
+
 @end
 
 @implementation WEPopoverContainerView(Private)
@@ -195,6 +255,10 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
     _bgRect = CGRectOffset(_bgRect, _arrowOffset.x, _arrowOffset.y);
     _arrowRect = CGRectOffset(_arrowRect, _arrowOffset.x, _arrowOffset.y);
     _calculatedFrame = CGRectIntegral(theFrame);
+    
+    _arrowImageView.hidden = (_arrowImage == nil);
+    _arrowImageView.image = _arrowImage;
+    _arrowImageView.frame = self.arrowRect;
 }
 
 - (CGSize)contentSize {

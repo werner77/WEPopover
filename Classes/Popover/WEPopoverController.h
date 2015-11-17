@@ -22,6 +22,11 @@
 
 @end
 
+typedef NS_ENUM(NSUInteger, WEPopoverAnimationType) {
+    WEPopoverAnimationTypeCrossFade = 0,
+    WEPopoverAnimationTypeSlide = 1
+};
+
 /**
  * Popover controller for the iPhone, mimicing the iPad UIPopoverController interface. See that class for more details.
  */
@@ -43,6 +48,12 @@
 @property (nonatomic, strong) id <NSObject> context;
 @property (nonatomic, weak) UIView *parentView;
 @property (nonatomic, copy) NSArray *passthroughViews;
+
+//Default is WEPopoverAnimationTypeCrossFade
+@property (nonatomic, assign) WEPopoverAnimationType animationType;
+
+//Default is .3 seconds
+@property (nonatomic, assign) NSTimeInterval animationDuration;
 
 @property(nonatomic, assign) UIEdgeInsets popoverLayoutMargins;
 

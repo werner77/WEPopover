@@ -24,6 +24,7 @@
 
     // Add the view controller's view to the window and display.
     [window addSubview:navController.view];
+    window.rootViewController = navController;
     [window makeKeyAndVisible];
 
     return YES;

@@ -10,7 +10,7 @@
 #import "WEPopoverParentView.h"
 #import "UIBarButtonItem+WEPopover.h"
 
-#define FADE_DURATION 0.3
+#define DEFAULT_ANIMATION_DURATION 0.3
 
 @interface WEPopoverController()<WETouchableViewDelegate, WEPopoverContainerViewDelegate>
 
@@ -26,10 +26,13 @@
 - (void)determineContentSize;
 - (CGSize)effectivePopoverContentSize;
 - (void)removeView;
+- (WEPopoverContainerView *)containerView;
 - (void)repositionContainerViewForFrameChange;
+- (CGRect)collapsedFrameFromFrame:(CGRect)frame forArrowDirection:(UIPopoverArrowDirection)arrowDirection;
 
 @end
 
+#define ANIMATE(duration, animationBlock, completionBlock) [UIView animateWithDuration:self.animationDuration delay:0.0 options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionBeginFromCurrentState animations:animationBlock completion:completionBlock]
 
 @implementation WEPopoverController {
     BOOL _popoverVisible;
@@ -116,6 +119,8 @@ static BOOL OSVersionIsAtLeast(float version) {
 	if ((self = [super init])) {
         self.backgroundColor = [UIColor clearColor];
         self.popoverLayoutMargins = UIEdgeInsetsMake(0, 0, 0, 0);
+        self.animationType = WEPopoverAnimationTypeCrossFade;
+        self.animationDuration = DEFAULT_ANIMATION_DURATION;
 	}
 	return self;
 }
@@ -160,21 +165,7 @@ static BOOL OSVersionIsAtLeast(float version) {
             [_contentViewController viewDidAppear:YES];
         }
 	} else if ([animationID isEqual:@"FadeOut"]) {
-		_popoverVisible = NO;
-        
-        if ([self forwardAppearanceMethods]) {
-            [_contentViewController viewDidDisappear:YES];
-        }
-		[self removeView];
 		
-		BOOL userInitiatedDismissal = [(__bridge NSNumber *)theContext boolValue];
-		
-		if (userInitiatedDismissal) {
-			//Only send message to delegate in case the user initiated this event, which is if he touched outside the view
-            if ([_delegate respondsToSelector:@selector(popoverControllerDidDismissPopover:)]) {
-                [_delegate popoverControllerDidDismissPopover:self];
-            }
-		}
 	}
 }
 
@@ -239,31 +230,59 @@ static BOOL OSVersionIsAtLeast(float version) {
         [_contentViewController viewWillAppear:animated];
     }
 	[self.view becomeFirstResponder];
-	_popoverVisible = YES;
     _presentedFromRect = rect;
     _presentedFromView = theView;
     
-	if (animated) {
-		self.view.alpha = 0.0;
-        _backgroundView.alpha = 0.0;
+    void (^animationCompletionBlock)(BOOL finished) = ^(BOOL finished) {
+        self.view.userInteractionEnabled = YES;
+        _popoverVisible = YES;
         
-        [UIView animateWithDuration:FADE_DURATION
-                              delay:0.0
-                            options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionBeginFromCurrentState
-                         animations:^{
-                             
-                             self.view.alpha = 1.0;
-                             _backgroundView.alpha = 1.0;
-                             
-                         } completion:^(BOOL finished) {
-                             
-                             [self animationDidStop:@"FadeIn" finished:[NSNumber numberWithBool:finished] context:nil];
-                         }];
+        if ([self forwardAppearanceMethods]) {
+            [_contentViewController viewDidAppear:YES];
+        }
+    };
+    
+	if (animated) {
+		_backgroundView.alpha = 0.0;
+        
+        if (self.animationType == WEPopoverAnimationTypeCrossFade) {
+            self.view.alpha = 0.0;
+            self.containerView.arrowCollapsed = NO;
+            
+            ANIMATE(self.animationDuration, ^{
+                
+                self.view.alpha = 1.0;
+                _backgroundView.alpha = 1.0;
+                
+            }, animationCompletionBlock);
+            
+        } else if (self.animationType == WEPopoverAnimationTypeSlide) {
+            
+            CGRect finalFrame = self.view.frame;
+            
+            CGRect initialFrame = [self collapsedFrameFromFrame:finalFrame forArrowDirection:_popoverArrowDirection];
+            
+            self.view.frame = initialFrame;
+            self.view.alpha = 1.0;
+            self.containerView.arrowCollapsed = YES;
+            
+            ANIMATE(self.animationDuration, ^{
+                
+                self.view.frame = finalFrame;
+                _backgroundView.alpha = 1.0;
+                
+            }, ^(BOOL finished) {
+                
+                ANIMATE(self.animationDuration, ^{
+                    self.containerView.arrowCollapsed = NO;
+                }, animationCompletionBlock);
+                
+            });
+            
+        }
         
 	} else {
-        if ([self forwardAppearanceMethods]) {
-            [_contentViewController viewDidAppear:animated];
-        }
+        animationCompletionBlock(YES);
 	}
 }
 
@@ -293,7 +312,7 @@ static BOOL OSVersionIsAtLeast(float version) {
 	
     if (animated) {
         [UIView beginAnimations:nil context:nil];
-        [UIView setAnimationDuration:FADE_DURATION];
+        [UIView setAnimationDuration:self.animationDuration];
         [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
         [UIView setAnimationBeginsFromCurrentState:YES];
     }
@@ -356,6 +375,14 @@ static BOOL OSVersionIsAtLeast(float version) {
 
 @implementation WEPopoverController(Private)
 
+- (WEPopoverContainerView *)containerView {
+    if ([self.view isKindOfClass:[WEPopoverContainerView class]]) {
+        return (WEPopoverContainerView *)self.view;
+    } else {
+        return nil;
+    }
+}
+
 - (BOOL)isView:(UIView *)v1 inSameHierarchyAsView:(UIView *)v2 {
     BOOL inViewHierarchy = NO;
     while (v1 != nil) {
@@ -417,32 +444,67 @@ static BOOL OSVersionIsAtLeast(float version) {
         if ([self forwardAppearanceMethods]) {
             [_contentViewController viewWillDisappear:animated];
         }
-		_popoverVisible = NO;
 		[self.view resignFirstResponder];
-		if (animated) {
-			self.view.userInteractionEnabled = NO;
+        
+        void (^animationCompletionBlock)(BOOL finished) = ^(BOOL finished) {
+            _popoverVisible = NO;
             
-            [UIView animateWithDuration:FADE_DURATION
-                                  delay:0.0
-                                options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionBeginFromCurrentState
-                             animations:^{
-                                 
-                                 self.view.alpha = 0.0;
-                                 _backgroundView.alpha = 0.0f;
-                                 
-                             } completion:^(BOOL finished) {
-                                 
-                                 [self animationDidStop:@"FadeOut" finished:[NSNumber numberWithBool:finished] context:(__bridge void *)([NSNumber numberWithBool:userInitiated])];
-                             }];
-            
-            
-		} else {
             if ([self forwardAppearanceMethods]) {
-                [_contentViewController viewDidDisappear:animated];
+                [_contentViewController viewDidDisappear:YES];
             }
             [self removeView];
+            
+            if (userInitiated) {
+                //Only send message to delegate in case the user initiated this event, which is if he touched outside the view
+                if ([_delegate respondsToSelector:@selector(popoverControllerDidDismissPopover:)]) {
+                    [_delegate popoverControllerDidDismissPopover:self];
+                }
+            }
+        };
+        
+		if (animated) {
+            //To avoid repositions happening during frame change
+            self.containerView.delegate = nil;
+			self.view.userInteractionEnabled = NO;
+            
+            if (self.animationType == WEPopoverAnimationTypeCrossFade) {
+                
+                ANIMATE(self.animationDuration, ^{
+                    
+                    self.view.alpha = 0.0;
+                    _backgroundView.alpha = 0.0f;
+                    
+                }, animationCompletionBlock);
+                
+            } else if (self.animationType == WEPopoverAnimationTypeSlide) {
+                
+                CGRect collapsedFrame = [self collapsedFrameFromFrame:self.view.frame forArrowDirection:_popoverArrowDirection];
+                
+                ANIMATE(self.animationDuration, ^{
+                    
+                    [self.containerView setArrowCollapsed:YES];
+                    
+                }, ^(BOOL finished) {
+                    
+                    ANIMATE(self.animationDuration, ^{
+                        self.view.frame = collapsedFrame;
+                        _backgroundView.alpha = 0.0f;
+                    }, animationCompletionBlock);
+                    
+                });
+            }
+            
+		} else {
+            animationCompletionBlock(YES);
 		}
 	}
+}
+
+- (void)setAnimationType:(WEPopoverAnimationType)animationType {
+    if (animationType > WEPopoverAnimationTypeSlide) {
+        animationType = WEPopoverAnimationTypeCrossFade;
+    }
+    _animationType = animationType;
 }
 
 - (void)removeView {
@@ -504,6 +566,20 @@ static BOOL OSVersionIsAtLeast(float version) {
         containerView.frame = theRect;
         containerView.delegate = self;
     }
+}
+
+- (CGRect)collapsedFrameFromFrame:(CGRect)frame forArrowDirection:(UIPopoverArrowDirection)arrowDirection {
+    CGRect ret = frame;
+    if (arrowDirection == UIPopoverArrowDirectionUp) {
+        ret = CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, 0);
+    } else if (arrowDirection == UIPopoverArrowDirectionDown) {
+        ret = CGRectMake(frame.origin.x, frame.origin.y + frame.size.height, frame.size.width, 0);
+    } else if (arrowDirection == UIPopoverArrowDirectionLeft) {
+        ret = CGRectMake(frame.origin.x, frame.origin.y, 0, frame.size.height);
+    } else if (arrowDirection == UIPopoverArrowDirectionRight) {
+        ret = CGRectMake(frame.origin.x + frame.size.width, frame.origin.y, 0, frame.size.height);
+    }
+    return ret;
 }
 
 @end
