@@ -29,7 +29,6 @@
 - (WEPopoverContainerView *)containerView;
 - (void)repositionContainerViewForFrameChange;
 - (CGRect)collapsedFrameFromFrame:(CGRect)frame forArrowDirection:(UIPopoverArrowDirection)arrowDirection;
-- (CGRect)backgroundRectForParentView:(UIView *)parentView;
 
 @end
 
@@ -224,11 +223,11 @@ static BOOL OSVersionIsAtLeast(float version) {
     
     UIView *keyView = [self keyViewForView:theView];
     
-    _backgroundView = [[WETouchableView alloc] initWithFrame:[self backgroundRectForParentView:keyView]];
+    _backgroundView = [[WETouchableView alloc] initWithFrame:keyView.bounds];
     _backgroundView.contentMode = UIViewContentModeScaleToFill;
     _backgroundView.autoresizingMask = ( UIViewAutoresizingFlexibleWidth |
                                         UIViewAutoresizingFlexibleHeight);
-    _backgroundView.backgroundColor = self.backgroundColor;
+    _backgroundView.fillColor = self.backgroundColor;
     _backgroundView.delegate = self;
     
     [keyView addSubview:_backgroundView];
@@ -238,10 +237,10 @@ static BOOL OSVersionIsAtLeast(float version) {
     containerView.delegate = self;
     _popoverArrowDirection = containerView.arrowDirection;
     
-    containerView.frame = [theView convertRect:containerView.calculatedFrame toView:keyView];
+    containerView.frame = [theView convertRect:containerView.calculatedFrame toView:_backgroundView];
     containerView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
     
-    [keyView addSubview:containerView];
+    [_backgroundView addSubview:containerView];
     
     containerView.contentView = _contentViewController.view;
     
@@ -400,6 +399,14 @@ static BOOL OSVersionIsAtLeast(float version) {
 			[self dismissPopoverAnimated:YES userInitiated:YES completion:nil];
 		}
 	}
+}
+
+- (CGRect)fillRectForView:(WETouchableView *)view {
+    CGRect rect = view.bounds;
+    if ([self.delegate respondsToSelector:@selector(backgroundAreaForPopoverController:relativeToView:)]) {
+        rect = [self.delegate backgroundAreaForPopoverController:self relativeToView:view];
+    }
+    return rect;
 }
 
 - (BOOL)isPopoverVisible {
@@ -635,14 +642,6 @@ static BOOL OSVersionIsAtLeast(float version) {
         ret = CGRectMake(frame.origin.x, frame.origin.y, 0, frame.size.height);
     } else if (arrowDirection == UIPopoverArrowDirectionRight) {
         ret = CGRectMake(frame.origin.x + frame.size.width, frame.origin.y, 0, frame.size.height);
-    }
-    return ret;
-}
-
-- (CGRect)backgroundRectForParentView:(UIView *)parentView {
-    CGRect ret = parentView.bounds;
-    if ([self.delegate respondsToSelector:@selector(backgroundAreaForPopoverController:relativeToView:)]) {
-        ret = [self.delegate backgroundAreaForPopoverController:self relativeToView:parentView];
     }
     return ret;
 }

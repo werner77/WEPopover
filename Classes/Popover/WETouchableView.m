@@ -28,6 +28,17 @@
     return self;
 }
 
+- (void)drawRect:(CGRect)rect {
+    if (self.fillColor) {
+        CGRect fillRect = self.bounds;
+        if ([self.delegate respondsToSelector:@selector(fillRectForView:)]) {
+            fillRect = [self.delegate fillRectForView:self];
+        }
+        [self.fillColor setFill];
+        UIRectFill(fillRect);
+    }
+}
+
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
 	if (_testHits) {
 		return nil;
