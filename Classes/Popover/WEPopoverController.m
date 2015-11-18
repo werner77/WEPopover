@@ -142,10 +142,6 @@ static BOOL OSVersionIsAtLeast(float version) {
 	}
 }
 
-- (BOOL)forwardAppearanceMethods {
-    return ![_contentViewController respondsToSelector:@selector(automaticallyForwardAppearanceAndRotationMethodsToChildViewControllers)];
-}
-
 //Overridden setter to copy the passthroughViews to the background view if it exists already
 - (void)setPassthroughViews:(NSArray *)array {
 	_passthroughViews = nil;
@@ -247,9 +243,6 @@ static BOOL OSVersionIsAtLeast(float version) {
     self.view = containerView;
     [self updateBackgroundPassthroughViews];
     
-    if ([self forwardAppearanceMethods]) {
-        [_contentViewController viewWillAppear:animated];
-    }
     [self.view becomeFirstResponder];
     _presentedFromRect = rect;
     _presentedFromView = theView;
@@ -257,11 +250,6 @@ static BOOL OSVersionIsAtLeast(float version) {
     void (^animationCompletionBlock)(BOOL finished) = ^(BOOL finished) {
         self.view.userInteractionEnabled = YES;
         _popoverVisible = YES;
-        
-        if ([self forwardAppearanceMethods]) {
-            [_contentViewController viewDidAppear:YES];
-        }
-        
         if (completion) {
             completion();
         }
@@ -326,14 +314,8 @@ static BOOL OSVersionIsAtLeast(float version) {
         _presentedFromView = nil;
         
         UIView *newContentView = [_contentViewController view];
-        
-        BOOL shouldAnimateContentView = (newContentView != self.containerView.contentView);
-        
-        if (shouldAnimateContentView) {
-            newContentView.alpha = 0.0f;
-            newContentView.frame = self.containerView.contentView.frame;
-            //newContentView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-            [self.containerView addSubview:newContentView];
+        if (newContentView != self.containerView.contentView) {
+            self.containerView.contentView = newContentView;
         }
         
         [self determineContentSize];
@@ -341,7 +323,6 @@ static BOOL OSVersionIsAtLeast(float version) {
         CGRect displayArea = [self displayAreaForView:theView];
         WEPopoverContainerView *containerView = (WEPopoverContainerView *)self.view;
         
-        WEPopoverController *__weak weakSelf = self;
         void (^animationBlock)(void) = ^(void) {
             [containerView updatePositionWithSize:self.effectivePopoverContentSize
                                        anchorRect:rect
@@ -351,19 +332,9 @@ static BOOL OSVersionIsAtLeast(float version) {
             containerView.frame = [theView convertRect:containerView.calculatedFrame toView:_backgroundView];
             _presentedFromView = theView;
             _presentedFromRect = rect;
-            
-            if (shouldAnimateContentView) {
-                weakSelf.containerView.contentView.alpha = 0.0f;
-                newContentView.alpha = 1.0f;
-            }
         };
         
         void (^animationCompletionBlock)(BOOL finished) = ^(BOOL finished) {
-            if (shouldAnimateContentView) {
-                [newContentView removeFromSuperview];
-                weakSelf.containerView.contentView = newContentView;
-                weakSelf.containerView.contentView.alpha = 1.0;
-            }
             if (completion) {
                 completion();
             }
@@ -495,17 +466,11 @@ static BOOL OSVersionIsAtLeast(float version) {
 
 - (void)dismissPopoverAnimated:(BOOL)animated userInitiated:(BOOL)userInitiated completion:(WEPopoverCompletionBlock)completion {
 	if (self.view) {
-        if ([self forwardAppearanceMethods]) {
-            [_contentViewController viewWillDisappear:animated];
-        }
 		[self.view resignFirstResponder];
         
         void (^animationCompletionBlock)(BOOL finished) = ^(BOOL finished) {
             _popoverVisible = NO;
             
-            if ([self forwardAppearanceMethods]) {
-                [_contentViewController viewDidDisappear:YES];
-            }
             [self removeView];
             
             if (userInitiated) {
