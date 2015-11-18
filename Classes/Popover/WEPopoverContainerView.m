@@ -95,12 +95,13 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
         
         self.clipsToBounds = YES;
         self.userInteractionEnabled = YES;
-        [self initFrame];
         
         self.arrowImageView = [[UIImageView alloc] init];
         self.arrowImageView.hidden = YES;
         self.arrowImageView.contentMode = UIViewContentModeCenter;
         [self addSubview:self.arrowImageView];
+        
+        [self initFrame];
     }
     return self;
 }
@@ -150,7 +151,6 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
 
 - (void)drawRect:(CGRect)rect {
     [_bgImage drawInRect:_bgRect blendMode:kCGBlendModeNormal alpha:1.0];
-    //[_arrowImage drawInRect:[self arrowRect] blendMode:kCGBlendModeNormal alpha:1.0];
     
     BOOL shouldClip = _properties.maskCornerRadius > 0.0f || !CGSizeEqualToSize(_properties.maskInsets, CGSizeZero);
     if (shouldClip) {
