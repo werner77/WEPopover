@@ -30,6 +30,8 @@ typedef NS_ENUM(NSUInteger, WEPopoverAnimationType) {
     WEPopoverAnimationTypeSlide = 1
 };
 
+typedef void(^WEPopoverCompletionBlock)(void);
+
 /**
  * Popover controller for the iPhone, mimicing the iPad UIPopoverController interface. See that class for more details.
  */
@@ -88,5 +90,25 @@ typedef NS_ENUM(NSUInteger, WEPopoverAnimationType) {
 						   inView:(UIView *)view
 		 permittedArrowDirections:(UIPopoverArrowDirection)arrowDirections
                          animated:(BOOL)animated;
+
+
+- (void)dismissPopoverAnimated:(BOOL)animated completion:(WEPopoverCompletionBlock)completion;
+
+- (void)presentPopoverFromBarButtonItem:(UIBarButtonItem *)item
+               permittedArrowDirections:(UIPopoverArrowDirection)arrowDirections
+                               animated:(BOOL)animated
+                             completion:(WEPopoverCompletionBlock)completion;;
+
+- (void)presentPopoverFromRect:(CGRect)rect
+                        inView:(UIView *)view
+      permittedArrowDirections:(UIPopoverArrowDirection)arrowDirections
+                      animated:(BOOL)animated
+                    completion:(WEPopoverCompletionBlock)completion;;
+
+- (void)repositionPopoverFromRect:(CGRect)rect
+                           inView:(UIView *)view
+         permittedArrowDirections:(UIPopoverArrowDirection)arrowDirections
+                         animated:(BOOL)animated
+                       completion:(WEPopoverCompletionBlock)completion;;
 
 @end
