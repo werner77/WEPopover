@@ -580,16 +580,22 @@ static BOOL OSVersionIsAtLeast(float version) {
     
 	CGRect displayArea = CGRectZero;
     
+    UIEdgeInsets insets = self.popoverLayoutMargins;
+    
     if ([self.delegate respondsToSelector:@selector(displayAreayForPoverController:relativeToView:)]) {
         displayArea = [self.delegate displayAreayForPoverController:self relativeToView:keyView];
         displayArea = [keyView convertRect:displayArea fromView:keyView];
     } else if ([theView conformsToProtocol:@protocol(WEPopoverParentView)] && [theView respondsToSelector:@selector(displayAreaForPopover)]) {
 		displayArea = [(id <WEPopoverParentView>)theView displayAreaForPopover];
 	} else {
-		displayArea = [keyView convertRect:keyView.bounds toView:theView];
+        displayArea = [keyView convertRect:keyView.bounds toView:theView];
+        
+        if (self.parentView == nil) {
+            //Add status bar height
+            insets.top += 20.0f;
+        }
 	}
     
-    UIEdgeInsets insets = self.popoverLayoutMargins;
     displayArea = UIEdgeInsetsInsetRect(displayArea, insets);
 	return displayArea;
 }
