@@ -21,7 +21,11 @@
 - (void)popoverController:(WEPopoverController *)popoverController willRepositionPopoverToRect:(inout CGRect *)rect inView:(inout UIView **)view;
 
 //If implemented restricts the popover to the specified area within the specified parentView (by default the parent view is the top most UIView in the view hierarchy).
-- (CGRect)displayAreayForPoverController:(WEPopoverController *)popoverController relativeToView:(UIView *)parentView;
+//The popoverLayoutMargins are applied on top of this display area
+- (CGRect)displayAreaForPopoverController:(WEPopoverController *)popoverController relativeToView:(UIView *)parentView;
+
+//If implemented restricts the area that is tinted with the background color. Defaults to the whole parentview.
+- (CGRect)backgroundAreaForPopoverController:(WEPopoverController *)popoverController relativeToView:(UIView *)parentView;
 
 @end
 
