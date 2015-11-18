@@ -222,6 +222,7 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
 
 - (void)setContentView:(UIView *)v {
     if (v != _contentView) {
+        [_contentView removeFromSuperview];
         _contentView = v;
         _contentView.frame = self.contentRect;
         [self addSubview:_contentView];
