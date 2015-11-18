@@ -14,14 +14,8 @@
  */
 @interface WEPopoverContainerViewProperties : NSObject
 
-@property(nonatomic, assign) CGFloat leftBgMargin;
-@property(nonatomic, assign) CGFloat rightBgMargin;
-@property(nonatomic, assign) CGFloat topBgMargin;
-@property(nonatomic, assign) CGFloat bottomBgMargin;
-@property(nonatomic, assign) CGFloat leftContentMargin;
-@property(nonatomic, assign) CGFloat rightContentMargin;
-@property(nonatomic, assign) CGFloat topContentMargin;
-@property(nonatomic, assign) CGFloat bottomContentMargin;
+@property(nonatomic, assign) UIEdgeInsets backgroundMargins;
+@property(nonatomic, assign) UIEdgeInsets contentMargins;
 @property(nonatomic, assign) NSInteger topBgCapSize;
 @property(nonatomic, assign) NSInteger leftBgCapSize;
 @property(nonatomic, assign) CGFloat arrowMargin;
@@ -29,7 +23,7 @@
 @property(nonatomic, strong) UIColor *maskBorderColor;
 @property(nonatomic, assign) CGFloat maskBorderWidth;
 @property(nonatomic, assign) CGFloat maskCornerRadius;
-@property(nonatomic, assign) CGSize maskInsets;
+@property(nonatomic, strong) UIColor *backgroundColor;
 
 @property(nonatomic, strong) UIImage *upArrowImage;
 @property(nonatomic, strong) UIImage *downArrowImage;

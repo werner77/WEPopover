@@ -9,6 +9,12 @@
 #import "WETouchableView.h"
 #import "WEBlockingGestureRecognizer.h"
 
+@interface WETouchableView()
+
+@property (nonatomic, strong) UIView *fillView;
+
+@end
+
 @interface WETouchableView(Private)
 
 - (BOOL)isPassthroughView:(UIView *)v;
@@ -25,19 +31,26 @@
         WEBlockingGestureRecognizer *gr = [[WEBlockingGestureRecognizer alloc] init];
         [self addGestureRecognizer:gr];
         self.backgroundColor = [UIColor clearColor];
+
+		self.fillView = [[UIView alloc] init];
+		self.fillView.backgroundColor = [UIColor clearColor];
+		[self addSubview:self.fillView];
     }
     return self;
 }
 
-- (void)drawRect:(CGRect)rect {
-    if (self.fillColor) {
-        CGRect fillRect = self.bounds;
-        if ([self.delegate respondsToSelector:@selector(fillRectForView:)]) {
-            fillRect = [self.delegate fillRectForView:self];
-        }
-        [self.fillColor setFill];
-        UIRectFill(fillRect);
-    }
+- (void)setFillColor:(UIColor *)fillColor {
+	self.fillView.backgroundColor = fillColor;
+}
+
+- (void)layoutSubviews {
+	[super layoutSubviews];
+
+	CGRect fillRect = self.bounds;
+	if ([self.delegate respondsToSelector:@selector(fillRectForView:)]) {
+		fillRect = [self.delegate fillRectForView:self];
+	}
+	self.fillView.frame = fillRect;
 }
 
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
@@ -48,7 +61,7 @@
 	} else {
 		UIView *hitView = [super hitTest:point withEvent:event];
 		
-		if (hitView == self) {
+		if (hitView == self || hitView == self.fillView) {
 			//Test whether any of the passthrough views would handle this touch
 			_testHits = YES;
 			UIView *superHitView = [self.superview hitTest:point withEvent:event];

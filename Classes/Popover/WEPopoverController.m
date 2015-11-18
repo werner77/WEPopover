@@ -11,6 +11,7 @@
 #import "UIBarButtonItem+WEPopover.h"
 
 #define DEFAULT_ANIMATION_DURATION 0.3
+#define SLIDE_ANIMATION_DURATION_RATIO 0.7 //first vs second part of animation
 
 @interface WEPopoverController()<WETouchableViewDelegate, WEPopoverContainerViewDelegate>
 
@@ -32,7 +33,7 @@
 
 @end
 
-#define ANIMATE(duration, animationBlock, completionBlock) [UIView animateWithDuration:self.animationDuration delay:0.0 options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionBeginFromCurrentState animations:animationBlock completion:completionBlock]
+#define ANIMATE(duration, animationBlock, completionBlock) [UIView animateWithDuration:duration delay:0.0 options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionBeginFromCurrentState animations:animationBlock completion:completionBlock]
 
 @implementation WEPopoverController {
     BOOL _popoverVisible;
@@ -98,18 +99,14 @@ static BOOL OSVersionIsAtLeast(float version) {
             props.rightArrowImageName = @"popoverArrowRight.png";
         }
         
-        props.leftBgMargin = bgMargin;
-        props.rightBgMargin = bgMargin;
-        props.topBgMargin = bgMargin;
-        props.bottomBgMargin = bgMargin;
+        props.backgroundMargins = UIEdgeInsetsMake(bgMargin, bgMargin, bgMargin, bgMargin);
+
         props.leftBgCapSize = bgCapSize;
         props.topBgCapSize = bgCapSize;
         props.bgImageName = bgImageName;
-        props.leftContentMargin = contentMargin;
-        props.rightContentMargin = contentMargin - 1; // Need to shift one pixel for border to look correct
-        props.topContentMargin = contentMargin;
-        props.bottomContentMargin = contentMargin;
-        
+
+        props.contentMargins = UIEdgeInsetsMake(contentMargin, contentMargin, contentMargin, contentMargin - 1);
+
         return props;
     }
 }
@@ -118,7 +115,7 @@ static BOOL OSVersionIsAtLeast(float version) {
 - (id)init {
 	if ((self = [super init])) {
         self.backgroundColor = [UIColor clearColor];
-        self.popoverLayoutMargins = UIEdgeInsetsMake(0, 0, 0, 0);
+        self.popoverLayoutMargins = UIEdgeInsetsMake(10, 10, 10, 10);
         self.animationType = WEPopoverAnimationTypeCrossFade;
         self.animationDuration = DEFAULT_ANIMATION_DURATION;
 	}
@@ -244,11 +241,11 @@ static BOOL OSVersionIsAtLeast(float version) {
     [self updateBackgroundPassthroughViews];
     
     [self.view becomeFirstResponder];
-    _presentedFromRect = rect;
-    _presentedFromView = theView;
-    
+
     void (^animationCompletionBlock)(BOOL finished) = ^(BOOL finished) {
         self.view.userInteractionEnabled = YES;
+        _presentedFromRect = rect;
+        _presentedFromView = theView;
         _popoverVisible = YES;
         if (completion) {
             completion();
@@ -279,14 +276,17 @@ static BOOL OSVersionIsAtLeast(float version) {
             self.view.alpha = 1.0;
             self.containerView.arrowCollapsed = YES;
             
-            ANIMATE(self.animationDuration, ^{
+            NSTimeInterval firstAnimationDuration = SLIDE_ANIMATION_DURATION_RATIO * self.animationDuration;
+            NSTimeInterval secondAnimationDuration = self.animationDuration - firstAnimationDuration;
+            
+            ANIMATE(firstAnimationDuration, ^{
                 
                 self.view.frame = finalFrame;
                 _backgroundView.alpha = 1.0;
                 
             }, ^(BOOL finished) {
                 
-                ANIMATE(self.animationDuration, ^{
+                ANIMATE(secondAnimationDuration, ^{
                     self.containerView.arrowCollapsed = NO;
                 }, animationCompletionBlock);
                 
@@ -355,6 +355,7 @@ static BOOL OSVersionIsAtLeast(float version) {
 - (CGRect)popoverContainerView:(WEPopoverContainerView *)containerView willChangeFrame:(CGRect)newFrame {
     CGRect rect = newFrame;
     if (_presentedFromView != nil) {
+        rect = containerView.frame;
         //Call async because all views will need their frames to be adjusted before we can recalculate
         [self performSelector:@selector(repositionContainerViewForFrameChange) withObject:nil afterDelay:0];
     }
@@ -503,13 +504,16 @@ static BOOL OSVersionIsAtLeast(float version) {
                 
                 CGRect collapsedFrame = [self collapsedFrameFromFrame:self.view.frame forArrowDirection:_popoverArrowDirection];
                 
-                ANIMATE(self.animationDuration, ^{
+                NSTimeInterval firstAnimationDuration = SLIDE_ANIMATION_DURATION_RATIO * self.animationDuration;
+                NSTimeInterval secondAnimationDuration = self.animationDuration - firstAnimationDuration;
+                
+                ANIMATE(firstAnimationDuration, ^{
                     
                     [self.containerView setArrowCollapsed:YES];
                     
                 }, ^(BOOL finished) {
                     
-                    ANIMATE(self.animationDuration, ^{
+                    ANIMATE(secondAnimationDuration, ^{
                         self.view.frame = collapsedFrame;
                         _backgroundView.alpha = 0.0f;
                     }, animationCompletionBlock);
@@ -543,13 +547,14 @@ static BOOL OSVersionIsAtLeast(float version) {
 - (CGRect)displayAreaForView:(UIView *)theView {
     
     UIView *keyView = [self keyViewForView:theView];
-    BOOL inViewHierarchy = (theView.window == keyView.window);
+
+    BOOL inViewHierarchy = [self isView:theView inSameHierarchyAsView:keyView];
     
     if (!inViewHierarchy) {
         NSException *ex = [NSException exceptionWithName:@"WEInvalidViewHierarchyException" reason:@"The supplied view to present the popover from is not in the same view hierarchy as the parent view for the popover" userInfo:nil];
         @throw ex;
     }
-    
+
 	CGRect displayArea = CGRectZero;
     
     UIEdgeInsets insets = self.popoverLayoutMargins;
@@ -574,26 +579,31 @@ static BOOL OSVersionIsAtLeast(float version) {
 
 - (void)repositionContainerViewForFrameChange {
     if (_presentedFromView != nil) {
-        CGRect displayArea = [self displayAreaForView:_presentedFromView];
-        WEPopoverContainerView *containerView = self.containerView;
-        
-        containerView.delegate = nil;
-        
-        [containerView updatePositionWithSize:self.effectivePopoverContentSize
-                                   anchorRect:_presentedFromRect
-                                  displayArea:displayArea
-                     permittedArrowDirections:_popoverArrowDirection];
-        
-        UIView *theView = _backgroundView;
-        CGRect theRect = [_presentedFromView convertRect:containerView.calculatedFrame toView:theView];
-        
-        if ([self.delegate respondsToSelector:@selector(popoverController:willRepositionPopoverToRect:inView:)]) {
-            [self.delegate popoverController:self willRepositionPopoverToRect:&theRect inView:&theView];
-            theRect = [theView convertRect:theRect toView:_backgroundView];
+        @try {
+            CGRect displayArea = [self displayAreaForView:_presentedFromView];
+            WEPopoverContainerView *containerView = self.containerView;
+
+            containerView.delegate = nil;
+
+            [containerView updatePositionWithSize:self.effectivePopoverContentSize
+                                       anchorRect:_presentedFromRect
+                                      displayArea:displayArea
+                         permittedArrowDirections:_popoverArrowDirection];
+
+            UIView *theView = _backgroundView;
+            CGRect theRect = [_presentedFromView convertRect:containerView.calculatedFrame toView:theView];
+
+            if ([self.delegate respondsToSelector:@selector(popoverController:willRepositionPopoverToRect:inView:)]) {
+                [self.delegate popoverController:self willRepositionPopoverToRect:&theRect inView:&theView];
+                theRect = [theView convertRect:theRect toView:_backgroundView];
+            }
+
+            containerView.frame = theRect;
+            containerView.delegate = self;
         }
-        
-        containerView.frame = theRect;
-        containerView.delegate = self;
+        @catch (NSException *exception) {
+            //Ignore: cannot reposition popover
+        }
     }
 }
 
@@ -612,3 +622,4 @@ static BOOL OSVersionIsAtLeast(float version) {
 }
 
 @end
+
