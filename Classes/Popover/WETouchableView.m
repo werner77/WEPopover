@@ -24,6 +24,7 @@
     if ((self = [super initWithFrame:frame])) {
         WEBlockingGestureRecognizer *gr = [[WEBlockingGestureRecognizer alloc] init];
         [self addGestureRecognizer:gr];
+        self.backgroundColor = [UIColor clearColor];
     }
     return self;
 }
