@@ -497,8 +497,8 @@ static BOOL OSVersionIsAtLeast(float version) {
                 
                 CGRect collapsedFrame = [self collapsedFrameFromFrame:self.view.frame forArrowDirection:_popoverArrowDirection];
                 
-                NSTimeInterval firstAnimationDuration = self.primaryAnimationDuration;
-                NSTimeInterval secondAnimationDuration = self.secundaryAnimationDuration;
+                NSTimeInterval firstAnimationDuration = self.secundaryAnimationDuration;
+                NSTimeInterval secondAnimationDuration = self.primaryAnimationDuration;
                 
                 ANIMATE(firstAnimationDuration, ^{
                     
