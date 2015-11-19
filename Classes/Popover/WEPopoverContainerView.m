@@ -9,41 +9,6 @@
 #import "WEPopoverContainerView.h"
 #import <QuartzCore/QuartzCore.h>
 
-@implementation WEPopoverContainerViewProperties {
-    
-}
-
-#define IMAGE_FOR_NAME(arrowImage, arrowImageName)	((arrowImage != nil) ? (arrowImage) : (arrowImageName == nil ? nil : [UIImage imageNamed:arrowImageName]))
-
-- (id)init {
-    if ((self = [super init])) {
-    }
-    return self;
-}
-
-- (UIImage *)upArrowImage {
-    return IMAGE_FOR_NAME(_upArrowImage, _upArrowImageName);
-}
-
-- (UIImage *)downArrowImage {
-    return IMAGE_FOR_NAME(_downArrowImage, _downArrowImageName);
-}
-
-- (UIImage *)leftArrowImage {
-    return IMAGE_FOR_NAME(_leftArrowImage, _leftArrowImageName);
-}
-
-- (UIImage *)rightArrowImage {
-    return IMAGE_FOR_NAME(_rightArrowImage, _rightArrowImageName);
-}
-
-- (UIImage *)bgImage {
-    return IMAGE_FOR_NAME(_bgImage, _bgImageName);
-}
-
-
-@end
-
 @interface WEPopoverContainerView()
 
 @property (nonatomic, strong) UIImageView *arrowImageView;

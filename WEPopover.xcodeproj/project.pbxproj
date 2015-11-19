@@ -38,6 +38,7 @@
 		7463500113729C6F000EF936 /* WETouchableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7463500013729C6F000EF936 /* WETouchableView.m */; };
 		7467073219CB18EA00E79E02 /* WEBlockingGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 7467073119CB18EA00E79E02 /* WEBlockingGestureRecognizer.m */; };
 		746B0A1D137454A000C5A8B5 /* UIBarButtonItem+WEPopover.m in Sources */ = {isa = PBXBuildFile; fileRef = 746B0A1C137454A000C5A8B5 /* UIBarButtonItem+WEPopover.m */; };
+		748BB2001BFDA42E0075CDAD /* WEPopoverContainerViewProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 748BB1FF1BFDA42E0075CDAD /* WEPopoverContainerViewProperties.m */; };
 		7496C86112D363AC00F93229 /* WEPopoverTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7496C86012D363AC00F93229 /* WEPopoverTableViewController.m */; };
 		749FAE861286130000AB97F9 /* WEPopoverContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 749FAE801286130000AB97F9 /* WEPopoverContainerView.m */; };
 		749FAE871286130000AB97F9 /* WEPopoverContentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 749FAE821286130000AB97F9 /* WEPopoverContentViewController.m */; };
@@ -84,6 +85,8 @@
 		7467073119CB18EA00E79E02 /* WEBlockingGestureRecognizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WEBlockingGestureRecognizer.m; sourceTree = "<group>"; };
 		746B0A1B137454A000C5A8B5 /* UIBarButtonItem+WEPopover.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIBarButtonItem+WEPopover.h"; sourceTree = "<group>"; };
 		746B0A1C137454A000C5A8B5 /* UIBarButtonItem+WEPopover.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIBarButtonItem+WEPopover.m"; sourceTree = "<group>"; };
+		748BB1FE1BFDA42E0075CDAD /* WEPopoverContainerViewProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WEPopoverContainerViewProperties.h; sourceTree = "<group>"; };
+		748BB1FF1BFDA42E0075CDAD /* WEPopoverContainerViewProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WEPopoverContainerViewProperties.m; sourceTree = "<group>"; };
 		7496C85F12D363AC00F93229 /* WEPopoverTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WEPopoverTableViewController.h; sourceTree = "<group>"; };
 		7496C86012D363AC00F93229 /* WEPopoverTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WEPopoverTableViewController.m; sourceTree = "<group>"; };
 		749FAE7F1286130000AB97F9 /* WEPopoverContainerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WEPopoverContainerView.h; sourceTree = "<group>"; };
@@ -223,17 +226,19 @@
 		749FAE6F1286123500AB97F9 /* Popover */ = {
 			isa = PBXGroup;
 			children = (
-				74634FFF13729C6F000EF936 /* WETouchableView.h */,
-				7463500013729C6F000EF936 /* WETouchableView.m */,
-				749FAE7F1286130000AB97F9 /* WEPopoverContainerView.h */,
-				749FAE801286130000AB97F9 /* WEPopoverContainerView.m */,
-				749FAE831286130000AB97F9 /* WEPopoverController.h */,
-				749FAE841286130000AB97F9 /* WEPopoverController.m */,
-				749FAE851286130000AB97F9 /* WEPopoverParentView.h */,
 				746B0A1B137454A000C5A8B5 /* UIBarButtonItem+WEPopover.h */,
 				746B0A1C137454A000C5A8B5 /* UIBarButtonItem+WEPopover.m */,
 				7467073019CB18EA00E79E02 /* WEBlockingGestureRecognizer.h */,
 				7467073119CB18EA00E79E02 /* WEBlockingGestureRecognizer.m */,
+				749FAE7F1286130000AB97F9 /* WEPopoverContainerView.h */,
+				749FAE801286130000AB97F9 /* WEPopoverContainerView.m */,
+				748BB1FE1BFDA42E0075CDAD /* WEPopoverContainerViewProperties.h */,
+				748BB1FF1BFDA42E0075CDAD /* WEPopoverContainerViewProperties.m */,
+				749FAE831286130000AB97F9 /* WEPopoverController.h */,
+				749FAE841286130000AB97F9 /* WEPopoverController.m */,
+				749FAE851286130000AB97F9 /* WEPopoverParentView.h */,
+				74634FFF13729C6F000EF936 /* WETouchableView.h */,
+				7463500013729C6F000EF936 /* WETouchableView.m */,
 			);
 			path = Popover;
 			sourceTree = "<group>";
@@ -340,6 +345,7 @@
 				749FAE871286130000AB97F9 /* WEPopoverContentViewController.m in Sources */,
 				749FAE881286130000AB97F9 /* WEPopoverController.m in Sources */,
 				7496C86112D363AC00F93229 /* WEPopoverTableViewController.m in Sources */,
+				748BB2001BFDA42E0075CDAD /* WEPopoverContainerViewProperties.m in Sources */,
 				7463500113729C6F000EF936 /* WETouchableView.m in Sources */,
 				746B0A1D137454A000C5A8B5 /* UIBarButtonItem+WEPopover.m in Sources */,
 			);

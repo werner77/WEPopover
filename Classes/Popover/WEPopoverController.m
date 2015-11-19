@@ -9,11 +9,15 @@
 #import "WEPopoverController.h"
 #import "WEPopoverParentView.h"
 #import "UIBarButtonItem+WEPopover.h"
+#import "WEPopoverContainerView.h"
 
-#define DEFAULT_ANIMATION_DURATION 0.3
-#define SLIDE_ANIMATION_DURATION_RATIO 0.7 //first vs second part of animation
+static const NSTimeInterval kDefaultPrimaryAnimationDuration = 0.3;
+static const NSTimeInterval kDefaultSecundaryAnimationDuration = 0.15;
 
 @interface WEPopoverController()<WETouchableViewDelegate, WEPopoverContainerViewDelegate>
+
+@property (nonatomic, strong) UIView *view;
+@property (nonatomic, strong) UIView *backgroundView;
 
 @end
 
@@ -21,7 +25,6 @@
 
 - (UIView *)keyViewForView:(UIView *)theView;
 - (void)updateBackgroundPassthroughViews;
-- (void)setView:(UIView *)v;
 - (CGRect)displayAreaForView:(UIView *)theView;
 - (void)dismissPopoverAnimated:(BOOL)animated userInitiated:(BOOL)userInitiated completion:(WEPopoverCompletionBlock)completion;
 - (void)determineContentSize;
@@ -117,7 +120,8 @@ static BOOL OSVersionIsAtLeast(float version) {
         self.backgroundColor = [UIColor clearColor];
         self.popoverLayoutMargins = UIEdgeInsetsMake(10, 10, 10, 10);
         self.animationType = WEPopoverAnimationTypeCrossFade;
-        self.animationDuration = DEFAULT_ANIMATION_DURATION;
+        self.primaryAnimationDuration = kDefaultPrimaryAnimationDuration;
+        self.secundaryAnimationDuration = kDefaultSecundaryAnimationDuration;
 	}
 	return self;
 }
@@ -137,6 +141,11 @@ static BOOL OSVersionIsAtLeast(float version) {
 	if (vc != _contentViewController) {
 		_contentViewController = vc;
 	}
+}
+
+- (void)repositionForContentViewController:(UIViewController *)vc animated:(BOOL)animated {
+    [self setContentViewController:vc];
+    [self repositionPopoverFromRect:_presentedFromRect inView:_presentedFromView permittedArrowDirections:_popoverArrowDirection animated:animated];
 }
 
 //Overridden setter to copy the passthroughViews to the background view if it exists already
@@ -195,7 +204,7 @@ static BOOL OSVersionIsAtLeast(float version) {
                              completion:(WEPopoverCompletionBlock)completion {
     
     UIView *v = [self keyViewForView:nil];
-    CGRect rect = [item frameInView:v];
+    CGRect rect = [item weFrameInView:v];
     return [self presentPopoverFromRect:rect inView:v permittedArrowDirections:arrowDirections animated:animated completion:completion];
 }
 
@@ -255,18 +264,7 @@ static BOOL OSVersionIsAtLeast(float version) {
     if (animated) {
         _backgroundView.alpha = 0.0;
         
-        if (self.animationType == WEPopoverAnimationTypeCrossFade) {
-            self.view.alpha = 0.0;
-            self.containerView.arrowCollapsed = NO;
-            
-            ANIMATE(self.animationDuration, ^{
-                
-                self.view.alpha = 1.0;
-                _backgroundView.alpha = 1.0;
-                
-            }, animationCompletionBlock);
-            
-        } else if (self.animationType == WEPopoverAnimationTypeSlide) {
+        if (self.animationType == WEPopoverAnimationTypeSlide) {
             
             CGRect finalFrame = self.view.frame;
             
@@ -276,8 +274,8 @@ static BOOL OSVersionIsAtLeast(float version) {
             self.view.alpha = 1.0;
             self.containerView.arrowCollapsed = YES;
             
-            NSTimeInterval firstAnimationDuration = SLIDE_ANIMATION_DURATION_RATIO * self.animationDuration;
-            NSTimeInterval secondAnimationDuration = self.animationDuration - firstAnimationDuration;
+            NSTimeInterval firstAnimationDuration = self.primaryAnimationDuration;
+            NSTimeInterval secondAnimationDuration = self.secundaryAnimationDuration;
             
             ANIMATE(firstAnimationDuration, ^{
                 
@@ -292,6 +290,16 @@ static BOOL OSVersionIsAtLeast(float version) {
                 
             });
             
+        } else {
+            self.view.alpha = 0.0;
+            self.containerView.arrowCollapsed = NO;
+            
+            ANIMATE(self.primaryAnimationDuration, ^{
+                
+                self.view.alpha = 1.0;
+                _backgroundView.alpha = 1.0;
+                
+            }, animationCompletionBlock);
         }
         
     } else {
@@ -341,7 +349,7 @@ static BOOL OSVersionIsAtLeast(float version) {
         };
         
         if (animated) {
-            ANIMATE(self.animationDuration, animationBlock, animationCompletionBlock);
+            ANIMATE(self.primaryAnimationDuration, animationBlock, animationCompletionBlock);
         } else {
             animationBlock();
             animationCompletionBlock(YES);
@@ -439,12 +447,6 @@ static BOOL OSVersionIsAtLeast(float version) {
     }
 }
 
-- (void)setView:(UIView *)v {
-	if (_view != v) {
-		_view = v;
-	}
-}
-
 - (void)updateBackgroundPassthroughViews {
 	_backgroundView.passthroughViews = _passthroughViews;
 }
@@ -491,21 +493,12 @@ static BOOL OSVersionIsAtLeast(float version) {
 		if (animated) {
 			self.view.userInteractionEnabled = NO;
             
-            if (self.animationType == WEPopoverAnimationTypeCrossFade) {
-                
-                ANIMATE(self.animationDuration, ^{
-                    
-                    self.view.alpha = 0.0;
-                    _backgroundView.alpha = 0.0f;
-                    
-                }, animationCompletionBlock);
-                
-            } else if (self.animationType == WEPopoverAnimationTypeSlide) {
+            if (self.animationType == WEPopoverAnimationTypeSlide) {
                 
                 CGRect collapsedFrame = [self collapsedFrameFromFrame:self.view.frame forArrowDirection:_popoverArrowDirection];
                 
-                NSTimeInterval firstAnimationDuration = SLIDE_ANIMATION_DURATION_RATIO * self.animationDuration;
-                NSTimeInterval secondAnimationDuration = self.animationDuration - firstAnimationDuration;
+                NSTimeInterval firstAnimationDuration = self.primaryAnimationDuration;
+                NSTimeInterval secondAnimationDuration = self.secundaryAnimationDuration;
                 
                 ANIMATE(firstAnimationDuration, ^{
                     
@@ -519,19 +512,19 @@ static BOOL OSVersionIsAtLeast(float version) {
                     }, animationCompletionBlock);
                     
                 });
+            } else {
+                ANIMATE(self.primaryAnimationDuration, ^{
+                    
+                    self.view.alpha = 0.0;
+                    _backgroundView.alpha = 0.0f;
+                    
+                }, animationCompletionBlock);
             }
             
 		} else {
             animationCompletionBlock(YES);
 		}
 	}
-}
-
-- (void)setAnimationType:(WEPopoverAnimationType)animationType {
-    if (animationType > WEPopoverAnimationTypeSlide) {
-        animationType = WEPopoverAnimationTypeCrossFade;
-    }
-    _animationType = animationType;
 }
 
 - (void)removeView {
