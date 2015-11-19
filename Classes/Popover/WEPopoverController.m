@@ -552,7 +552,7 @@ static BOOL OSVersionIsAtLeast(float version) {
     
     UIEdgeInsets insets = self.popoverLayoutMargins;
     
-    if ([self.delegate respondsToSelector:@selector(displayAreayForPoverController:relativeToView:)]) {
+    if ([self.delegate respondsToSelector:@selector(displayAreaForPopoverController:relativeToView:)]) {
         displayArea = [self.delegate displayAreaForPopoverController:self relativeToView:keyView];
         displayArea = [keyView convertRect:displayArea toView:theView];
     } else if ([theView conformsToProtocol:@protocol(WEPopoverParentView)] && [theView respondsToSelector:@selector(displayAreaForPopover)]) {
