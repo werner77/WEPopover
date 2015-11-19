@@ -107,7 +107,7 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
     CGRect rect = _arrowRect;
     
     CGPoint shift = CGPointZero;
-    CGFloat margin = 10.0f;
+    CGFloat margin = 1.0f;
     
     if (_arrowCollapsed) {
         switch (_arrowDirection) {
