@@ -18,7 +18,8 @@ static const NSTimeInterval kDefaultSecundaryAnimationDuration = 0.15;
 
 @property (nonatomic, strong) WEPopoverContainerView *containerView;
 @property (nonatomic, strong) WETouchableView *backgroundView;
-@property (nonatomic, assign, getter=isTransitioning) BOOL transitioning;
+@property (nonatomic, assign, getter=isPresenting) BOOL presenting;
+@property (nonatomic, assign, getter=isDismissing) BOOL dismissing;
 
 @end
 
@@ -217,12 +218,14 @@ static BOOL OSVersionIsAtLeast(float version) {
                       animated:(BOOL)animated
                     completion:(WEPopoverCompletionBlock)completion {
     
-    if (!self.isTransitioning) {
+    if (!self.isPresenting && !self.isDismissing) {
         [self dismissPopoverAnimated:NO];
         
-        self.transitioning = YES;
+        self.presenting = YES;
         
         [[NSNotificationCenter defaultCenter] postNotificationName:WEPopoverControllerWillShowNotification object:self];
+        
+        _popoverVisible = YES;
         
         //First force a load view for the contentViewController so the popoverContentSize is properly initialized
         [_contentViewController view];
@@ -263,8 +266,7 @@ static BOOL OSVersionIsAtLeast(float version) {
             self.containerView.userInteractionEnabled = YES;
             _presentedFromRect = rect;
             _presentedFromView = theView;
-            _popoverVisible = YES;
-            self.transitioning = NO;
+            self.presenting = NO;
             if (completion) {
                 completion();
             }
@@ -326,8 +328,7 @@ static BOOL OSVersionIsAtLeast(float version) {
                          animated:(BOOL)animated
                        completion:(WEPopoverCompletionBlock)completion {
     
-    if ([self isPopoverVisible] && !self.isTransitioning) {
-        self.transitioning = YES;
+    if ([self isPopoverVisible] && !self.isDismissing) {
         _presentedFromRect = CGRectZero;
         _presentedFromView = nil;
         
@@ -353,7 +354,6 @@ static BOOL OSVersionIsAtLeast(float version) {
         };
         
         void (^animationCompletionBlock)(BOOL finished) = ^(BOOL finished) {
-            self.transitioning = NO;
             if (completion) {
                 completion();
             }
@@ -471,8 +471,8 @@ static BOOL OSVersionIsAtLeast(float version) {
 }
 
 - (void)dismissPopoverAnimated:(BOOL)animated userInitiated:(BOOL)userInitiated completion:(WEPopoverCompletionBlock)completion {
-	if (self.containerView && !self.isTransitioning) {
-        self.transitioning = YES;
+	if (self.containerView && !self.isDismissing && !self.isPresenting) {
+        self.dismissing = YES;
 		[self.containerView resignFirstResponder];
         
         void (^animationCompletionBlock)(BOOL finished) = ^(BOOL finished) {
@@ -480,7 +480,7 @@ static BOOL OSVersionIsAtLeast(float version) {
             
             [self removeView];
             
-            self.transitioning = NO;
+            self.dismissing = NO;
             
             if (userInitiated) {
                 //Only send message to delegate in case the user initiated this event, which is if he touched outside the view
