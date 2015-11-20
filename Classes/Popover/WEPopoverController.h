@@ -11,6 +11,12 @@
 #import "WEPopoverContainerViewProperties.h"
 #import "WETouchableView.h"
 
+/**
+ Notifications for showing/dismissing.
+ */
+extern NSString * const WEPopoverControllerWillShowNotification;
+extern NSString * const WEPopoverControllerDidDismissNotification;
+
 @class WEPopoverController;
 
 /**

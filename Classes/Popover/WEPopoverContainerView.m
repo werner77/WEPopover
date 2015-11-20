@@ -174,12 +174,22 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
 }
 
 - (void)setContentView:(UIView *)v {
+    [self setContentView:v withAnimationDuration:0.0];
+}
+
+- (void)setContentView:(UIView *)v withAnimationDuration:(NSTimeInterval)duration {
     if (v != _contentView) {
-        [_contentView removeFromSuperview];
+        UIView *oldContentView = _contentView;
         _contentView = v;
         CGRect rect = [self convertRect:self.contentRect toView:self.bgView];
         _contentView.frame = rect;
-        [self.bgView addSubview:_contentView];
+        if (duration > 0.0) {
+            [UIView transitionFromView:oldContentView toView:_contentView duration:0.3
+                               options:UIViewAnimationOptionTransitionCrossDissolve completion:nil];
+        } else {
+            [oldContentView removeFromSuperview];
+            [self.bgView addSubview:_contentView];
+        }
     }
 }
 

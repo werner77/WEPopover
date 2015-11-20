@@ -18,12 +18,11 @@
 @interface WETouchableView(Private)
 
 - (BOOL)isPassthroughView:(UIView *)v;
-- (BOOL)isGestureRecognizerAllowed:(UIGestureRecognizer *)gr;
 
 @end
 
 @implementation WETouchableView {
-	BOOL _testHits;
+    BOOL _testHits;
 }
 
 - (id)initWithFrame:(CGRect)frame {
@@ -31,84 +30,70 @@
         WEBlockingGestureRecognizer *gr = [[WEBlockingGestureRecognizer alloc] init];
         [self addGestureRecognizer:gr];
         self.backgroundColor = [UIColor clearColor];
-
-		self.fillView = [[UIView alloc] init];
-		self.fillView.backgroundColor = [UIColor clearColor];
-		[self addSubview:self.fillView];
+        
+        self.fillView = [[UIView alloc] init];
+        self.fillView.backgroundColor = [UIColor clearColor];
+        [self addSubview:self.fillView];
     }
     return self;
 }
 
 - (void)setFillColor:(UIColor *)fillColor {
-	self.fillView.backgroundColor = fillColor;
+    self.fillView.backgroundColor = fillColor;
 }
 
 - (void)layoutSubviews {
-	[super layoutSubviews];
-
-	CGRect fillRect = self.bounds;
-	if ([self.delegate respondsToSelector:@selector(fillRectForView:)]) {
-		fillRect = [self.delegate fillRectForView:self];
-	}
-	self.fillView.frame = fillRect;
+    [super layoutSubviews];
+    
+    CGRect fillRect = self.bounds;
+    if ([self.delegate respondsToSelector:@selector(fillRectForView:)]) {
+        fillRect = [self.delegate fillRectForView:self];
+    }
+    self.fillView.frame = fillRect;
 }
 
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
-	if (_testHits) {
-		return nil;
-	} else if (_touchForwardingDisabled) {
-		return self;
-	} else {
-		UIView *hitView = [super hitTest:point withEvent:event];
-		
-		if (hitView == self || hitView == self.fillView) {
-			//Test whether any of the passthrough views would handle this touch
-			_testHits = YES;
-			UIView *superHitView = [self.superview hitTest:point withEvent:event];
-			_testHits = NO;
-			
-			if ([self isPassthroughView:superHitView]) {
-				hitView = superHitView;
-			}
-		}
-		
-		return hitView;
-	}
+    if (_testHits) {
+        return nil;
+    } else if (_touchForwardingDisabled) {
+        return self;
+    } else {
+        UIView *hitView = [super hitTest:point withEvent:event];
+        
+        if (hitView == self || hitView == self.fillView) {
+            //Test whether any of the passthrough views would handle this touch
+            _testHits = YES;
+            UIView *superHitView = [self.superview hitTest:point withEvent:event];
+            _testHits = NO;
+            
+            if ([self isPassthroughView:superHitView]) {
+                hitView = superHitView;
+            }
+        }
+        
+        return hitView;
+    }
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-	[self.delegate viewWasTouched:self];
-}
-
-#pragma mark - UIGestureRecognizerDelegate
-
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
-    return [self isGestureRecognizerAllowed:otherGestureRecognizer];
-}
-
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldBeRequiredToFailByGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
-    return [self isGestureRecognizerAllowed:otherGestureRecognizer];
+    [self.delegate viewWasTouched:self];
 }
 
 @end
 
 @implementation WETouchableView(Private)
 
-- (BOOL)isGestureRecognizerAllowed:(UIGestureRecognizer *)gr {
-    return [gr.view isDescendantOfView:self];
-}
-
 - (BOOL)isPassthroughView:(UIView *)v {
-	
-	if (v == nil) {
-		return NO;
-	}
-	
-	if ([_passthroughViews containsObject:v]) {
-		return YES;
-	}
-	
-	return [self isPassthroughView:v.superview];
+    
+    if (v == nil) {
+        return NO;
+    }
+    
+    if ([_passthroughViews containsObject:v]) {
+        return YES;
+    }
+    
+    return [self isPassthroughView:v.superview];
 }
 
 @end

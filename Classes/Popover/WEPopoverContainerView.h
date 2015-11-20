@@ -64,4 +64,6 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
 
 - (CGRect)calculatedFrame;
 
+- (void)setContentView:(UIView *)v withAnimationDuration:(NSTimeInterval)duration;
+
 @end
