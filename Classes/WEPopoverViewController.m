@@ -10,6 +10,10 @@
 #import "WEPopoverController.h"
 #import "WEPopoverContentViewController.h"
 
+@interface WEPopoverViewController()<WEPopoverControllerDelegate>
+
+@end
+
 @implementation WEPopoverViewController
 
 @synthesize popoverController;
@@ -61,22 +65,39 @@
 	self.popoverController = nil;
 }
 
+- (void)updateButtonTitle {
+    if (self.popoverController==nil) {
+        [self.button setTitle:@"Show Popover" forState:UIControlStateNormal];
+    } else {
+        [self.button setTitle:@"Hide Popover" forState:UIControlStateNormal];
+    }
+}
+
 - (IBAction)onButtonClick:(UIButton *)button {
 	
 	if (self.popoverController) {
-		[self.popoverController dismissPopoverAnimated:YES];
+        [self.popoverController dismissPopoverAnimated:YES];
 		self.popoverController = nil;
-		[button setTitle:@"Show Popover" forState:UIControlStateNormal];
+		
 	} else {
 		UIViewController *contentViewController = [[WEPopoverContentViewController alloc] initWithStyle:UITableViewStylePlain];
 		
 		self.popoverController = [[WEPopoverController alloc] initWithContentViewController:contentViewController];
+        self.popoverController.delegate = self;
 		[self.popoverController presentPopoverFromRect:button.frame 
 												inView:self.view 
 							  permittedArrowDirections:UIPopoverArrowDirectionDown
 											  animated:YES];
-		[button setTitle:@"Hide Popover" forState:UIControlStateNormal];
+		
 	}
+    [self updateButtonTitle];
+}
+
+#pragma mark - WEPopoverControllerDelegate
+
+- (void)popoverControllerDidDismissPopover:(WEPopoverController *)popoverController {
+    self.popoverController = nil;
+    [self updateButtonTitle];
 }
 
 - (void)dealloc {

@@ -16,8 +16,8 @@ static const NSTimeInterval kDefaultSecundaryAnimationDuration = 0.15;
 
 @interface WEPopoverController()<WETouchableViewDelegate, WEPopoverContainerViewDelegate>
 
-@property (nonatomic, strong) UIView *view;
-@property (nonatomic, strong) UIView *backgroundView;
+@property (nonatomic, strong) WEPopoverContainerView *containerView;
+@property (nonatomic, strong) WETouchableView *backgroundView;
 
 @end
 
@@ -30,7 +30,6 @@ static const NSTimeInterval kDefaultSecundaryAnimationDuration = 0.15;
 - (void)determineContentSize;
 - (CGSize)effectivePopoverContentSize;
 - (void)removeView;
-- (WEPopoverContainerView *)containerView;
 - (void)repositionContainerViewForFrameChange;
 - (CGRect)collapsedFrameFromFrame:(CGRect)frame forArrowDirection:(UIPopoverArrowDirection)arrowDirection;
 
@@ -239,20 +238,20 @@ static BOOL OSVersionIsAtLeast(float version) {
     containerView.delegate = self;
     _popoverArrowDirection = containerView.arrowDirection;
     
-    containerView.frame = [theView convertRect:containerView.calculatedFrame toView:_backgroundView];
-    containerView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
+    [keyView addSubview:containerView];
     
-    [_backgroundView addSubview:containerView];
+    containerView.frame = [theView convertRect:containerView.calculatedFrame toView:containerView.superview];
+    containerView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
     
     containerView.contentView = _contentViewController.view;
     
-    self.view = containerView;
+    self.containerView = containerView;
     [self updateBackgroundPassthroughViews];
     
-    [self.view becomeFirstResponder];
+    [self.containerView becomeFirstResponder];
 
     void (^animationCompletionBlock)(BOOL finished) = ^(BOOL finished) {
-        self.view.userInteractionEnabled = YES;
+        self.containerView.userInteractionEnabled = YES;
         _presentedFromRect = rect;
         _presentedFromView = theView;
         _popoverVisible = YES;
@@ -266,12 +265,12 @@ static BOOL OSVersionIsAtLeast(float version) {
         
         if (self.animationType == WEPopoverAnimationTypeSlide) {
             
-            CGRect finalFrame = self.view.frame;
+            CGRect finalFrame = self.containerView.frame;
             
             CGRect initialFrame = [self collapsedFrameFromFrame:finalFrame forArrowDirection:_popoverArrowDirection];
             
-            self.view.frame = initialFrame;
-            self.view.alpha = 1.0;
+            self.containerView.frame = initialFrame;
+            self.containerView.alpha = 1.0;
             self.containerView.arrowCollapsed = YES;
             
             NSTimeInterval firstAnimationDuration = self.primaryAnimationDuration;
@@ -279,7 +278,7 @@ static BOOL OSVersionIsAtLeast(float version) {
             
             ANIMATE(firstAnimationDuration, ^{
                 
-                self.view.frame = finalFrame;
+                self.containerView.frame = finalFrame;
                 _backgroundView.alpha = 1.0;
                 
             }, ^(BOOL finished) {
@@ -291,19 +290,19 @@ static BOOL OSVersionIsAtLeast(float version) {
             });
             
         } else {
-            self.view.alpha = 0.0;
+            self.containerView.alpha = 0.0;
             self.containerView.arrowCollapsed = NO;
             
             ANIMATE(self.primaryAnimationDuration, ^{
                 
-                self.view.alpha = 1.0;
+                self.containerView.alpha = 1.0;
                 _backgroundView.alpha = 1.0;
                 
             }, animationCompletionBlock);
         }
         
     } else {
-        self.view.alpha = 1.0;
+        self.containerView.alpha = 1.0;
         self.containerView.arrowCollapsed = NO;
         _backgroundView.alpha = 1.0;
         animationCompletionBlock(YES);
@@ -329,7 +328,7 @@ static BOOL OSVersionIsAtLeast(float version) {
         [self determineContentSize];
         
         CGRect displayArea = [self displayAreaForView:theView];
-        WEPopoverContainerView *containerView = (WEPopoverContainerView *)self.view;
+        WEPopoverContainerView *containerView = self.containerView;
         
         void (^animationBlock)(void) = ^(void) {
             [containerView updatePositionWithSize:self.effectivePopoverContentSize
@@ -337,7 +336,7 @@ static BOOL OSVersionIsAtLeast(float version) {
                                       displayArea:displayArea
                          permittedArrowDirections:arrowDirections];
             _popoverArrowDirection = containerView.arrowDirection;
-            containerView.frame = [theView convertRect:containerView.calculatedFrame toView:_backgroundView];
+            containerView.frame = [theView convertRect:containerView.calculatedFrame toView:containerView.superview];
             _presentedFromView = theView;
             _presentedFromRect = rect;
         };
@@ -393,7 +392,7 @@ static BOOL OSVersionIsAtLeast(float version) {
     if (!_popoverVisible) {
         return NO;
     }
-    UIView *sv = self.view;
+    UIView *sv = self.containerView;
     BOOL foundWindowAsSuperView = NO;
     while ((sv = sv.superview) != nil) {
         if ([sv isKindOfClass:[UIWindow class]]) {
@@ -408,14 +407,6 @@ static BOOL OSVersionIsAtLeast(float version) {
 
 
 @implementation WEPopoverController(Private)
-
-- (WEPopoverContainerView *)containerView {
-    if ([self.view isKindOfClass:[WEPopoverContainerView class]]) {
-        return (WEPopoverContainerView *)self.view;
-    } else {
-        return nil;
-    }
-}
 
 - (BOOL)isView:(UIView *)v1 inSameHierarchyAsView:(UIView *)v2 {
     BOOL inViewHierarchy = NO;
@@ -468,8 +459,8 @@ static BOOL OSVersionIsAtLeast(float version) {
 }
 
 - (void)dismissPopoverAnimated:(BOOL)animated userInitiated:(BOOL)userInitiated completion:(WEPopoverCompletionBlock)completion {
-	if (self.view) {
-		[self.view resignFirstResponder];
+	if (self.containerView) {
+		[self.containerView resignFirstResponder];
         
         void (^animationCompletionBlock)(BOOL finished) = ^(BOOL finished) {
             _popoverVisible = NO;
@@ -491,11 +482,11 @@ static BOOL OSVersionIsAtLeast(float version) {
         //To avoid repositions happening during frame change
         self.containerView.delegate = nil;
 		if (animated) {
-			self.view.userInteractionEnabled = NO;
+			self.containerView.userInteractionEnabled = NO;
             
             if (self.animationType == WEPopoverAnimationTypeSlide) {
                 
-                CGRect collapsedFrame = [self collapsedFrameFromFrame:self.view.frame forArrowDirection:_popoverArrowDirection];
+                CGRect collapsedFrame = [self collapsedFrameFromFrame:self.containerView.frame forArrowDirection:_popoverArrowDirection];
                 
                 NSTimeInterval firstAnimationDuration = self.secundaryAnimationDuration;
                 NSTimeInterval secondAnimationDuration = self.primaryAnimationDuration;
@@ -507,7 +498,7 @@ static BOOL OSVersionIsAtLeast(float version) {
                 }, ^(BOOL finished) {
                     
                     ANIMATE(secondAnimationDuration, ^{
-                        self.view.frame = collapsedFrame;
+                        self.containerView.frame = collapsedFrame;
                         _backgroundView.alpha = 0.0f;
                     }, animationCompletionBlock);
                     
@@ -515,7 +506,7 @@ static BOOL OSVersionIsAtLeast(float version) {
             } else {
                 ANIMATE(self.primaryAnimationDuration, ^{
                     
-                    self.view.alpha = 0.0;
+                    self.containerView.alpha = 0.0;
                     _backgroundView.alpha = 0.0f;
                     
                 }, animationCompletionBlock);
@@ -528,8 +519,8 @@ static BOOL OSVersionIsAtLeast(float version) {
 }
 
 - (void)removeView {
-    [self.view removeFromSuperview];
-    self.view = nil;
+    [self.containerView removeFromSuperview];
+    self.containerView = nil;
     [_backgroundView removeFromSuperview];
     _backgroundView = nil;
     
@@ -588,7 +579,7 @@ static BOOL OSVersionIsAtLeast(float version) {
 
             if ([self.delegate respondsToSelector:@selector(popoverController:willRepositionPopoverToRect:inView:)]) {
                 [self.delegate popoverController:self willRepositionPopoverToRect:&theRect inView:&theView];
-                theRect = [theView convertRect:theRect toView:_backgroundView];
+                theRect = [theView convertRect:theRect toView:containerView.superview];
             }
 
             containerView.frame = theRect;

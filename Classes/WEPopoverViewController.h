@@ -16,6 +16,8 @@
 
 @property (nonatomic, strong) WEPopoverController *popoverController;
 
+@property (nonatomic, strong) IBOutlet UIButton *button;
+
 - (IBAction)onButtonClick:(UIButton *)button;
 
 @end

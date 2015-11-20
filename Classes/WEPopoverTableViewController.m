@@ -8,6 +8,7 @@
 
 #import "WEPopoverTableViewController.h"
 #import "WEPopoverContentViewController.h"
+#import "WEPopoverViewController.h"
 #import "UIBarButtonItem+WEPopover.h"
 
 @implementation WEPopoverTableViewController
@@ -42,6 +43,8 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 	
 	currentPopoverCellIndex = -1;
+    
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Show modal" style:UIBarButtonItemStyleBordered target:self action:@selector(showModal:)];
 }
 
 /*
@@ -247,6 +250,11 @@
 
 #pragma mark -
 #pragma mark Actions
+
+- (IBAction)showModal:(id)sender {
+    WEPopoverViewController *vc = [WEPopoverViewController new];
+    [self presentViewController:vc animated:YES completion:nil];
+}
 
 - (IBAction)showPopover:(id)sender {
 	
