@@ -238,7 +238,7 @@ static BOOL OSVersionIsAtLeast(float version) {
     containerView.delegate = self;
     _popoverArrowDirection = containerView.arrowDirection;
     
-    [keyView addSubview:containerView];
+    [_backgroundView addSubview:containerView];
     
     containerView.frame = [theView convertRect:containerView.calculatedFrame toView:containerView.superview];
     containerView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
@@ -261,7 +261,7 @@ static BOOL OSVersionIsAtLeast(float version) {
     };
     
     if (animated) {
-        _backgroundView.alpha = 0.0;
+        self.backgroundView.fillView.alpha = 0.0;
         
         if (self.animationType == WEPopoverAnimationTypeSlide) {
             
@@ -279,7 +279,7 @@ static BOOL OSVersionIsAtLeast(float version) {
             ANIMATE(firstAnimationDuration, ^{
                 
                 self.containerView.frame = finalFrame;
-                _backgroundView.alpha = 1.0;
+                self.backgroundView.fillView.alpha = 1.0;
                 
             }, ^(BOOL finished) {
                 
@@ -296,7 +296,7 @@ static BOOL OSVersionIsAtLeast(float version) {
             ANIMATE(self.primaryAnimationDuration, ^{
                 
                 self.containerView.alpha = 1.0;
-                _backgroundView.alpha = 1.0;
+                self.backgroundView.fillView.alpha = 1.0;
                 
             }, animationCompletionBlock);
         }
@@ -304,7 +304,7 @@ static BOOL OSVersionIsAtLeast(float version) {
     } else {
         self.containerView.alpha = 1.0;
         self.containerView.arrowCollapsed = NO;
-        _backgroundView.alpha = 1.0;
+        self.backgroundView.fillView.alpha = 1.0;
         animationCompletionBlock(YES);
     }
     
@@ -499,7 +499,7 @@ static BOOL OSVersionIsAtLeast(float version) {
                     
                     ANIMATE(secondAnimationDuration, ^{
                         self.containerView.frame = collapsedFrame;
-                        _backgroundView.alpha = 0.0f;
+                        _backgroundView.fillView.alpha = 0.0f;
                     }, animationCompletionBlock);
                     
                 });
@@ -507,7 +507,7 @@ static BOOL OSVersionIsAtLeast(float version) {
                 ANIMATE(self.primaryAnimationDuration, ^{
                     
                     self.containerView.alpha = 0.0;
-                    _backgroundView.alpha = 0.0f;
+                    self.backgroundView.fillView.alpha = 0.0f;
                     
                 }, animationCompletionBlock);
             }

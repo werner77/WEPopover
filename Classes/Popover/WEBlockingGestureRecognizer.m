@@ -25,7 +25,6 @@
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{
     if (self.state == UIGestureRecognizerStatePossible) {
         self.state = UIGestureRecognizerStateBegan;
-        self.state = UIGestureRecognizerStateRecognized;
     }
 }
 
@@ -33,10 +32,15 @@
 }
 
 -(void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event{
+    self.state = UIGestureRecognizerStateRecognized;
+}
+
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
+    self.state = UIGestureRecognizerStateCancelled;
 }
 
 - (BOOL)canBePreventedByGestureRecognizer:(UIGestureRecognizer *)preventingGestureRecognizer {
-    return [self isGestureRecognizerAllowed:preventingGestureRecognizer];
+    return NO;
 }
 
 - (BOOL)canPreventGestureRecognizer:(UIGestureRecognizer *)preventedGestureRecognizer {

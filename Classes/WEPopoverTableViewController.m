@@ -215,6 +215,8 @@
                 [self.popoverController setContainerViewProperties:[self improvedContainerViewProperties]];
             }
             
+            self.popoverController.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.3];
+            
             self.popoverController.delegate = self;
             
             //Uncomment the line below to allow the table view to handle events while the popover is displayed.
@@ -262,6 +264,7 @@
 		
 		UIViewController *contentViewController = [[WEPopoverContentViewController alloc] initWithStyle:UITableViewStylePlain];
 		self.popoverController = [[popoverClass alloc] initWithContentViewController:contentViewController];
+        self.popoverController.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.3];
 		self.popoverController.delegate = self;
 		self.popoverController.passthroughViews = [NSArray arrayWithObject:self.navigationController.navigationBar];
 		
