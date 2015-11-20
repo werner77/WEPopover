@@ -81,8 +81,20 @@ typedef void(^WEPopoverCompletionBlock)(void);
  
  If set while presented, use one of the reposition methods to auto-size the popover for the new content.
  Use the method repositionForContentViewController:animated: for setting the contentViewController and repositioning at the same time.
+ 
+ The content view controller cannot be changed while the popover is dismissing.
  */
 @property(nonatomic, strong) UIViewController *contentViewController;
+
+/**
+ Returns whether or not the popover is currently presenting (animating to be presented).
+ */
+@property (nonatomic, readonly, getter=isPresenting) BOOL presenting;
+
+/**
+ Returns whether or not the popover is currently dismissing (animating to be dismissed).
+ */
+@property (nonatomic, readonly, getter=isDismissing) BOOL dismissing;
 
 /**
  The view from which the popover was presented.
@@ -246,6 +258,8 @@ typedef void(^WEPopoverCompletionBlock)(void);
  Sets the specified content view controller and repositions at the same time using the current anchor frame/arrow direction, optionally animating the reposition.
  
  For more control, assign the contentViewController and call one of the other reposition methods manually.
+ 
+ This method has no effect if the popover is currently dismissing or hasn't been presented yet.
  */
 - (void)repositionForContentViewController:(UIViewController *)vc animated:(BOOL)animated;
 
@@ -253,6 +267,8 @@ typedef void(^WEPopoverCompletionBlock)(void);
  Repositions the popover to the specified anchor frame (rect relative to view) and obeying the new permitted arrow directions.
  
  The reposition is optionally animated.
+ 
+ This method has no effect if the popover is currently dismissing or hasn't been presented yet.
  */
 - (void)repositionPopoverFromRect:(CGRect)rect
 						   inView:(UIView *)view
@@ -264,6 +280,8 @@ typedef void(^WEPopoverCompletionBlock)(void);
  
  The reposition is optionally animated.
  The completion block is called when done.
+ 
+ This method has no effect if the popover is currently dismissing or hasn't been presented yet.
  */
 - (void)repositionPopoverFromRect:(CGRect)rect
                            inView:(UIView *)view

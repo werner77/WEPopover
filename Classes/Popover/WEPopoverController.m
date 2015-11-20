@@ -142,9 +142,11 @@ static BOOL OSVersionIsAtLeast(float version) {
 }
 
 - (void)setContentViewController:(UIViewController *)vc {
-	if (vc != _contentViewController) {
-		_contentViewController = vc;
-	}
+    if (!self.isDismissing) {
+        if (vc != _contentViewController) {
+            _contentViewController = vc;
+        }
+    }
 }
 
 - (void)repositionForContentViewController:(UIViewController *)vc animated:(BOOL)animated {
@@ -581,8 +583,6 @@ static BOOL OSVersionIsAtLeast(float version) {
 - (void)repositionContainerViewForFrameChange {
     if (_presentedFromView != nil) {
         @try {
-            self.transitioning = YES;
-            
             CGRect displayArea = [self displayAreaForView:_presentedFromView];
             WEPopoverContainerView *containerView = self.containerView;
 
@@ -603,8 +603,6 @@ static BOOL OSVersionIsAtLeast(float version) {
 
             containerView.frame = theRect;
             containerView.delegate = self;
-            
-            self.transitioning = NO;
         }
         @catch (NSException *exception) {
             //Ignore: cannot reposition popover
