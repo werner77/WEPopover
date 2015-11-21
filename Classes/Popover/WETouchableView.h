@@ -16,6 +16,7 @@
   */
 @protocol WETouchableViewDelegate<NSObject>
 
+@optional
 - (void)viewWasTouched:(WETouchableView *)view;
 - (CGRect)fillRectForView:(WETouchableView *)view;
 

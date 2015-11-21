@@ -76,7 +76,9 @@
 }
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    [self.delegate viewWasTouched:self];
+    if ([self.delegate respondsToSelector:@selector(viewWasTouched:)]) {
+        [self.delegate viewWasTouched:self];
+    }
 }
 
 @end

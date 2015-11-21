@@ -184,8 +184,9 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
         CGRect rect = [self convertRect:self.contentRect toView:self.bgView];
         _contentView.frame = rect;
         if (duration > 0.0) {
-            [UIView transitionFromView:oldContentView toView:_contentView duration:0.3
-                               options:UIViewAnimationOptionTransitionCrossDissolve completion:nil];
+            [UIView transitionFromView:oldContentView toView:_contentView duration:duration
+                               options:UIViewAnimationOptionTransitionCrossDissolve | UIViewAnimationOptionBeginFromCurrentState |
+                            UIViewAnimationCurveEaseInOut completion:nil];
         } else {
             [oldContentView removeFromSuperview];
             [self.bgView addSubview:_contentView];

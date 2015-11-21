@@ -64,6 +64,9 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
 
 - (CGRect)calculatedFrame;
 
+/**
+ Method to animate the transition to a new content view with the specified animation duration.
+ */
 - (void)setContentView:(UIView *)v withAnimationDuration:(NSTimeInterval)duration;
 
 @end
