@@ -35,6 +35,7 @@ static const NSTimeInterval kDefaultSecundaryAnimationDuration = 0.15;
 - (void)removeView;
 - (void)repositionContainerViewForFrameChange;
 - (CGRect)collapsedFrameFromFrame:(CGRect)frame forArrowDirection:(UIPopoverArrowDirection)arrowDirection;
+- (UIView *)fillBackgroundViewWithDefault:(UIView *)defaultView;
 
 @end
 
@@ -249,6 +250,7 @@ static BOOL OSVersionIsAtLeast(float version) {
         UIView *keyView = [self keyViewForView:theView];
         
         _backgroundView = [[WETouchableView alloc] initWithFrame:keyView.bounds];
+        _backgroundView.fillView = [self fillBackgroundViewWithDefault:_backgroundView.fillView];
         _backgroundView.contentMode = UIViewContentModeScaleToFill;
         _backgroundView.autoresizingMask = ( UIViewAutoresizingFlexibleWidth |
                                             UIViewAutoresizingFlexibleHeight);
@@ -664,6 +666,16 @@ static BOOL OSVersionIsAtLeast(float version) {
         ret = CGRectMake(frame.origin.x, frame.origin.y, 0, frame.size.height);
     } else if (arrowDirection == UIPopoverArrowDirectionRight) {
         ret = CGRectMake(frame.origin.x + frame.size.width, frame.origin.y, 0, frame.size.height);
+    }
+    return ret;
+}
+
+- (UIView *)fillBackgroundViewWithDefault:(UIView *)defaultView {
+    UIView *ret = defaultView;
+    if ([self.delegate respondsToSelector:@selector(backgroundViewForPopoverController:)]) {
+        ret = [self.delegate backgroundViewForPopoverController:self];
+    } else if (self.backgroundViewClass != nil && [self.backgroundViewClass isSubclassOfClass:[UIView class]]) {
+        ret = [self.backgroundViewClass new];
     }
     return ret;
 }

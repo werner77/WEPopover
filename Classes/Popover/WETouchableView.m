@@ -11,8 +11,6 @@
 
 @interface WETouchableView()
 
-@property (nonatomic, strong) UIView *fillView;
-
 @end
 
 @interface WETouchableView(Private)
@@ -36,6 +34,17 @@
         [self addSubview:self.fillView];
     }
     return self;
+}
+
+- (void)setFillView:(UIView *)fillView {
+    if (_fillView != fillView) {
+        [_fillView removeFromSuperview];
+        _fillView = fillView;
+        if (_fillView != nil) {
+            [self addSubview:_fillView];
+            [self setNeedsLayout];
+        }
+    }
 }
 
 - (void)setFillColor:(UIColor *)fillColor {

@@ -30,7 +30,7 @@
 @property (nonatomic, assign) BOOL touchForwardingDisabled;
 @property (nonatomic, weak) id <WETouchableViewDelegate> delegate;
 @property (nonatomic, copy) NSArray *passthroughViews;
-@property (nonatomic, readonly) UIView *fillView;
+@property (nonatomic, strong) UIView *fillView;
 
 - (void)setFillColor:(UIColor *)fillColor;
 
