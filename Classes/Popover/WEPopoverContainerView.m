@@ -204,11 +204,15 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
     return _calculatedFrame;
 }
 
-- (void)setFrame:(CGRect)frame {
+- (void)setFrame:(CGRect)frame sendNotification:(BOOL)sendNotification {
     if ([self.delegate respondsToSelector:@selector(popoverContainerView:willChangeFrame:)]) {
         frame = [self.delegate popoverContainerView:self willChangeFrame:frame];
     }
     [super setFrame:frame];
+}
+
+- (void)setFrame:(CGRect)frame {
+    [self setFrame:frame sendNotification:YES];
 }
 
 @end

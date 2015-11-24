@@ -62,11 +62,21 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
                    displayArea:(CGRect)displayArea
       permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections;
 
+/**
+ Calculated from for position.
+ */
 - (CGRect)calculatedFrame;
 
 /**
  Method to animate the transition to a new content view with the specified animation duration.
  */
 - (void)setContentView:(UIView *)v withAnimationDuration:(NSTimeInterval)duration;
+
+/**
+ Set frame optionally sending a notification to the delegate.
+ 
+ By default setFrame: does send a notification.
+ */
+- (void)setFrame:(CGRect)frame sendNotification:(BOOL)sendNotification;
 
 @end

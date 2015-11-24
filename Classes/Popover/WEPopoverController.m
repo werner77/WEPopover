@@ -266,7 +266,7 @@ static BOOL OSVersionIsAtLeast(float version) {
         
         [_backgroundView addSubview:containerView];
         
-        containerView.frame = [theView convertRect:containerView.calculatedFrame toView:containerView.superview];
+        [containerView setFrame:[theView convertRect:containerView.calculatedFrame toView:containerView.superview] sendNotification:NO];
         containerView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
         
         containerView.contentView = _contentViewController.view;
@@ -276,10 +276,11 @@ static BOOL OSVersionIsAtLeast(float version) {
         
         [self.containerView becomeFirstResponder];
         
+        _presentedFromRect = rect;
+        _presentedFromView = theView;
+        
         void (^animationCompletionBlock)(BOOL finished) = ^(BOOL finished) {
             self.containerView.userInteractionEnabled = YES;
-            _presentedFromRect = rect;
-            _presentedFromView = theView;
             self.presenting = NO;
             if (completion) {
                 completion();
@@ -295,7 +296,7 @@ static BOOL OSVersionIsAtLeast(float version) {
                 
                 CGRect initialFrame = [self collapsedFrameFromFrame:finalFrame forArrowDirection:_popoverArrowDirection];
                 
-                self.containerView.frame = initialFrame;
+                [self.containerView setFrame:initialFrame sendNotification:NO];
                 self.containerView.alpha = 1.0;
                 self.containerView.arrowCollapsed = YES;
                 
@@ -304,7 +305,7 @@ static BOOL OSVersionIsAtLeast(float version) {
                 
                 ANIMATE(firstAnimationDuration, ^{
                     
-                    self.containerView.frame = finalFrame;
+                    [self.containerView setFrame:finalFrame sendNotification:NO];
                     self.backgroundView.fillView.alpha = 1.0;
                     
                     if (self.transitionBlock) {
@@ -395,7 +396,7 @@ static BOOL OSVersionIsAtLeast(float version) {
                                       displayArea:displayArea
                          permittedArrowDirections:arrowDirections];
             _popoverArrowDirection = containerView.arrowDirection;
-            containerView.frame = [theView convertRect:containerView.calculatedFrame toView:containerView.superview];
+            [containerView setFrame:[theView convertRect:containerView.calculatedFrame toView:containerView.superview] sendNotification:NO];
             _presentedFromView = theView;
             _presentedFromRect = rect;
             
@@ -424,7 +425,7 @@ static BOOL OSVersionIsAtLeast(float version) {
 
 - (CGRect)popoverContainerView:(WEPopoverContainerView *)containerView willChangeFrame:(CGRect)newFrame {
     CGRect rect = newFrame;
-    if (_presentedFromView != nil) {
+    if (_presentedFromView != nil && containerView == self.containerView) {
         rect = containerView.frame;
         //Call async because all views will need their frames to be adjusted before we can recalculate
         [self performSelector:@selector(repositionContainerViewForFrameChange) withObject:nil afterDelay:0];
@@ -551,7 +552,7 @@ static BOOL OSVersionIsAtLeast(float version) {
                 }, ^(BOOL finished) {
                     
                     ANIMATE(secondAnimationDuration, ^{
-                        self.containerView.frame = collapsedFrame;
+                        [self.containerView setFrame:collapsedFrame sendNotification:NO];
                         _backgroundView.fillView.alpha = 0.0f;
                         
                         if (self.transitionBlock) {
@@ -647,7 +648,7 @@ static BOOL OSVersionIsAtLeast(float version) {
                 theRect = [theView convertRect:theRect toView:containerView.superview];
             }
 
-            containerView.frame = theRect;
+            [containerView setFrame:theRect sendNotification:NO];
             containerView.delegate = self;
         }
         @catch (NSException *exception) {
