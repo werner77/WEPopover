@@ -42,8 +42,6 @@ static const NSTimeInterval kDefaultSecundaryAnimationDuration = 0.15;
 NSString * const WEPopoverControllerWillShowNotification = @"WEPopoverWillShowNotification";
 NSString * const WEPopoverControllerDidDismissNotification = @"WEPopoverDidDismissNotification";
 
-#define ANIMATE(duration, animationBlock, completionBlock) [UIView animateWithDuration:duration delay:0.0 options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionBeginFromCurrentState animations:animationBlock completion:completionBlock]
-
 @implementation WEPopoverController {
 }
 
@@ -52,6 +50,10 @@ static NSUInteger popoverVisibleCount = 0;
 
 static BOOL OSVersionIsAtLeast(float version) {
     return version <= ([[[UIDevice currentDevice] systemVersion] floatValue] + 0.0001);
+}
+
+static void animate(NSTimeInterval duration, void (^animationBlock)(void), void (^completionBlock)(BOOL finished)) {
+    [UIView animateWithDuration:duration delay:0.0 options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionBeginFromCurrentState animations:animationBlock completion:completionBlock];
 }
 
 #pragma - Class Methods
@@ -303,7 +305,7 @@ static BOOL OSVersionIsAtLeast(float version) {
                 NSTimeInterval firstAnimationDuration = self.primaryAnimationDuration;
                 NSTimeInterval secondAnimationDuration = self.secundaryAnimationDuration;
                 
-                ANIMATE(firstAnimationDuration, ^{
+                animate(firstAnimationDuration, ^{
                     
                     [self.containerView setFrame:finalFrame sendNotification:NO];
                     self.backgroundView.fillView.alpha = 1.0;
@@ -314,7 +316,7 @@ static BOOL OSVersionIsAtLeast(float version) {
                     
                 }, ^(BOOL finished) {
                     
-                    ANIMATE(secondAnimationDuration, ^{
+                    animate(secondAnimationDuration, ^{
                         self.containerView.arrowCollapsed = NO;
                     }, animationCompletionBlock);
                     
@@ -324,7 +326,7 @@ static BOOL OSVersionIsAtLeast(float version) {
                 self.containerView.alpha = 0.0;
                 self.containerView.arrowCollapsed = NO;
                 
-                ANIMATE(self.primaryAnimationDuration, ^{
+                animate(self.primaryAnimationDuration, ^{
                     
                     self.containerView.alpha = 1.0;
                     self.backgroundView.fillView.alpha = 1.0;
@@ -412,7 +414,7 @@ static BOOL OSVersionIsAtLeast(float version) {
         };
         
         if (animated) {
-            ANIMATE(self.primaryAnimationDuration, animationBlock, animationCompletionBlock);
+            animate(self.primaryAnimationDuration, animationBlock, animationCompletionBlock);
         } else {
             animationBlock();
             animationCompletionBlock(YES);
@@ -545,13 +547,13 @@ static BOOL OSVersionIsAtLeast(float version) {
                 NSTimeInterval firstAnimationDuration = self.secundaryAnimationDuration;
                 NSTimeInterval secondAnimationDuration = self.primaryAnimationDuration;
                 
-                ANIMATE(firstAnimationDuration, ^{
+                animate(firstAnimationDuration, ^{
                     
                     [self.containerView setArrowCollapsed:YES];
                     
                 }, ^(BOOL finished) {
                     
-                    ANIMATE(secondAnimationDuration, ^{
+                    animate(secondAnimationDuration, ^{
                         [self.containerView setFrame:collapsedFrame sendNotification:NO];
                         _backgroundView.fillView.alpha = 0.0f;
                         
@@ -563,7 +565,7 @@ static BOOL OSVersionIsAtLeast(float version) {
                     
                 });
             } else {
-                ANIMATE(self.primaryAnimationDuration, ^{
+                animate(self.primaryAnimationDuration, ^{
                     
                     self.containerView.alpha = 0.0;
                     self.backgroundView.fillView.alpha = 0.0f;
