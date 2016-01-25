@@ -459,16 +459,16 @@ static void animate(NSTimeInterval duration, void (^animationBlock)(void), void 
 
 @implementation WEPopoverController(Private)
 
-- (BOOL)isView:(UIView *)v1 inSameHierarchyAsView:(UIView *)v2 {
-    BOOL inViewHierarchy = NO;
-    while (v1 != nil) {
-        if (v1 == v2) {
-            inViewHierarchy = YES;
-            break;
-        }
-        v1 = v1.superview;
+- (UIView *)topMostAncestorForView:(UIView *)view {
+    UIView *v = view;
+    while (v.superview != nil) {
+        v = v.superview;
     }
-    return inViewHierarchy;
+    return v;
+}
+
+- (BOOL)isView:(UIView *)v1 inSameHierarchyAsView:(UIView *)v2 {
+    return [self topMostAncestorForView:v1] == [self topMostAncestorForView:v2];
 }
 
 - (UIView *)keyViewForView:(UIView *)theView {
