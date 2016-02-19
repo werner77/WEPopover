@@ -16,6 +16,9 @@
 
 - (id)init {
     if ((self = [super init])) {
+        self.shadowOffset = CGSizeZero;
+        self.shadowOpacity = 0.5;
+        self.shadowRadius = 3.0;
     }
     return self;
 }

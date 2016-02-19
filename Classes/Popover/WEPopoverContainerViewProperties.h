@@ -79,6 +79,26 @@
 @property(nonatomic, strong) UIImage *rightArrowImage;
 
 /**
+ * If set a shadow will be applied around the background for the popover with this color
+ */
+@property(nonatomic, strong) UIColor *shadowColor;
+
+/**
+ * Radius for the shadow, requires shadowColor to be set. Defaults to 3.0
+ */
+@property(nonatomic, assign) CGFloat shadowRadius;
+
+/**
+ * Offset for the shadow, requires shadowColor to be set. Defaults to CGSizeZero
+ */
+@property(nonatomic, assign) CGSize shadowOffset;
+
+/**
+ * Opacity for the shadow, requires shadowColor to be set. Defaults to 0.5
+ */
+@property(nonatomic, assign) CGFloat shadowOpacity;
+
+/**
  Image to apply as background.
  
  Is resized automatically using the topBgCapSize and leftBgCapSize.

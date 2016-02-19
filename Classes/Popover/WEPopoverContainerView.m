@@ -13,6 +13,7 @@
 
 @property (nonatomic, strong) UIImageView *arrowImageView;
 @property (nonatomic, strong) UIView *bgView;
+@property (nonatomic, strong) UIView *shadowView;
 @property (nonatomic, strong) UIImageView *bgImageView;
 
 @end
@@ -60,8 +61,15 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
         UIImage *theImage = _properties.bgImage;
         _bgImage = [theImage stretchableImageWithLeftCapWidth:_properties.leftBgCapSize topCapHeight:_properties.topBgCapSize];
         
-        self.clipsToBounds = YES;
+        self.clipsToBounds = NO;
         self.userInteractionEnabled = YES;
+        
+        self.shadowView = [UIView new];
+        self.shadowView.backgroundColor = [UIColor redColor];
+        self.shadowView.clipsToBounds = NO;
+        self.shadowView.layer.masksToBounds = NO;
+
+        [self addSubview:self.shadowView];
         
         self.arrowImageView = [[UIImageView alloc] init];
         self.arrowImageView.hidden = YES;
@@ -89,8 +97,16 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
 
         if (_properties.maskCornerRadius > 0.0f) {
             self.bgView.layer.cornerRadius = _properties.maskCornerRadius;
+            self.shadowView.layer.cornerRadius = _properties.maskCornerRadius;
         }
-        
+
+        if (_properties.shadowColor != nil) {
+            self.shadowView.layer.shadowColor = [_properties.shadowColor CGColor];
+            self.shadowView.layer.shadowRadius = _properties.shadowRadius;
+            self.shadowView.layer.shadowOffset = _properties.shadowOffset;
+            self.shadowView.layer.shadowOpacity = _properties.shadowOpacity;
+        }
+
         [self initFrame];
     }
     return self;
@@ -237,6 +253,7 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
     _bgImageView.image = _bgImage;
     _bgImageView.hidden = (_bgImage == nil);
     _bgView.frame = _bgRect;
+    _shadowView.frame = _bgRect;
 }
 
 - (CGSize)contentSize {
@@ -285,7 +302,7 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
     while (theArrowDirection <= UIPopoverArrowDirectionRight) {
         
         if ((supportedArrowDirections & theArrowDirection)) {
-            
+
             CGRect theBgRect = CGRectMake(0, 0, theSize.width, theSize.height);
             CGRect theArrowRect = CGRectZero;
             CGPoint theOffset = CGPointZero;
