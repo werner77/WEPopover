@@ -38,7 +38,7 @@
     [super viewDidLoad];
 	
 	//Try setting this to UIPopoverController to use the iPad popover. The API is exactly the same!
-	popoverClass = [WEPopoverController class];
+	popoverClass = [WECustomPopoverController class];
 
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
@@ -212,10 +212,11 @@
                 wePopoverController.animationType = WEPopoverAnimationTypeSlide;
             }
 
+            /*
             if ([self.popoverController respondsToSelector:@selector(setContainerViewProperties:)]) {
                 [self.popoverController setContainerViewProperties:[self improvedContainerViewProperties]];
             }
-            
+            */
             self.popoverController.backgroundColor = [UIColor colorWithWhite:0.0 alpha:0.3];
             
             self.popoverController.delegate = self;
