@@ -10,6 +10,7 @@
 #import "WEPopoverParentView.h"
 #import "UIBarButtonItem+WEPopover.h"
 #import "WEPopoverContainerView.h"
+#import "WEWeakReference.h"
 
 static const NSTimeInterval kDefaultPrimaryAnimationDuration = 0.3;
 static const NSTimeInterval kDefaultSecundaryAnimationDuration = 0.15;
@@ -58,14 +59,65 @@ static void animate(NSTimeInterval duration, void (^animationBlock)(void), void 
 
 #pragma - Class Methods
 
++ (NSMutableArray *)activePopoverReferences {
+    static NSMutableArray *activePopovers = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        activePopovers = [NSMutableArray new];
+    });
+    return activePopovers;
+}
+
++ (NSUInteger)indexForActivePopover:(WEPopoverController *)controller {
+    @synchronized([WEPopoverController class]) {
+        NSMutableArray *array = [self activePopoverReferences];
+        for (NSUInteger i = 0; i < array.count; ++i) {
+            WEWeakReference *value = [array objectAtIndex:i];
+            if (value.object == controller) {
+                return i;
+            }
+        }
+        return NSNotFound;
+    }
+}
+
++ (void)pushActivePopover:(WEPopoverController *)controller {
+    @synchronized([WEPopoverController class]) {
+        id value = [WEWeakReference weakReferenceWithObject:controller];
+        [[self activePopoverReferences] addObject:value];
+    }
+}
+
++ (void)popActivePopover:(WEPopoverController *)controller {
+    @synchronized([WEPopoverController class]) {
+        NSUInteger index = [self indexForActivePopover:controller];
+        if (index != NSNotFound) {
+            [[self activePopoverReferences] removeObjectAtIndex:index];
+        }
+    }
+}
+
++ (NSArray *)visiblePopovers {
+    @synchronized([WEPopoverController class]) {
+        NSArray *popoverReferences = [self activePopoverReferences];
+        NSMutableArray *ret = [NSMutableArray arrayWithCapacity:popoverReferences.count];
+        for (WEWeakReference *ref in popoverReferences) {
+            if (ref.object != nil) {
+                [ret addObject:ref.object];
+            }
+        }
+        return ret;
+    }
+}
+
 + (BOOL)isAnyPopoverVisible {
-    @synchronized(self) {
+    @synchronized([WEPopoverController class]) {
         return popoverVisibleCount > 0;
     }
 }
 
 + (void)setDefaultContainerViewProperties:(WEPopoverContainerViewProperties *)properties {
-    @synchronized(self) {
+    @synchronized([WEPopoverController class]) {
         if (properties != defaultProperties) {
             defaultProperties = properties;
         }
@@ -74,7 +126,7 @@ static void animate(NSTimeInterval duration, void (^animationBlock)(void), void 
 
 //Enable to use the simple popover style
 + (WEPopoverContainerViewProperties *)defaultContainerViewProperties {
-    @synchronized(self) {
+    @synchronized([WEPopoverController class]) {
         if (defaultProperties) {
             return defaultProperties;
         }
@@ -140,6 +192,7 @@ static void animate(NSTimeInterval duration, void (^animationBlock)(void), void 
         self.animationType = WEPopoverAnimationTypeCrossFade;
         self.primaryAnimationDuration = kDefaultPrimaryAnimationDuration;
         self.secundaryAnimationDuration = kDefaultSecundaryAnimationDuration;
+        self.gestureBlockingEnabled = YES;
 	}
 	return self;
 }
@@ -183,11 +236,13 @@ static void animate(NSTimeInterval duration, void (^animationBlock)(void), void 
 - (void)setPopoverVisible:(BOOL)popoverVisible {
     if (_popoverVisible != popoverVisible) {
         _popoverVisible = popoverVisible;
-        @synchronized(self.class) {
+        @synchronized([WEPopoverController class]) {
             if (popoverVisible) {
                 popoverVisibleCount++;
+                [self.class pushActivePopover:self];
             } else {
                 popoverVisibleCount--;
+                [self.class popActivePopover:self];
             }
         }
     }
@@ -258,6 +313,7 @@ static void animate(NSTimeInterval duration, void (^animationBlock)(void), void 
                                             UIViewAutoresizingFlexibleHeight);
         _backgroundView.fillColor = self.backgroundColor;
         _backgroundView.delegate = self;
+        _backgroundView.gestureBlockingEnabled = self.gestureBlockingEnabled;
         
         [keyView addSubview:_backgroundView];
         
@@ -350,6 +406,10 @@ static void animate(NSTimeInterval duration, void (^animationBlock)(void), void 
     }
 }
 
+- (void)setGestureBlockingEnabled:(BOOL)gestureBlockingEnabled {
+    _gestureBlockingEnabled = gestureBlockingEnabled;
+    _backgroundView.gestureBlockingEnabled = gestureBlockingEnabled;
+}
 
 #pragma mark - Reposition
 

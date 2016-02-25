@@ -191,6 +191,13 @@ typedef void(^WEPopoverTransitionBlock)(WEPopoverTransitionType transitionType, 
 @property (nonatomic, copy) NSArray *passthroughViews;
 
 /**
+ Whether gestures outside the popover view are blocked while the popover is visible.
+ 
+ Default is true.
+ */
+@property (nonatomic, assign) BOOL gestureBlockingEnabled;
+
+/**
  The animation type to use.
 
  Default is WEPopoverAnimationTypeCrossFade
@@ -251,6 +258,11 @@ typedef void(^WEPopoverTransitionBlock)(WEPopoverTransitionType transitionType, 
  Returns true iff any instance of WEPopoverController is visible.
  */
 + (BOOL)isAnyPopoverVisible;
+
+/**
+ Returns the array of visible WEPopoverControllers.
+ */
++ (NSArray *)visiblePopovers;
 
 /**
  Intializes with the specified content view controller.

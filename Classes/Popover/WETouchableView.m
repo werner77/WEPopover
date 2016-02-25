@@ -11,6 +11,8 @@
 
 @interface WETouchableView()
 
+@property (nonatomic, strong) WEBlockingGestureRecognizer *blockingGestureRecognizer;
+
 @end
 
 @interface WETouchableView(Private)
@@ -21,19 +23,35 @@
 
 @implementation WETouchableView {
     BOOL _testHits;
+    BOOL _gestureBlockingEnabled;
 }
 
 - (id)initWithFrame:(CGRect)frame {
     if ((self = [super initWithFrame:frame])) {
         WEBlockingGestureRecognizer *gr = [[WEBlockingGestureRecognizer alloc] init];
         [self addGestureRecognizer:gr];
+        gr.enabled = YES;
+        self.blockingGestureRecognizer = gr;
         self.backgroundColor = [UIColor clearColor];
         
         self.fillView = [[UIView alloc] init];
         self.fillView.backgroundColor = [UIColor clearColor];
         [self addSubview:self.fillView];
+        
+        _gestureBlockingEnabled = YES;
     }
     return self;
+}
+
+- (void)setGestureBlockingEnabled:(BOOL)gestureBlockingEnabled {
+    if (_gestureBlockingEnabled != gestureBlockingEnabled) {
+        _gestureBlockingEnabled = gestureBlockingEnabled;
+        self.blockingGestureRecognizer.enabled = gestureBlockingEnabled;
+    }
+}
+
+- (BOOL)gestureBlockingEnabled {
+    return _gestureBlockingEnabled;
 }
 
 - (void)setFillView:(UIView *)fillView {

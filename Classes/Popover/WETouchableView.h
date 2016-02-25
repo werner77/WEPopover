@@ -31,6 +31,7 @@
 @property (nonatomic, weak) id <WETouchableViewDelegate> delegate;
 @property (nonatomic, copy) NSArray *passthroughViews;
 @property (nonatomic, strong) UIView *fillView;
+@property (nonatomic, assign) BOOL gestureBlockingEnabled;
 
 - (void)setFillColor:(UIColor *)fillColor;
 
