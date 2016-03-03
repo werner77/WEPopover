@@ -214,7 +214,9 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
                     }];
         } else {
             [oldContentView removeFromSuperview];
-            [self.bgView addSubview:_contentView];
+            if (_contentView) {
+                [self.bgView addSubview:_contentView];
+            }
             if (completion) {
                 completion();
             }

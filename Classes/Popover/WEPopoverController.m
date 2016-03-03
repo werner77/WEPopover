@@ -225,15 +225,33 @@ static void animate(NSTimeInterval duration, void (^animationBlock)(void), void 
     UIView *newContentView = [contentViewController view];
     UIViewController *__weak parentViewController = _parentViewController;
     if (self.containerView != nil && newContentView != self.containerView.contentView) {
+        BOOL shouldManuallyForwardAppearanceMethods = YES;
+
+        if ([parentViewController respondsToSelector:@selector(shouldAutomaticallyForwardAppearanceMethods)]) {
+            shouldManuallyForwardAppearanceMethods = ![parentViewController shouldAutomaticallyForwardAppearanceMethods];
+        } else if ([parentViewController respondsToSelector:@selector(automaticallyForwardAppearanceAndRotationMethodsToChildViewControllers)]) {
+            shouldManuallyForwardAppearanceMethods = ![parentViewController automaticallyForwardAppearanceAndRotationMethodsToChildViewControllers];
+        }
+
         if (parentViewController) {
             [oldContentViewController willMoveToParentViewController:nil];
-            [parentViewController addChildViewController:contentViewController];
+            if (contentViewController) {
+                [parentViewController addChildViewController:contentViewController];
+            }
+            if (shouldManuallyForwardAppearanceMethods) {
+                [oldContentViewController beginAppearanceTransition:NO animated:animated];
+                [contentViewController beginAppearanceTransition:YES animated:animated];
+            }
         }
         [self.containerView setContentView:newContentView withAnimationDuration:(animated ? self.primaryAnimationDuration : 0.0)
                                 completion:^ {
                                     if (parentViewController) {
                                         [contentViewController didMoveToParentViewController:parentViewController];
                                         [oldContentViewController willMoveToParentViewController:nil];
+                                        if (shouldManuallyForwardAppearanceMethods) {
+                                            [oldContentViewController endAppearanceTransition];
+                                            [contentViewController endAppearanceTransition];
+                                        }
                                     }
                                 }];
     }
@@ -346,9 +364,10 @@ static void animate(NSTimeInterval duration, void (^animationBlock)(void), void 
         [containerView setFrame:[theView convertRect:containerView.calculatedFrame toView:containerView.superview] sendNotification:NO];
         containerView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
         
-        [self updateContentViewController:_contentViewController withOldContentViewController:nil animated:NO];
-        
         self.containerView = containerView;
+
+        [self updateContentViewController:_contentViewController withOldContentViewController:nil animated:NO];
+
         [self updateBackgroundPassthroughViews];
         
         [self.containerView becomeFirstResponder];
@@ -555,7 +574,7 @@ static void animate(NSTimeInterval duration, void (^animationBlock)(void), void 
 }
 
 - (BOOL)isView:(UIView *)v1 inSameHierarchyAsView:(UIView *)v2 {
-    return [self topMostAncestorForView:v1] == [self topMostAncestorForView:v2];
+    return ([self topMostAncestorForView:v1] == [self topMostAncestorForView:v2]) || (v1.window == v2.window);
 }
 
 - (UIView *)keyViewForView:(UIView *)theView {
@@ -674,9 +693,7 @@ static void animate(NSTimeInterval duration, void (^animationBlock)(void), void 
 }
 
 - (void)removeView {
-    if (self.parentViewController != nil) {
-        [self.contentViewController removeFromParentViewController];
-    }
+    [self updateContentViewController:nil withOldContentViewController:_contentViewController animated:NO];
     [self.containerView removeFromSuperview];
     self.containerView = nil;
     [_backgroundView removeFromSuperview];
