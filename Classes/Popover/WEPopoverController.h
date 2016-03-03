@@ -184,6 +184,13 @@ typedef void(^WEPopoverTransitionBlock)(WEPopoverTransitionType transitionType, 
 @property (nonatomic, weak) UIView *parentView;
 
 /**
+ If set: this view controller is used as parent view controller for the popover.
+
+ The methods addChildViewController: etc will be called with the contentViewController as parameter.
+ */
+@property (nonatomic, weak) UIViewController *parentViewController;
+
+/**
  Array of views that should receive touch events while the popover is visible.
  
  By default the popover blocks all touches from its parent view.

@@ -195,6 +195,10 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
 }
 
 - (void)setContentView:(UIView *)v withAnimationDuration:(NSTimeInterval)duration {
+    [self setContentView:v withAnimationDuration:duration completion:nil];
+}
+
+- (void)setContentView:(UIView *)v withAnimationDuration:(NSTimeInterval)duration completion:(void (^)(void))completion {
     if (v != _contentView) {
         UIView *oldContentView = _contentView;
         _contentView = v;
@@ -203,10 +207,17 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
         if (duration > 0.0) {
             [UIView transitionFromView:oldContentView toView:_contentView duration:duration
                                options:UIViewAnimationOptionTransitionCrossDissolve | UIViewAnimationOptionBeginFromCurrentState |
-                            UIViewAnimationCurveEaseInOut completion:nil];
+                            UIViewAnimationCurveEaseInOut completion:^(BOOL finished) {
+                        if (completion) {
+                            completion();
+                        }
+                    }];
         } else {
             [oldContentView removeFromSuperview];
             [self.bgView addSubview:_contentView];
+            if (completion) {
+                completion();
+            }
         }
     }
 }
