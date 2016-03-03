@@ -216,23 +216,26 @@ static void animate(NSTimeInterval duration, void (^animationBlock)(void), void 
 
 - (void)setContentViewController:(UIViewController *)contentViewController animated:(BOOL)animated {
     if (contentViewController != _contentViewController) {
-        UIViewController *oldContentViewController = contentViewController;
-        UIViewController *__weak parentViewController = _parentViewController;
+        [self updateContentViewController:contentViewController withOldContentViewController:_contentViewController animated:animated];
+        _contentViewController = contentViewController;
+    }
+}
+
+- (void)updateContentViewController:(UIViewController *)contentViewController withOldContentViewController:(UIViewController *)oldContentViewController animated:(BOOL)animated {
+    UIView *newContentView = [contentViewController view];
+    UIViewController *__weak parentViewController = _parentViewController;
+    if (self.containerView != nil && newContentView != self.containerView.contentView) {
         if (parentViewController) {
             [oldContentViewController willMoveToParentViewController:nil];
             [parentViewController addChildViewController:contentViewController];
         }
-        UIView *newContentView = [contentViewController view];
-        if (self.containerView != nil && newContentView != self.containerView.contentView) {
-            [self.containerView setContentView:newContentView withAnimationDuration:(animated ? self.primaryAnimationDuration : 0.0)
-            completion:^ {
-                if (parentViewController) {
-                    [contentViewController didMoveToParentViewController:parentViewController];
-                    [oldContentViewController willMoveToParentViewController:nil];
-                }
-            }];
-        }
-        _contentViewController = contentViewController;
+        [self.containerView setContentView:newContentView withAnimationDuration:(animated ? self.primaryAnimationDuration : 0.0)
+                                completion:^ {
+                                    if (parentViewController) {
+                                        [contentViewController didMoveToParentViewController:parentViewController];
+                                        [oldContentViewController willMoveToParentViewController:nil];
+                                    }
+                                }];
     }
 }
 
@@ -343,7 +346,7 @@ static void animate(NSTimeInterval duration, void (^animationBlock)(void), void 
         [containerView setFrame:[theView convertRect:containerView.calculatedFrame toView:containerView.superview] sendNotification:NO];
         containerView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
         
-        containerView.contentView = _contentViewController.view;
+        [self updateContentViewController:_contentViewController withOldContentViewController:nil animated:NO];
         
         self.containerView = containerView;
         [self updateBackgroundPassthroughViews];
