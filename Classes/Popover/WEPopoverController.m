@@ -247,7 +247,7 @@ static void animate(NSTimeInterval duration, void (^animationBlock)(void), void 
                                 completion:^ {
                                     if (parentViewController) {
                                         [contentViewController didMoveToParentViewController:parentViewController];
-                                        [oldContentViewController willMoveToParentViewController:nil];
+                                        [oldContentViewController removeFromParentViewController];
                                         if (shouldManuallyForwardAppearanceMethods) {
                                             [oldContentViewController endAppearanceTransition];
                                             [contentViewController endAppearanceTransition];
