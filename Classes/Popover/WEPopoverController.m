@@ -230,7 +230,10 @@ static void animate(NSTimeInterval duration, void (^animationBlock)(void), void 
         if ([parentViewController respondsToSelector:@selector(shouldAutomaticallyForwardAppearanceMethods)]) {
             shouldManuallyForwardAppearanceMethods = ![parentViewController shouldAutomaticallyForwardAppearanceMethods];
         } else if ([parentViewController respondsToSelector:@selector(automaticallyForwardAppearanceAndRotationMethodsToChildViewControllers)]) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
             shouldManuallyForwardAppearanceMethods = ![parentViewController automaticallyForwardAppearanceAndRotationMethodsToChildViewControllers];
+#pragma clang diagnostic pop
         }
 
         if (parentViewController) {
