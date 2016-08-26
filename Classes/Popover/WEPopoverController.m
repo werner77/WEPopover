@@ -527,9 +527,8 @@ static void animate(NSTimeInterval duration, void (^animationBlock)(void), void 
 - (CGRect)popoverContainerView:(WEPopoverContainerView *)containerView willChangeFrame:(CGRect)newFrame {
     CGRect rect = newFrame;
     if (_presentedFromView != nil && containerView == self.containerView) {
+        [self repositionContainerViewForFrameChange];
         rect = containerView.frame;
-        //Call async because all views will need their frames to be adjusted before we can recalculate
-        [self performSelector:@selector(repositionContainerViewForFrameChange) withObject:nil afterDelay:0];
     }
     return rect;
 }
@@ -578,6 +577,24 @@ static void animate(NSTimeInterval duration, void (^animationBlock)(void), void 
     return ([self topMostAncestorForView:v1] == [self topMostAncestorForView:v2]) || (v1.window == v2.window);
 }
 
+- (CGRect)rotatedFrameForWindow:(UIWindow *)window {
+    CGRect frame = CGRectZero;
+    if (window != nil) {
+        frame = window.frame;
+        if (![[UIScreen mainScreen] respondsToSelector:@selector(nativeBounds)]) {
+            //iOS < 8 support
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+            UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
+            if (UIInterfaceOrientationIsLandscape(orientation)) {
+                frame = CGRectMake(0, 0, window.frame.size.height, window.frame.size.width);
+            }
+#pragma clang diagnostic pop
+        }
+    }
+    return frame;
+}
+
 - (UIView *)keyViewForView:(UIView *)theView {
     if (self.parentView) {
         return self.parentView;
@@ -588,13 +605,32 @@ static void animate(NSTimeInterval duration, void (^animationBlock)(void), void 
         } else {
             w = [[UIApplication sharedApplication] keyWindow];
         }
-        if (w.subviews.count > 0 && (theView == nil || [self isView:theView inSameHierarchyAsView:[w.subviews objectAtIndex:0]])) {
-            return [w.subviews objectAtIndex:0];
+
+        CGRect windowFrame = [self rotatedFrameForWindow:w];
+        UIView *firstSubView = nil;
+        for (UIView *subview in w.subviews) {
+            //Take the first sub view of the window where the frame matches the window frame, corrected for orientation
+            if (firstSubView == nil) {
+                firstSubView = subview;
+            }
+            if (CGRectEqualToRect(subview.frame, windowFrame)) {
+                firstSubView = subview;
+                break;
+            }
+        }
+
+        if (firstSubView != nil && theView != nil && ![self isView:theView inSameHierarchyAsView:firstSubView]) {
+            firstSubView = nil;
+        }
+
+        if (firstSubView != nil) {
+            return firstSubView;
         } else {
             return w;
         }
     }
 }
+
 
 - (void)updateBackgroundPassthroughViews {
 	self.backgroundView.passthroughViews = self.passthroughViews;
@@ -746,6 +782,9 @@ static void animate(NSTimeInterval duration, void (^animationBlock)(void), void 
     if (_presentedFromView != nil) {
         @try {
             CGRect displayArea = [self displayAreaForView:_presentedFromView];
+
+            [self determineContentSizeWithConstraintSize:displayArea.size];
+
             WEPopoverContainerView *containerView = self.containerView;
 
             containerView.delegate = nil;
