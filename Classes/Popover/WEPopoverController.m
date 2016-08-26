@@ -607,7 +607,10 @@ static void animate(NSTimeInterval duration, void (^animationBlock)(void), void 
         } else if ([_contentViewController respondsToSelector:@selector(preferredContentSize)]) {
             self.effectivePopoverContentSize = _contentViewController.preferredContentSize;
         } else {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
             self.effectivePopoverContentSize = _contentViewController.contentSizeForViewInPopover;
+#pragma clang diagnostic pop
         }
 	} else {
         self.effectivePopoverContentSize = self.popoverContentSize;
