@@ -68,6 +68,18 @@ extern NSString * const WEPopoverControllerDidDismissNotification;
  */
 - (UIView *)backgroundViewForPopoverController:(WEPopoverController *)popoverController;
 
+
+/**
+ * If implemented, this method is used in favor of preferredContentSize defined by UIViewController.
+ *
+ * This method is an improved version as it supplies the constraint size dictated by the popover layout margins and screen bounds.
+ *
+ * @param popoverController The popover controller
+ * @param constraintSize The size available for layout
+ * @return The preferred content size.
+ */
+- (CGSize)preferredContentSizeForPopoverController:(WEPopoverController *)popoverController withConstraintSize:(CGSize)constraintSize;
+
 @end
 
 /**

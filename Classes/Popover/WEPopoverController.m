@@ -32,7 +32,7 @@ static const NSTimeInterval kDefaultSecundaryAnimationDuration = 0.15;
 - (void)updateBackgroundPassthroughViews;
 - (CGRect)displayAreaForView:(UIView *)theView;
 - (void)dismissPopoverAnimated:(BOOL)animated userInitiated:(BOOL)userInitiated completion:(WEPopoverCompletionBlock)completion;
-- (void)determineContentSize;
+- (void)determineContentSizeWithConstraintSize:(CGSize)constraintSize;
 - (void)removeView;
 - (void)repositionContainerViewForFrameChange;
 - (CGRect)collapsedFrameFromFrame:(CGRect)frame forArrowDirection:(UIPopoverArrowDirection)arrowDirection;
@@ -332,10 +332,10 @@ static void animate(NSTimeInterval duration, void (^animationBlock)(void), void 
         
         //First force a load view for the contentViewController so the popoverContentSize is properly initialized
         [_contentViewController view];
-        
-        [self determineContentSize];
-        
+
         CGRect displayArea = [self displayAreaForView:theView];
+        
+        [self determineContentSizeWithConstraintSize:displayArea.size];
         
         UIView *keyView = [self keyViewForView:theView];
         
@@ -484,10 +484,11 @@ static void animate(NSTimeInterval duration, void (^animationBlock)(void), void 
     if ([self isPopoverVisible] && !self.isDismissing) {
         _presentedFromRect = CGRectZero;
         _presentedFromView = nil;
-        
-        [self determineContentSize];
-        
+
         CGRect displayArea = [self displayAreaForView:theView];
+        
+        [self determineContentSizeWithConstraintSize:displayArea.size];
+
         WEPopoverContainerView *containerView = self.containerView;
         
         void (^animationBlock)(void) = ^(void) {
@@ -599,9 +600,11 @@ static void animate(NSTimeInterval duration, void (^animationBlock)(void), void 
 	self.backgroundView.passthroughViews = self.passthroughViews;
 }
 
-- (void)determineContentSize {
+- (void)determineContentSizeWithConstraintSize:(CGSize)constraintSize {
     if (CGSizeEqualToSize(self.popoverContentSize, CGSizeZero)) {
-        if ([_contentViewController respondsToSelector:@selector(preferredContentSize)]) {
+        if ([self.delegate respondsToSelector:@selector(preferredContentSizeForPopoverController:withConstraintSize:)]) {
+            self.effectivePopoverContentSize = [self.delegate preferredContentSizeForPopoverController:self withConstraintSize:constraintSize];
+        } else if ([_contentViewController respondsToSelector:@selector(preferredContentSize)]) {
             self.effectivePopoverContentSize = _contentViewController.preferredContentSize;
         } else {
             self.effectivePopoverContentSize = _contentViewController.contentSizeForViewInPopover;
