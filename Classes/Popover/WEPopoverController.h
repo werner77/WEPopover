@@ -10,6 +10,7 @@
 #import <UIKit/UIKit.h>
 #import "WEPopoverContainerViewProperties.h"
 #import "WETouchableView.h"
+#import "WEPopoverContainerView.h"
 
 /**
  Notifications for showing/dismissing.
@@ -259,13 +260,25 @@ typedef void(^WEPopoverTransitionBlock)(WEPopoverTransitionType transitionType, 
 @property (nonatomic, copy) WEPopoverCompletionBlock afterDismissBlock;
 
 /**
- The UIView subclass to use for the background view of the popover. This is the view that is tinted in the background when the popover is visible.
+ The UIView subclass to use for the backgroundView.fillView of the popover. This is the view that is tinted in the background when the popover is visible.
  
  You may define a sub class of a UIVisualEffectView for example to get iOS 7 style blurred behavior.
  
  If the delegate implements backgroundViewForPopoverController: the implementation of that method overrides the class set here.
  */
 @property (nonatomic, assign) Class backgroundViewClass;
+
+/**
+ * The background view.
+ *
+ * The fillView property of this view is set using backgroundViewClass or backgroundViewForPopoverController: if implemented by the delegate.
+ */
+@property (nonatomic, strong, readonly) WETouchableView *backgroundView;
+
+/**
+ * The container view for the popover.
+ */
+@property (nonatomic, strong, readonly) WEPopoverContainerView *containerView;
 
 /**
  The default container view properties to be used by the popover.

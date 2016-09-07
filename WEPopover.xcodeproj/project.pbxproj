@@ -48,6 +48,7 @@
 		749FAE881286130000AB97F9 /* WEPopoverController.m in Sources */ = {isa = PBXBuildFile; fileRef = 749FAE841286130000AB97F9 /* WEPopoverController.m */; };
 		74A2A7B1190E5B800054A6CD /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74A2A7B0190E5B800054A6CD /* QuartzCore.framework */; };
 		A83DF01A644BD2B58C4EDD65 /* WECustomPopoverController.m in Sources */ = {isa = PBXBuildFile; fileRef = A83DF4A31AA1332716629BF2 /* WECustomPopoverController.m */; };
+		A83DF4665DCA1611146378A7 /* UIView+WEPopover.m in Sources */ = {isa = PBXBuildFile; fileRef = A83DFD2DCC3853D474CD9B5F /* UIView+WEPopover.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -109,6 +110,8 @@
 		8D1107310486CEB800E47090 /* WEPopover-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "WEPopover-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		A83DF428564B2075B045155A /* WECustomPopoverController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WECustomPopoverController.h; sourceTree = "<group>"; };
 		A83DF4A31AA1332716629BF2 /* WECustomPopoverController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WECustomPopoverController.m; sourceTree = "<group>"; };
+		A83DF7D277F13D75FAC228AD /* UIView+WEPopover.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+WEPopover.h"; sourceTree = "<group>"; };
+		A83DFD2DCC3853D474CD9B5F /* UIView+WEPopover.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+WEPopover.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -256,6 +259,8 @@
 				7463500013729C6F000EF936 /* WETouchableView.m */,
 				749AF5571C7F553B00B444E1 /* WEWeakReference.h */,
 				749AF5581C7F553B00B444E1 /* WEWeakReference.m */,
+				A83DFD2DCC3853D474CD9B5F /* UIView+WEPopover.m */,
+				A83DF7D277F13D75FAC228AD /* UIView+WEPopover.h */,
 			);
 			path = Popover;
 			sourceTree = "<group>";
@@ -378,6 +383,7 @@
 				7463500113729C6F000EF936 /* WETouchableView.m in Sources */,
 				746B0A1D137454A000C5A8B5 /* UIBarButtonItem+WEPopover.m in Sources */,
 				A83DF01A644BD2B58C4EDD65 /* WECustomPopoverController.m in Sources */,
+				A83DF4665DCA1611146378A7 /* UIView+WEPopover.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
