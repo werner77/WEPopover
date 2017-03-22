@@ -1,6 +1,6 @@
 {
   "name": "WEPopover",
-  "version": "2.4.2",
+  "version": "2.4.3",
   "license": "MIT",
   "summary": "Generic popover implementation for iOS with same API as the UIPopoverController.",
   "description": "Generic popover implementation for iOS with same API as the UIPopoverController for the iPad, but configurable with custom background and available for iPhone as well",
@@ -10,7 +10,7 @@
   },
   "source": {
     "git": "https://github.com/werner77/WEPopover.git",
-    "tag" : "2.4.2"
+    "tag" : "2.4.3"
   },
   "platforms": {
     "ios": "5.0"
