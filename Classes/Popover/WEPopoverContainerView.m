@@ -322,7 +322,7 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
     _arrowRect = CGRectZero;
     _arrowDirection = UIPopoverArrowDirectionUnknown;
     
-    CGFloat biggestSurface = 0.0f;
+    CGFloat biggestSurface = -CGFLOAT_MAX;
     CGFloat currentMinMargin = 0.0f;
     
     UIImage *upArrowImage = _properties.upArrowImage;
@@ -496,11 +496,30 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
             CGFloat minMargin = MIN(minMarginLeft, minMarginRight);
             minMargin = MIN(minMargin, minMarginTop);
             minMargin = MIN(minMargin, minMarginBottom);
-            
-            // Calculate intersection and surface
-            CGFloat surface = theBgRect.size.width * theBgRect.size.height;
-            
-            if (surface >= biggestSurface && minMargin >= currentMinMargin) {
+
+            CGRect freeDisplayArea = displayArea;
+
+            switch (theArrowDirection) {
+                case UIPopoverArrowDirectionUp:
+                    freeDisplayArea.origin.y = CGRectGetMaxY(bgFrame);
+                    freeDisplayArea.size.height = CGRectGetHeight(freeDisplayArea) - CGRectGetMaxY(bgFrame);
+                    break;
+                case UIPopoverArrowDirectionDown:
+                    freeDisplayArea.size.height = CGRectGetMinY(bgFrame) - CGRectGetMinY(freeDisplayArea);
+                    break;
+                case UIPopoverArrowDirectionLeft:
+                    freeDisplayArea.origin.x = CGRectGetMaxX(bgFrame);
+                    freeDisplayArea.size.width = CGRectGetWidth(freeDisplayArea) - CGRectGetMaxX(bgFrame);
+                    break;
+                case UIPopoverArrowDirectionRight:
+                    freeDisplayArea.size.width = CGRectGetMinX(bgFrame) - CGRectGetMinX(freeDisplayArea);
+                    break;
+                default:
+                    break;
+            }
+            CGFloat surface = freeDisplayArea.size.width * freeDisplayArea.size.height;
+
+            if (surface > biggestSurface && minMargin >= currentMinMargin) {
                 biggestSurface = surface;
                 _offset = CGPointMake(roundf(theOffset.x + displayArea.origin.x), roundf(theOffset.y + displayArea.origin.y));
                 _arrowRect = [self roundedRect:theArrowRect];
