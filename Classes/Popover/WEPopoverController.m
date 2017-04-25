@@ -13,6 +13,7 @@
 #import "WEPopoverContainerView.h"
 #import "WEWeakReference.h"
 #import "UIView+WEPopover.h"
+#import "NSCondition+WEPopover.h"
 
 static const NSTimeInterval kDefaultPrimaryAnimationDuration = 0.3;
 static const NSTimeInterval kDefaultSecundaryAnimationDuration = 0.15;
@@ -25,6 +26,7 @@ static const NSTimeInterval kDefaultSecundaryAnimationDuration = 0.15;
 @property (nonatomic, assign, getter=isDismissing) BOOL dismissing;
 @property (nonatomic, assign, getter=isPopoverVisible) BOOL popoverVisible;
 @property (nonatomic, assign) CGSize effectivePopoverContentSize;
+@property (nonatomic, strong) NSCondition *transitioningCondition;
 
 @end
 
@@ -41,6 +43,7 @@ static const NSTimeInterval kDefaultSecundaryAnimationDuration = 0.15;
 - (UIView *)fillBackgroundViewWithDefault:(UIView *)defaultView;
 - (CGRect)calculatedContainerViewFrame;
 - (void)keyViewDidLayoutSubviewsNotification:(NSNotification *)notification;
+- (void)waitUntilNotTransitioningWithCompletion:(void (^)(BOOL waited))completion;
 
 @end
 
@@ -197,6 +200,7 @@ static void animate(NSTimeInterval duration, void (^animationBlock)(void), void 
         self.primaryAnimationDuration = kDefaultPrimaryAnimationDuration;
         self.secundaryAnimationDuration = kDefaultSecundaryAnimationDuration;
         self.gestureBlockingEnabled = YES;
+        self.transitioningCondition = [NSCondition new];
     }
     return self;
 }
@@ -213,6 +217,30 @@ static void animate(NSTimeInterval duration, void (^animationBlock)(void), void 
 }
 
 #pragma mark - Getters/setters
+
+- (void)setPresenting:(BOOL)presenting {
+    if (_presenting != presenting) {
+        [self.transitioningCondition weBroadcastForPredicateModification:^{
+            self->_presenting = presenting;
+        }];
+    }
+}
+
+- (void)setDismissing:(BOOL)dismissing {
+    if (_dismissing != dismissing) {
+        [self.transitioningCondition weBroadcastForPredicateModification:^{
+            self->_dismissing = dismissing;
+        }];
+    }
+}
+
+- (BOOL)transitioning {
+    return _presenting || _dismissing;
+}
+
+- (BOOL)isTransitioning {
+    return [self transitioning];
+}
 
 - (void)setContentViewController:(UIViewController *)vc {
     [self setContentViewController:vc animated:NO];
@@ -329,6 +357,13 @@ static void animate(NSTimeInterval duration, void (^animationBlock)(void), void 
       permittedArrowDirections:(UIPopoverArrowDirection)arrowDirections
                       animated:(BOOL)animated
                     completion:(WEPopoverCompletionBlock)completion {
+
+    if (self.isDismissing) {
+        __typeof(self) __weak weakSelf = self;
+        [self waitUntilNotTransitioningWithCompletion:^(BOOL waited) {
+            [weakSelf presentPopoverFromRect:rect inView:theView permittedArrowDirections:arrowDirections animated:animated completion:completion];
+        }];
+    }
 
     if (!self.isPresenting && !self.isDismissing && ![self isPopoverVisible]) {
         self.presenting = YES;
@@ -653,6 +688,14 @@ static void animate(NSTimeInterval duration, void (^animationBlock)(void), void 
 }
 
 - (void)dismissPopoverAnimated:(BOOL)animated userInitiated:(BOOL)userInitiated completion:(WEPopoverCompletionBlock)completion {
+
+    if (self.isPresenting) {
+        __typeof(self) __weak weakSelf = self;
+        [self waitUntilNotTransitioningWithCompletion:^(BOOL waited) {
+            [weakSelf dismissPopoverAnimated:animated userInitiated:userInitiated completion:completion];
+        }];
+    }
+
     if (self.containerView && !self.isDismissing && !self.isPresenting) {
         self.dismissing = YES;
         [self.containerView resignFirstResponder];
@@ -863,6 +906,17 @@ static void animate(NSTimeInterval duration, void (^animationBlock)(void), void 
     }];
 
     [self repositionContainerViewForFrameChange];
+}
+
+- (void)waitUntilNotTransitioningWithCompletion:(void (^)(BOOL waited))completion {
+    __typeof(self) __weak weakSelf = self;
+    [self.transitioningCondition weWaitForPredicate:^BOOL {
+        return !weakSelf.isTransitioning;
+    } completion:^(BOOL waited) {
+        if (completion) {
+            completion(waited);
+        }
+    }];
 }
 
 @end

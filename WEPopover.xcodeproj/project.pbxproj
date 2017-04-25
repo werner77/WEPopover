@@ -48,6 +48,7 @@
 		749FAE881286130000AB97F9 /* WEPopoverController.m in Sources */ = {isa = PBXBuildFile; fileRef = 749FAE841286130000AB97F9 /* WEPopoverController.m */; };
 		74A2A7B1190E5B800054A6CD /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74A2A7B0190E5B800054A6CD /* QuartzCore.framework */; };
 		A83DF01A644BD2B58C4EDD65 /* WECustomPopoverController.m in Sources */ = {isa = PBXBuildFile; fileRef = A83DF4A31AA1332716629BF2 /* WECustomPopoverController.m */; };
+		A83DF0E72F611E8D79702E64 /* NSCondition+WEPopover.m in Sources */ = {isa = PBXBuildFile; fileRef = A83DF01961E14C5F2CE7865F /* NSCondition+WEPopover.m */; };
 		A83DF4665DCA1611146378A7 /* UIView+WEPopover.m in Sources */ = {isa = PBXBuildFile; fileRef = A83DFD2DCC3853D474CD9B5F /* UIView+WEPopover.m */; };
 /* End PBXBuildFile section */
 
@@ -108,6 +109,8 @@
 		749FAE851286130000AB97F9 /* WEPopoverParentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WEPopoverParentView.h; sourceTree = "<group>"; };
 		74A2A7B0190E5B800054A6CD /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		8D1107310486CEB800E47090 /* WEPopover-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "WEPopover-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
+		A83DF01961E14C5F2CE7865F /* NSCondition+WEPopover.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSCondition+WEPopover.m"; sourceTree = "<group>"; };
+		A83DF062174D6D5F0B855E89 /* NSCondition+WEPopover.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSCondition+WEPopover.h"; sourceTree = "<group>"; };
 		A83DF428564B2075B045155A /* WECustomPopoverController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WECustomPopoverController.h; sourceTree = "<group>"; };
 		A83DF4A31AA1332716629BF2 /* WECustomPopoverController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WECustomPopoverController.m; sourceTree = "<group>"; };
 		A83DF7D277F13D75FAC228AD /* UIView+WEPopover.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+WEPopover.h"; sourceTree = "<group>"; };
@@ -261,6 +264,8 @@
 				749AF5581C7F553B00B444E1 /* WEWeakReference.m */,
 				A83DFD2DCC3853D474CD9B5F /* UIView+WEPopover.m */,
 				A83DF7D277F13D75FAC228AD /* UIView+WEPopover.h */,
+				A83DF01961E14C5F2CE7865F /* NSCondition+WEPopover.m */,
+				A83DF062174D6D5F0B855E89 /* NSCondition+WEPopover.h */,
 			);
 			path = Popover;
 			sourceTree = "<group>";
@@ -384,6 +389,7 @@
 				746B0A1D137454A000C5A8B5 /* UIBarButtonItem+WEPopover.m in Sources */,
 				A83DF01A644BD2B58C4EDD65 /* WECustomPopoverController.m in Sources */,
 				A83DF4665DCA1611146378A7 /* UIView+WEPopover.m in Sources */,
+				A83DF0E72F611E8D79702E64 /* NSCondition+WEPopover.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
