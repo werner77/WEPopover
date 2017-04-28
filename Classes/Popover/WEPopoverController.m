@@ -43,7 +43,6 @@ static const NSTimeInterval kDefaultSecundaryAnimationDuration = 0.15;
 - (UIView *)fillBackgroundViewWithDefault:(UIView *)defaultView;
 - (CGRect)calculatedContainerViewFrame;
 - (void)keyViewDidLayoutSubviewsNotification:(NSNotification *)notification;
-- (void)waitUntilNotTransitioningWithCompletion:(void (^)(BOOL waited))completion;
 
 @end
 
@@ -358,13 +357,6 @@ static void animate(NSTimeInterval duration, void (^animationBlock)(void), void 
                       animated:(BOOL)animated
                     completion:(WEPopoverCompletionBlock)completion {
 
-    if (self.isDismissing) {
-        __typeof(self) __weak weakSelf = self;
-        [self waitUntilNotTransitioningWithCompletion:^(BOOL waited) {
-            [weakSelf presentPopoverFromRect:rect inView:theView permittedArrowDirections:arrowDirections animated:animated completion:completion];
-        }];
-    }
-
     if (!self.isPresenting && !self.isDismissing && ![self isPopoverVisible]) {
         self.presenting = YES;
 
@@ -592,6 +584,17 @@ static void animate(NSTimeInterval duration, void (^animationBlock)(void), void 
         ret = _parentViewController.view;
     }
     return ret;
+}
+
+- (void)waitUntilNotTransitioningWithCompletion:(void (^)(BOOL waited))completion {
+    __typeof(self) __weak weakSelf = self;
+    [self.transitioningCondition weWaitForPredicate:^BOOL {
+        return !weakSelf.isTransitioning;
+    } completion:^(BOOL waited) {
+        if (completion) {
+            completion(waited);
+        }
+    }];
 }
 
 @end
@@ -906,17 +909,6 @@ static void animate(NSTimeInterval duration, void (^animationBlock)(void), void 
     }];
 
     [self repositionContainerViewForFrameChange];
-}
-
-- (void)waitUntilNotTransitioningWithCompletion:(void (^)(BOOL waited))completion {
-    __typeof(self) __weak weakSelf = self;
-    [self.transitioningCondition weWaitForPredicate:^BOOL {
-        return !weakSelf.isTransitioning;
-    } completion:^(BOOL waited) {
-        if (completion) {
-            completion(waited);
-        }
-    }];
 }
 
 @end

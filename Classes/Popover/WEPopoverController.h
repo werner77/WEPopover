@@ -341,7 +341,7 @@ typedef void(^WEPopoverTransitionBlock)(WEPopoverTransitionType transitionType, 
  The view and rect are used as anchor for automatic reposition during rotation.
  
  This method has no effect is the popover is already visible.
- If the popover is transitioning, this method waits untill the existing animation completes before starting the new presentation.
+ If the popover is transitioning, this method does nothing. Use waitUntilNotTransitioning if you want to present after any transition was finished.
  */
 - (void)presentPopoverFromRect:(CGRect)rect
                         inView:(UIView *)view
@@ -353,7 +353,7 @@ typedef void(^WEPopoverTransitionBlock)(WEPopoverTransitionType transitionType, 
  Presents the popover from the specified bar button item and allowed arrow directions, optionally animating the presentation.
  
  This method has no effect is the popover is already visible.
- If the popover is transitioning, this method waits untill the existing animation completes before starting the new presentation.
+ If the popover is transitioning, this method does nothing. Use waitUntilNotTransitioning if you want to present after any transition was finished.
  */
 - (void)presentPopoverFromBarButtonItem:(UIBarButtonItem *)item
                permittedArrowDirections:(UIPopoverArrowDirection)arrowDirections
@@ -365,7 +365,7 @@ typedef void(^WEPopoverTransitionBlock)(WEPopoverTransitionType transitionType, 
  Calls the completion block when done.
  
  This method has no effect is the popover is already visible.
- If the popover is transitioning, this method waits untill the existing animation completes before starting the new presentation.
+ If the popover is transitioning, this method does nothing. Use waitUntilNotTransitioning if you want to present after any transition was finished.
  */
 - (void)presentPopoverFromBarButtonItem:(UIBarButtonItem *)item
                permittedArrowDirections:(UIPopoverArrowDirection)arrowDirections
@@ -377,8 +377,7 @@ typedef void(^WEPopoverTransitionBlock)(WEPopoverTransitionType transitionType, 
  
  For more control, assign the contentViewController and call one of the other reposition methods manually.
  
- This method has no effect if the popover hasn't been presented yet.
- If the popover is transitioning, this method waits untill the existing animation completes before starting the new presentation.
+ This method has no effect if the popover hasn't been presented yet or is transitioning.
  */
 - (void)repositionForContentViewController:(UIViewController *)vc animated:(BOOL)animated;
 
@@ -409,5 +408,14 @@ typedef void(^WEPopoverTransitionBlock)(WEPopoverTransitionType transitionType, 
          permittedArrowDirections:(UIPopoverArrowDirection)arrowDirections
                          animated:(BOOL)animated
                        completion:(WEPopoverCompletionBlock)completion;
+
+
+/**
+ * Waits until the popover is not presenting or dismissing.
+ * Calls the completion block when transitioning finishes or immediately if no transition was active.
+ *
+ * @param completion
+ */
+- (void)waitUntilNotTransitioningWithCompletion:(void (^)(BOOL waited))completion;
 
 @end
