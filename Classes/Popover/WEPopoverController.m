@@ -358,6 +358,8 @@ static void animate(NSTimeInterval duration, void (^animationBlock)(void), void 
                     completion:(WEPopoverCompletionBlock)completion {
 
     if (!self.isPresenting && !self.isDismissing && ![self isPopoverVisible]) {
+        CGRect displayArea = [self displayAreaForView:theView];
+
         self.presenting = YES;
 
         [[NSNotificationCenter defaultCenter] postNotificationName:WEPopoverControllerWillShowNotification object:self];
@@ -366,8 +368,6 @@ static void animate(NSTimeInterval duration, void (^animationBlock)(void), void 
 
         //First force a load view for the contentViewController so the popoverContentSize is properly initialized
         [_contentViewController view];
-
-        CGRect displayArea = [self displayAreaForView:theView];
 
         [self determineContentSizeWithConstraintSize:displayArea.size];
 
@@ -519,10 +519,10 @@ static void animate(NSTimeInterval duration, void (^animationBlock)(void), void 
                        completion:(WEPopoverCompletionBlock)completion {
 
     if ([self isPopoverVisible] && !self.isDismissing) {
+        CGRect displayArea = [self displayAreaForView:theView];
+
         _presentedFromRect = CGRectZero;
         _presentedFromView = nil;
-
-        CGRect displayArea = [self displayAreaForView:theView];
 
         [self determineContentSizeWithConstraintSize:displayArea.size];
 
