@@ -414,7 +414,7 @@ typedef void(^WEPopoverTransitionBlock)(WEPopoverTransitionType transitionType, 
  * Waits until the popover is not presenting or dismissing.
  * Calls the completion block when transitioning finishes or immediately if no transition was active.
  *
- * @param completion
+ * @param completion The completion block
  */
 - (void)waitUntilNotTransitioningWithCompletion:(void (^)(BOOL waited))completion;
 
