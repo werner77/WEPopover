@@ -418,4 +418,13 @@ typedef void(^WEPopoverTransitionBlock)(WEPopoverTransitionType transitionType, 
  */
 - (void)waitUntilNotTransitioningWithCompletion:(void (^)(BOOL waited))completion;
 
+/**
+ * Whether or not the popover can be presented from the specified view.
+ * This method checks whether the view is in the same view hierarchy as the parent view for the popover. If the popover is presented when this method returns false an exception will occur.
+ *
+ * @param theView The view to present the popover relative to.
+ * @return true if possible to present from this view, false otherwise.
+ */
+- (BOOL)canShowPopoverFromView:(UIView *)theView;
+
 @end

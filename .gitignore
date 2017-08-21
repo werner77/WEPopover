@@ -1,0 +1,6 @@
+*.xcworkspace
+xcuserdata
+.idea
+*.mode1v3
+*.pbxuser
+

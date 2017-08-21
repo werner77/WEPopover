@@ -43,6 +43,7 @@ static const NSTimeInterval kDefaultSecundaryAnimationDuration = 0.15;
 - (UIView *)fillBackgroundViewWithDefault:(UIView *)defaultView;
 - (CGRect)calculatedContainerViewFrame;
 - (void)keyViewDidLayoutSubviewsNotification:(NSNotification *)notification;
+- (BOOL)isView:(UIView *)v1 inSameHierarchyAsView:(UIView *)v2;
 
 @end
 
@@ -595,6 +596,11 @@ static void animate(NSTimeInterval duration, void (^animationBlock)(void), void 
             completion(waited);
         }
     }];
+}
+
+- (BOOL)canShowPopoverFromView:(UIView *)theView {
+    UIView *keyView = [self keyViewForView:theView];
+    return [self isView:theView inSameHierarchyAsView:keyView];
 }
 
 @end
