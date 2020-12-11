@@ -121,7 +121,7 @@ permittedArrowDirections:(UIPopoverArrowDirection)permittedArrowDirections
 }
 
 - (CGRect)arrowRect {
-    CGRect rect = _arrowRect;
+    CGRect rect;
     
     CGPoint shift = CGPointZero;
     CGFloat margin = 1.0f;
